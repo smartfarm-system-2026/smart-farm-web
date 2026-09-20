@@ -131,7 +131,7 @@
 
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
         }
 
@@ -171,7 +171,7 @@
         }
 
         .visualizer-card {
-            grid-column: span 4;
+            grid-column: span 2;
             background: linear-gradient(180deg, #0f172a 0%, #090d16 100%);
             border: 1px solid var(--border-glow);
             border-radius: 16px;
@@ -400,8 +400,8 @@
         }
 
         @media (max-width: 900px) {
-            .grid-container { grid-template-columns: repeat(2, 1fr); }
-            .visualizer-card { grid-column: span 2; }
+            .grid-container { grid-template-columns: repeat(1, 1fr); }
+            .visualizer-card { grid-column: span 1; }
             .lower-grid { grid-template-columns: 1fr; }
             .contact-row { flex-direction: column; }
         }
@@ -414,7 +414,7 @@
         <div class="dashboard-header">
             <div class="header-title-box">
                 <img id="app-logo" src="https://cdn-icons-png.flaticon.com/512/628/628324.png" class="custom-logo-img" alt="Logo">
-                <h2 id="app-title">Smart farm management System</h2>
+                <h2 id="app-title">Smart Farm Management System</h2>
             </div>
             <div class="header-right">
                 <div class="status-badge">
@@ -426,30 +426,14 @@
             </div>
         </div>
 
-        <!-- SENSOR METRICS -->
+        <!-- SENSOR METRICS (Soil Moisture ug Water Pump Status nalang ang gibilin) -->
         <div class="grid-container">
-            <div class="card">
-                <div class="card-header">
-                    <span>Temperature</span>
-                    <span>🌡️</span>
-                </div>
-                <div class="card-value" id="val-temp">28.5 °C</div>
-            </div>
-
             <div class="card">
                 <div class="card-header">
                     <span>Soil Moisture</span>
                     <span>💧</span>
                 </div>
-                <div class="card-value" id="val-soil">65 %</div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <span>Water Tank Level</span>
-                    <span>🚰</span>
-                </div>
-                <div class="card-value" id="val-water">80 %</div>
+                <div class="card-value" id="val-soil">0 %</div>
             </div>
 
             <div class="card">
@@ -627,7 +611,6 @@
                 audioPlayer.src = fileURL;
                 nameDisplay.innerText = "Playing: " + file.name;
 
-                // Auto-play on user upload selection
                 audioPlayer.play().catch(e => console.log("User interaction needed to autoplay: ", e));
             }
         }
@@ -655,9 +638,7 @@
 
             if (data && data.length > 0) {
                 let reading = data[0];
-                document.getElementById('val-temp').innerText = (reading.temperature ?? '28.5') + ' °C';
-                document.getElementById('val-soil').innerText = (reading.soil_moisture ?? '65') + ' %';
-                document.getElementById('val-water').innerText = (reading.water_level ?? '80') + ' %';
+                document.getElementById('val-soil').innerText = (reading.soil_moisture ?? '0') + ' %';
                 
                 if (reading.pump_status !== undefined) {
                     const isPumpOn = !!reading.pump_status;
@@ -678,11 +659,10 @@
             let currentStatus = data && data.length > 0 ? !!data[0].pump_status : false;
             let newStatus = !currentStatus;
 
+            let currentSoil = data && data[0] ? data[0].soil_moisture : 0;
+
             let { error } = await _supabase.from('sensor_data').insert([{
-                temperature: data && data[0] ? data[0].temperature : 28.5,
-                humidity: data && data[0] ? data[0].humidity : 50,
-                soil_moisture: data && data[0] ? data[0].soil_moisture : 65,
-                water_level: data && data[0] ? data[0].water_level : 80,
+                soil_moisture: currentSoil,
                 pump_status: newStatus
             }]);
 
