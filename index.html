@@ -743,7 +743,7 @@
                     toggleBtn.className = isPumpOn ? "btn-pump pump-on" : "btn-pump pump-off";
                 }
 
-                // Dynamic Water Stream Wave adjustment based on soil/humidity data (mo-taas kung dako, mo-gamay/uga kung gamay)
+                // Dynamic Water Stream Wave adjustment based on soil/humidity data
                 let waveHeightOffset = Math.max(20, Math.min(140, 180 - (soil * 1.2)));
                 document.getElementById('dynamic-wave-fill').setAttribute('d', `M0,${waveHeightOffset} Q150,${waveHeightOffset - 40} 300,${waveHeightOffset} T600,${waveHeightOffset - 20} T900,${waveHeightOffset + 10} T1200,${waveHeightOffset - 30} L1200,180 L0,180 Z`);
 
@@ -781,8 +781,9 @@
             document.getElementById('app-logo').src = localStorage.getItem('custom_logo');
         }
 
-        loadTelemetry();
+        // Poll telemetry every 3 seconds
         setInterval(loadTelemetry, 3000);
+        loadTelemetry();
     </script>
 </body>
 </html>
