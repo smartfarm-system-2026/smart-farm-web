@@ -29,7 +29,7 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             margin: 0;
-            padding: 30px;
+            padding: 20px;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -39,25 +39,23 @@
         .dashboard-frame {
             background: linear-gradient(145deg, #0e1626, #05080e);
             border: 2px solid #1e293b;
-            border-radius: 20px;
-            padding: 24px;
+            border-radius: 16px;
+            padding: 20px;
             width: 100%;
-            max-width: 1400px;
-            box-shadow: 
-                0 30px 60px rgba(0,0,0,0.8),
-                inset 0 1px 1px rgba(255,255,255,0.1),
-                0 0 40px rgba(6, 182, 212, 0.05);
+            max-width: 1450px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.1);
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
+        /* HEADER */
         .dashboard-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: var(--panel-bg);
-            padding: 16px 24px;
+            padding: 14px 20px;
             border-radius: 12px;
             border: 1px solid var(--border-glow);
         }
@@ -65,21 +63,22 @@
         .header-title-box {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
         .custom-logo-img {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
             object-fit: cover;
             border: 1px solid var(--accent-main);
         }
 
         .dashboard-header h2 {
             margin: 0;
-            font-size: 22px;
-            letter-spacing: 1px;
+            font-size: 20px;
+            letter-spacing: 0.5px;
+            text-transform: lowercase;
             background: linear-gradient(90deg, var(--accent-main), var(--accent-purple));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -89,116 +88,165 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
         }
 
         .status-badge {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             background: rgba(16, 185, 129, 0.1);
-            padding: 6px 14px;
+            padding: 6px 12px;
             border-radius: 20px;
             border: 1px solid rgba(16, 185, 129, 0.3);
             color: var(--accent-green);
             font-size: 13px;
             font-weight: 600;
+            text-transform: lowercase;
         }
 
         .status-dot {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             background: var(--accent-green);
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent-green);
+            box-shadow: 0 0 8px var(--accent-green);
         }
 
-        .btn-action {
-            background: #1e293b;
-            color: #fff;
-            border: 1px solid var(--border-glow);
-            padding: 8px 14px;
-            border-radius: 8px;
+        .header-btn {
+            background: transparent;
+            color: var(--text-main);
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
+            text-transform: lowercase;
+        }
+
+        .header-btn:hover {
+            color: var(--accent-main);
+        }
+
+        /* MAIN LAYOUT: LEFT SIDEBAR & RIGHT CONTENT */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+        }
+
+        /* LEFT SIDEBAR STACK (As shown in wireframe diagram) */
+        .left-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sidebar-btn-box {
+            background: var(--card-surface);
+            border: 1px solid var(--border-glow);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: var(--text-main);
+            text-align: left;
             font-size: 13px;
             font-weight: 600;
-            display: inline-flex;
+            cursor: pointer;
+            display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 10px;
+            text-transform: lowercase;
         }
 
-        .btn-action:hover {
-            background: var(--accent-main);
-            color: #000;
+        .sidebar-btn-box:hover {
             border-color: var(--accent-main);
+            background: rgba(6, 182, 212, 0.05);
+            transform: translateX(3px);
         }
 
-        .btn-report {
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.4);
+        .sidebar-btn-box i {
+            color: var(--accent-main);
+            width: 18px;
         }
 
-        .btn-report:hover {
-            background: #ef4444;
-            color: #fff;
-            border-color: #ef4444;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+        /* RIGHT CONTENT AREA */
+        .right-content {
+            display: flex;
+            flex-direction: column;
             gap: 20px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
         }
 
         .card {
             background: var(--card-surface);
             border: 1px solid var(--border-glow);
-            border-radius: 14px;
-            padding: 20px;
-            position: relative;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            border-radius: 12px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            min-height: 130px;
         }
 
         .card:hover {
-            transform: translateY(-4px);
             border-color: var(--accent-main);
-            box-shadow: 0 12px 25px rgba(6, 182, 212, 0.15);
+            box-shadow: 0 8px 20px rgba(6, 182, 212, 0.1);
         }
 
         .card-header {
-            display: flex;
-            justify-content: space-between;
             color: var(--text-sub);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            text-transform: lowercase;
+            letter-spacing: 0.5px;
         }
 
         .card-value {
-            font-size: 32px;
+            font-size: 24px;
             font-weight: 800;
-            margin: 15px 0 5px 0;
+            margin: 10px 0 5px 0;
             color: #fff;
         }
 
+        .btn-pump {
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #fff;
+            font-size: 11px;
+            text-transform: lowercase;
+            margin-top: 6px;
+        }
+
+        .pump-off {
+            background: #10b981;
+        }
+
+        .pump-on {
+            background: #ef4444;
+        }
+
+        /* ANALYTICAL TOPOGRAPHY & WAVE MATRIX */
         .visualizer-card {
-            grid-column: span 3;
             background: linear-gradient(180deg, #0f172a 0%, #090d16 100%);
             border: 1px solid var(--border-glow);
-            border-radius: 16px;
+            border-radius: 14px;
             padding: 20px;
             position: relative;
             overflow: hidden;
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
-            height: 200px;
+            height: 260px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            /* Parallelogram/Trapezoid styled look in diagram */
+            transform: skewX(-0.5deg);
         }
 
         .wave-svg {
@@ -206,169 +254,11 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 140px;
+            height: 160px;
             pointer-events: none;
         }
 
-        .btn-pump {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            color: #fff;
-            font-size: 13px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-top: 10px;
-        }
-
-        .pump-off {
-            background: linear-gradient(135deg, #10b981, #059669);
-            box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
-        }
-
-        .pump-on {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3);
-        }
-
-        /* SPLIT LAYOUT: History on Left, Support & Controls on Right */
-        .split-layout {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 20px;
-        }
-
-        .history-panel {
-            background: var(--card-surface);
-            border: 1px solid var(--border-glow);
-            border-radius: 14px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            height: 520px;
-        }
-
-        .history-panel h3 {
-            margin-top: 0;
-            font-size: 15px;
-            color: var(--accent-main);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* SCROLLABLE LOGS CONTAINER */
-        .table-scroll-container {
-            width: 100%;
-            flex: 1;
-            overflow-y: auto;
-            border: 1px solid var(--border-glow);
-            border-radius: 8px;
-            background: #090d16;
-        }
-
-        .history-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 12px;
-        }
-
-        .history-table th, .history-table td {
-            padding: 10px 12px;
-            border-bottom: 1px solid var(--border-glow);
-        }
-
-        .history-table th {
-            background: #0d131d;
-            color: var(--accent-main);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .history-table tr:hover {
-            background: rgba(6, 182, 212, 0.05);
-        }
-
-        .right-side-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .support-panel {
-            background: var(--card-surface);
-            border: 1px solid var(--border-glow);
-            border-radius: 14px;
-            padding: 20px;
-            flex: 1;
-        }
-
-        .support-panel h3 {
-            margin-top: 0;
-            font-size: 15px;
-            color: var(--accent-main);
-        }
-
-        .contact-row {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 10px;
-            font-size: 12px;
-        }
-
-        .contact-item {
-            background: #090d16;
-            padding: 10px 12px;
-            border-radius: 8px;
-            border-left: 3px solid var(--accent-main);
-        }
-
-        .contact-item.fb-box {
-            border-left-color: #1877f2;
-        }
-
-        .contact-item span {
-            display: block;
-            color: var(--text-sub);
-            font-size: 10px;
-            margin-bottom: 2px;
-        }
-
-        .fb-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: #1877f2;
-            text-decoration: none;
-            font-weight: 700;
-        }
-
-        .fb-link:hover {
-            color: #4292f8;
-        }
-
-        .report-guide {
-            background: rgba(37, 40, 20, 0.9);
-            border-left: 3px solid #eab308;
-            padding: 10px 12px;
-            border-radius: 8px;
-            margin-top: 12px;
-            font-size: 12px;
-            color: #fef08a;
-        }
-
-        .report-guide ul {
-            margin: 4px 0 0 0;
-            padding-left: 15px;
-        }
-
+        /* MODALS */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -382,49 +272,55 @@
         .modal-box {
             background: #0d131d;
             border: 2px solid var(--accent-main);
-            border-radius: 16px;
-            padding: 25px;
+            border-radius: 14px;
+            padding: 24px;
             width: 100%;
-            max-width: 480px;
+            max-width: 500px;
             box-shadow: 0 0 30px rgba(6, 182, 212, 0.3);
+            max-height: 85vh;
+            overflow-y: auto;
         }
 
         .modal-box h3 {
             margin-top: 0;
             color: var(--accent-main);
+            text-transform: lowercase;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .form-group label {
             display: block;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-sub);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             font-weight: 700;
+            text-transform: lowercase;
         }
 
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 10px;
+            padding: 9px;
             background: #121926;
             border: 1px solid var(--border-glow);
             color: #fff;
-            border-radius: 8px;
+            border-radius: 6px;
             font-family: inherit;
+            font-size: 12px;
         }
 
         .btn-save {
             background: var(--accent-main);
             color: #000;
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 10px;
+            border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
+            text-transform: lowercase;
         }
 
         .btn-close {
@@ -436,124 +332,326 @@
             font-size: 16px;
         }
 
-        @media (max-width: 1000px) {
-            .grid-container { grid-template-columns: repeat(1, 1fr); }
-            .visualizer-card { grid-column: span 1; }
-            .split-layout { grid-template-columns: 1fr; }
-            .history-panel { height: 400px; }
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        .history-table th, .history-table td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-glow);
+        }
+
+        .history-table th {
+            background: #090d16;
+            color: var(--accent-main);
+            position: sticky;
+            top: 0;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .metrics-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
 
     <div class="dashboard-frame">
-        <!-- HEADER -->
+        <!-- HEADER (Matches diagram top box) -->
         <div class="dashboard-header">
             <div class="header-title-box">
                 <img id="app-logo" src="https://cdn-icons-png.flaticon.com/512/628/628324.png" class="custom-logo-img" alt="Logo">
-                <h2 id="app-title">Smart Farm Management System</h2>
+                <h2 id="app-title">smart farm management system</h2>
             </div>
             <div class="header-right">
                 <div class="status-badge">
-                    <span class="status-dot"></span> Live
+                    <span class="status-dot"></span> live
                 </div>
-                <button class="btn-action btn-report" onclick="openReportModal()">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Report Bugs & Issues
-                </button>
-                <button class="btn-action" onclick="openSettings()" title="Settings">
-                    <i class="fa-solid fa-gear"></i>
-                </button>
+                <button class="header-btn" onclick="openSettings()">settings</button>
             </div>
         </div>
 
-        <!-- SENSOR METRICS -->
-        <div class="grid-container">
-            <div class="card">
-                <div class="card-header">
-                    <span>Humidity</span>
-                    <span>🌡️</span>
-                </div>
-                <div class="card-value" id="val-humidity">0 %</div>
+        <!-- MAIN LAYOUT: LEFT SIDEBAR & RIGHT CONTENT -->
+        <div class="main-layout">
+            <!-- LEFT SIDEBAR STACK (Wireframe mapped) -->
+            <div class="left-sidebar">
+                <button class="sidebar-btn-box" onclick="openModal('history-modal')">
+                    <i class="fa-solid fa-clock-rotate-left"></i> sensor history logs
+                </button>
+                <button class="sidebar-btn-box" onclick="openModal('report-modal')">
+                    <i class="fa-solid fa-bug"></i> report bugs & issues
+                </button>
+                <button class="sidebar-btn-box" onclick="openModal('support-modal')">
+                    <i class="fa-solid fa-tools"></i> technical support & maintenance
+                </button>
+                <button class="sidebar-btn-box" onclick="openModal('weather-modal')">
+                    <i class="fa-solid fa-cloud-sun"></i> weather update
+                </button>
+                <button class="sidebar-btn-box" onclick="openModal('music-modal')">
+                    <i class="fa-solid fa-music"></i> free music
+                </button>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <span>Soil Moisture</span>
-                    <span>💧</span>
-                </div>
-                <div class="card-value" id="val-soil">0 %</div>
-            </div>
+            <!-- RIGHT CONTENT AREA -->
+            <div class="right-content">
+                <div class="metrics-grid">
+                    <!-- Humidity Card -->
+                    <div class="card">
+                        <div class="card-header">humidity</div>
+                        <div class="card-value" id="val-humidity">0 %</div>
+                        <span style="font-size: 10px; color: var(--text-sub);">atmospheric sensor</span>
+                    </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <span>Water Pump Status</span>
-                    <span>⚙️</span>
-                </div>
-                <div class="card-value" id="val-pump" style="color: var(--accent-green);">OFF</div>
-                <button id="btn-toggle-pump" class="btn-pump pump-off" onclick="togglePump()">TURN ON PUMP</button>
-            </div>
+                    <!-- Soil Moisture Card -->
+                    <div class="card">
+                        <div class="card-header">soil moisture</div>
+                        <div class="card-value" id="val-soil">0 %</div>
+                        <span style="font-size: 10px; color: var(--text-sub);">moisture sensor</span>
+                    </div>
 
-            <!-- ANALYTICAL TOPOGRAPHY & WAVE MATRIX -->
-            <div class="visualizer-card">
-                <div style="display: flex; justify-content: space-between; position: relative; z-index: 2;">
-                    <span style="font-weight: 700; color: var(--accent-main); font-size: 13px;">ANALYTICAL TOPOGRAPHY & WAVE MATRIX</span>
-                    <span style="color: var(--text-sub); font-size: 11px;">Realtime Stream</span>
+                    <!-- Rain Sensor Card -->
+                    <div class="card">
+                        <div class="card-header">rain sensor</div>
+                        <div class="card-value" id="val-rain" style="color: var(--accent-main);">NORMAL</div>
+                        <span style="font-size: 10px; color: var(--text-sub);">precipitation status</span>
+                    </div>
+
+                    <!-- Water Pump Status Card -->
+                    <div class="card">
+                        <div class="card-header">water pump status</div>
+                        <div class="card-value" id="val-pump" style="color: var(--accent-green);">OFF</div>
+                        <button id="btn-toggle-pump" class="btn-pump pump-off" onclick="togglePump()">turn on pump</button>
+                    </div>
                 </div>
 
-                <svg class="wave-svg" viewBox="0 0 1200 140" preserveAspectRatio="none">
-                    <defs>
-                        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.7"/>
-                            <stop offset="50%" stop-color="#8b5cf6" stop-opacity="0.8"/>
-                            <stop offset="100%" stop-color="#ec4899" stop-opacity="0.6"/>
-                        </linearGradient>
-                        <linearGradient id="grad2" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.4"/>
-                            <stop offset="100%" stop-color="#080b10" stop-opacity="0.9"/>
-                        </linearGradient>
-                    </defs>
-                    <path d="M0,100 Q150,30 300,70 T600,50 T900,80 T1200,30 L1200,140 L0,140 Z" fill="url(#grad2)" />
-                    <path d="M0,80 C150,10 250,110 400,40 C550,100 700,10 850,70 C1000,20 1100,90 1200,50" fill="none" stroke="url(#grad1)" stroke-width="3" />
-                </svg>
+                <!-- ANALYTICAL TOPOGRAPHY & WAVE MATRIX -->
+                <div class="visualizer-card">
+                    <div style="display: flex; justify-content: space-between; position: relative; z-index: 2;">
+                        <span style="font-weight: 700; color: var(--accent-main); font-size: 12px; text-transform: lowercase;">analytical topography & wave matrix</span>
+                        <span style="color: var(--text-sub); font-size: 10px;">realtime sensor stream</span>
+                    </div>
+
+                    <svg class="wave-svg" viewBox="0 0 1200 160" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.7"/>
+                                <stop offset="50%" stop-color="#8b5cf6" stop-opacity="0.8"/>
+                                <stop offset="100%" stop-color="#ec4899" stop-opacity="0.6"/>
+                            </linearGradient>
+                            <linearGradient id="grad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.4"/>
+                                <stop offset="100%" stop-color="#080b10" stop-opacity="0.9"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M0,120 Q150,40 300,90 T600,60 T900,100 T1200,40 L1200,160 L0,160 Z" fill="url(#grad2)" />
+                        <path d="M0,100 C150,20 250,130 400,50 C550,120 700,10 850,80 C1000,30 1100,110 1200,60" fill="none" stroke="url(#grad1)" stroke-width="3" />
+                    </svg>
+                </div>
             </div>
         </div>
+    </div>
 
-        <!-- SPLIT LAYOUT: HISTORY LOGS ON LEFT, SUPPORT ON RIGHT -->
-        <div class="split-layout">
-            <!-- LEFT SIDE: SCROLLABLE SENSOR HISTORY LOGS TABLE -->
-            <div class="history-panel">
-                <h3><i class="fa-solid fa-clock-rotate-left"></i> Sensor History Logs (Scroll Down)</h3>
-                <div class="table-scroll-container">
-                    <table class="history-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Humidity</th>
-                                <th>Soil</th>
-                                <th>Pump</th>
-                                <th>Recorded At</th>
-                            </tr>
-                        </thead>
-                        <tbody id="history-table-body">
-                            <tr>
-                                <td colspan="5" style="text-align: center; color: var(--text-sub);">Loading history logs...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+    <!-- MODALS FOR SIDEBAR ACTIONS -->
+
+    <!-- Sensor History Modal -->
+    <div class="modal-overlay" id="history-modal">
+        <div class="modal-box" style="max-width: 700px;">
+            <button class="btn-close" onclick="closeModal('history-modal')">✖</button>
+            <h3>sensor history logs</h3>
+            <div style="max-height: 350px; overflow-y: auto; margin-top: 15px;">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>humidity</th>
+                            <th>soil moisture</th>
+                            <th>pump status</th>
+                            <th>recorded at</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        <tr><td colspan="5" style="text-align: center; color: var(--text-sub);">loading logs...</td></tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
+    </div>
 
-            <!-- RIGHT SIDE: TECHNICAL SUPPORT & GUIDELINES -->
-            <div class="right-side-stack">
-                <div class="support-panel">
-                    <h3>🛠️ Technical Support & Maintenance</h3>
-                    <p style="font-size: 12px; color: #ccc; margin-bottom: 10px;">
-                        Need assistance regarding sensors or hardware connectivity? Reach out below:
-                    </p>
+    <!-- Report Bugs Modal -->
+    <div class="modal-overlay" id="report-modal">
+        <div class="modal-box">
+            <button class="btn-close" onclick="closeModal('report-modal')">✖</button>
+            <h3>report bugs & issues</h3>
+            <div class="form-group" style="margin-top: 15px;">
+                <label>your name / identifier</label>
+                <input type="text" id="bug-name" placeholder="Enter your name">
+            </div>
+            <div class="form-group">
+                <label>issue category</label>
+                <select id="bug-cat">
+                    <option value="Sensor">Sensor Disconnected</option>
+                    <option value="Pump">Water Pump Failure</option>
+                    <option value="UI">Dashboard Layout Glitch</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>description</label>
+                <textarea id="bug-desc" rows="3" placeholder="Describe issue..."></textarea>
+            </div>
+            <button class="btn-save" onclick="submitBug()">submit report</button>
+        </div>
+    </div>
 
-                    <div class="contact-row">
-                        <div class="contact-item">
-                            <span>Phone Support</span>
-                            <strong>09855094913</strong>
-                        </div>
-                        <div
+    <!-- Technical Support Modal -->
+    <div class="modal-overlay" id="support-modal">
+        <div class="modal-box">
+            <button class="btn-close" onclick="closeModal('support-modal')">✖</button>
+            <h3>technical support & maintenance</h3>
+            <p style="font-size: 12px; color: var(--text-sub); margin-top: 10px;">
+                developer contact details:<br>
+                <strong>phone:</strong> 09855094913<br>
+                <strong>email:</strong> alfrancisis69@gmail.com<br>
+                <strong>facebook:</strong> Alfrancis Sastrillas
+            </p>
+        </div>
+    </div>
+
+    <!-- Weather Update Modal -->
+    <div class="modal-overlay" id="weather-modal">
+        <div class="modal-box">
+            <button class="btn-close" onclick="closeModal('weather-modal')">✖</button>
+            <h3>weather update (ubay, bohol)</h3>
+            <p style="font-size: 12px; color: var(--text-sub); margin-top: 10px;">
+                🌤️ current status: normal farming weather conditions.<br>
+                🌧️ rain alert: clear skies, ideal for irrigation scheduling.
+            </p>
+        </div>
+    </div>
+
+    <!-- Free Music Modal -->
+    <div class="modal-overlay" id="music-modal">
+        <div class="modal-box">
+            <button class="btn-close" onclick="closeModal('music-modal')">✖</button>
+            <h3>free music ambient player</h3>
+            <p style="font-size: 12px; color: var(--text-sub); margin-top: 10px;">paminaw samtang nagdumala sa uma:</p>
+            <audio controls style="width: 100%; margin-top: 15px;">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-box">
+            <button class="btn-close" onclick="closeModal('settings-modal')">✖</button>
+            <h3>settings</h3>
+            <div class="form-group" style="margin-top: 15px;">
+                <label>accent color</label>
+                <select id="input-theme" onchange="changeTheme(this.value)">
+                    <option value="#06b6d4">Teal Blue</option>
+                    <option value="#10b981">Emerald Green</option>
+                    <option value="#8b5cf6">Neon Purple</option>
+                    <option value="#eab308">Cyber Gold</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>system logo upload</label>
+                <input type="file" accept="image/*" onchange="uploadLogo(event)">
+            </div>
+            <button class="btn-save" onclick="closeModal('settings-modal')">save settings</button>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://fqqwlvreqnxkbvbjjrol.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxcXdsdnJlcW54a2J2Ympqcm9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NjI4NjksImV4cCI6MjEwMzIzODg2OX0.J_-GrhljQrMhJnzmSMhSJYUFCR7moiUF3oBIOW0YWUQ';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function openSettings() { openModal('settings-modal'); }
+
+        function submitBug() {
+            const name = document.getElementById('bug-name').value;
+            if(!name) { alert("Palihug og butang sa imong ngalan."); return; }
+            alert("Salamat, " + name + "! Na-submit na ang bug report.");
+            closeModal('report-modal');
+        }
+
+        function changeTheme(color) {
+            document.documentElement.style.setProperty('--accent-main', color);
+            localStorage.setItem('theme_color', color);
+        }
+
+        function uploadLogo(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('app-logo').src = e.target.result;
+                    localStorage.setItem('custom_logo', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function loadTelemetry() {
+            let { data, error } = await _supabase.from('sensor_data').select('*').order('id', { ascending: false }).limit(30);
+            if(error) return;
+
+            if(data && data.length > 0) {
+                let latest = data[0];
+                document.getElementById('val-humidity').innerText = (latest.humidity ?? '0') + ' %';
+                document.getElementById('val-soil').innerText = (latest.soil_moisture ?? '0') + ' %';
+
+                if(latest.pump_status !== undefined) {
+                    let isPumpOn = !!latest.pump_status;
+                    let pumpVal = document.getElementById('val-pump');
+                    let toggleBtn = document.getElementById('btn-toggle-pump');
+                    pumpVal.innerText = isPumpOn ? 'ON' : 'OFF';
+                    pumpVal.style.color = isPumpOn ? '#ef4444' : '#10b981';
+                    toggleBtn.innerText = isPumpOn ? "turn off pump" : "turn on pump";
+                    toggleBtn.className = isPumpOn ? "btn-pump pump-on" : "btn-pump pump-off";
+                }
+
+                const tbody = document.getElementById('history-table-body');
+                tbody.innerHTML = '';
+                data.forEach(row => {
+                    let tr = document.createElement('tr');
+                    let dateStr = row.recorded_at ? new Date(row.recorded_at).toLocaleString() : 'N/A';
+                    let pumpTxt = row.pump_status ? '<span style="color:#ef4444">ON</span>' : '<span style="color:#10b981">OFF</span>';
+                    tr.innerHTML = `<td>${row.id}</td><td>${row.humidity}%</td><td>${row.soil_moisture}%</td><td>${pumpTxt}</td><td>${dateStr}</td>`;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+        async function togglePump() {
+            let { data } = await _supabase.from('sensor_data').select('*').order('id', { ascending: false }).limit(1);
+            let currentStatus = data && data.length > 0 ? !!data[0].pump_status : false;
+            let newStatus = !currentStatus;
+            let soil = data && data[0] ? data[0].soil_moisture : 0;
+            let hum = data && data[0] ? data[0].humidity : 0;
+
+            await _supabase.from('sensor_data').insert([{ humidity: hum, soil_moisture: soil, pump_status: newStatus }]);
+            loadTelemetry();
+        }
+
+        // Init loads
+        if(localStorage.getItem('theme_color')) {
+            document.documentElement.style.setProperty('--accent-main', localStorage.getItem('theme_color'));
+            document.getElementById('input-theme').value = localStorage.getItem('theme_color');
+        }
+        if(localStorage.getItem('custom_logo')) {
+            document.getElementById('app-logo').src = localStorage.getItem('custom_logo');
+        }
+
+        loadTelemetry();
+        setInterval(loadTelemetry, 3000);
+    </script>
+</body>
+</html>
