@@ -9,9 +9,8 @@
     <style>
         :root {
             --bg-dark: #050b14;
-            --sidebar-bg: rgba(7, 11, 20, 0.95);
             --panel-bg: rgba(13, 19, 29, 0.85);
-            --card-surface: rgba(18, 25, 38, 0.9);
+            --card-surface: rgba(18, 25, 38, 0.85);
             --border-glow: rgba(6, 182, 212, 0.3);
             --accent-main: #06b6d4;
             --accent-green: #10b981;
@@ -22,91 +21,148 @@
 
         * {
             box-sizing: border-box;
-            transition: all 0.2s ease-in-out;
+            transition: all 0.25s ease-in-out;
         }
 
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(rgba(5, 11, 20, 0.85), rgba(5, 11, 20, 0.92)), 
+            background: linear-gradient(rgba(5, 11, 20, 0.8), rgba(5, 11, 20, 0.9)), 
                         url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
             background-size: cover;
             color: var(--text-main);
             margin: 0;
-            padding: 16px;
+            padding: 20px;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        /* LAYOUT NGA PAREHO SA GIPAKITA NGA DASHBOARD IMAGE */
-        .app-layout-frame {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            gap: 16px;
-            width: 100%;
-            max-width: 1550px;
-            height: 94vh;
-            background: var(--sidebar-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border-glow);
+        .dashboard-frame {
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            border: 2px solid var(--border-glow);
             border-radius: 16px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.9);
-            overflow: hidden;
-        }
-
-        /* SIDEBAR (WALA) */
-        .app-sidebar {
-            background: rgba(3, 7, 14, 0.98);
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
             padding: 20px;
+            width: 100%;
+            max-width: 1450px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9), inset 0 1px 2px rgba(255,255,255,0.2);
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
-        .brand-box {
+        /* HEADER */
+        .dashboard-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            font-weight: 800;
-            font-size: 16px;
-            text-transform: lowercase;
-            background: linear-gradient(90deg, var(--accent-main), var(--accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            background: var(--card-surface);
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-glow);
         }
 
-        .brand-logo {
-            width: 32px;
-            height: 32px;
+        .header-title-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .custom-logo-img {
+            width: 36px;
+            height: 36px;
             border-radius: 6px;
             object-fit: cover;
             border: 1px solid var(--accent-main);
         }
 
-        .sidebar-menu-list {
+        .dashboard-header h2 {
+            margin: 0;
+            font-size: 20px;
+            letter-spacing: 0.5px;
+            text-transform: lowercase;
+            background: linear-gradient(90deg, var(--accent-main), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.15);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: var(--accent-green);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: lowercase;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-green);
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .header-btn {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-glow);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: lowercase;
+        }
+
+        .header-btn:hover {
+            background: var(--accent-main);
+            color: #000;
+            border-color: var(--accent-main);
+            transform: translateY(-2px);
+        }
+
+        /* MAIN LAYOUT */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+        }
+
+        /* SIDEBAR BUTTONS WITH ANIMATIONS */
+        .left-sidebar {
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            flex-grow: 1;
+            gap: 12px;
         }
 
-        .menu-category-title {
-            font-size: 10px;
-            color: var(--text-sub);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 14px 0 6px 6px;
-            font-weight: 700;
-        }
-
-        .sidebar-btn-item {
-            background: transparent;
-            border: none;
-            color: var(--text-sub);
-            padding: 10px 12px;
-            border-radius: 8px;
+        .sidebar-btn-box {
+            background: var(--card-surface);
+            border: 1px solid var(--border-glow);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: var(--text-main);
+            text-align: left;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
@@ -114,89 +170,53 @@
             align-items: center;
             gap: 12px;
             text-transform: lowercase;
-            text-align: left;
-            width: 100%;
+            position: relative;
+            overflow: hidden;
         }
 
-        .sidebar-btn-item i {
+        .sidebar-btn-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .sidebar-btn-box:hover::before {
+            left: 100%;
+        }
+
+        .sidebar-btn-box:hover {
+            border-color: var(--accent-main);
+            background: rgba(6, 182, 212, 0.1);
+            transform: translateX(5px) scale(1.02);
+            box-shadow: 0 5px 15px rgba(6, 182, 212, 0.2);
+        }
+
+        .sidebar-btn-box:active {
+            transform: scale(0.97);
+        }
+
+        .sidebar-btn-box i {
             color: var(--accent-main);
-            width: 16px;
-            font-size: 14px;
+            width: 18px;
+            font-size: 15px;
         }
 
-        .sidebar-btn-item:hover, .sidebar-btn-item.active {
-            background: rgba(6, 182, 212, 0.12);
-            color: var(--accent-main);
-            border-left: 3px solid var(--accent-main);
-            padding-left: 9px;
-        }
-
-        /* MAIN VIEW AREA (TUO) */
-        .main-view-area {
+        /* RIGHT CONTENT AREA */
+        .right-content {
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
-            padding: 20px;
-            gap: 16px;
+            gap: 20px;
         }
 
-        /* TOP NAVIGATION BAR */
-        .top-navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--card-surface);
-            padding: 12px 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border-glow);
-        }
-
-        .top-search-box {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(5, 11, 20, 0.6);
-            border: 1px solid var(--border-glow);
-            padding: 8px 14px;
-            border-radius: 8px;
-            width: 380px;
-        }
-
-        .top-search-box input {
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-size: 13px;
-            width: 100%;
-            outline: none;
-        }
-
-        .user-profile-box {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(5, 11, 20, 0.6);
-            border: 1px solid var(--border-glow);
-            padding: 6px 14px 6px 6px;
-            border-radius: 30px;
-        }
-
-        .user-profile-box img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            border: 1px solid var(--accent-main);
-            object-fit: cover;
-        }
-
-        /* METRICS GRID CARDS */
-        .metrics-grid-box {
+        .metrics-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 14px;
+            gap: 15px;
         }
 
-        .card-surface-item {
+        .card {
             background: var(--card-surface);
             border: 1px solid var(--border-glow);
             border-radius: 12px;
@@ -205,31 +225,33 @@
             flex-direction: column;
             justify-content: space-between;
             min-height: 130px;
+            backdrop-filter: blur(5px);
         }
 
-        .card-surface-item:hover {
+        .card:hover {
             border-color: var(--accent-main);
-            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.2);
-            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.25);
+            transform: translateY(-3px);
         }
 
-        .card-title-label {
+        .card-header {
             color: var(--text-sub);
             font-size: 11px;
             font-weight: 700;
             text-transform: lowercase;
+            letter-spacing: 0.5px;
         }
 
-        .card-value-display {
+        .card-value {
             font-size: 24px;
             font-weight: 800;
-            margin: 8px 0;
+            margin: 10px 0 5px 0;
             color: #fff;
         }
 
-        .btn-pump-ctrl {
+        .btn-pump {
             width: 100%;
-            padding: 8px;
+            padding: 9px;
             border: none;
             border-radius: 6px;
             font-weight: 700;
@@ -237,20 +259,31 @@
             color: #fff;
             font-size: 11px;
             text-transform: lowercase;
+            margin-top: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .btn-pump:hover {
+            transform: scale(1.03);
+            opacity: 0.9;
+        }
+
+        .btn-pump:active {
+            transform: scale(0.96);
         }
 
         .pump-off { background: #10b981; }
         .pump-on { background: #ef4444; }
 
-        /* WAVE TOPOGRAPHY CHART BOX */
-        .visualizer-chart-box {
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(8, 12, 20, 0.95) 100%);
+        /* ANALYTICAL TOPOGRAPHY & REALTIME WATER STREAM WAVE MATRIX */
+        .visualizer-card {
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(9, 13, 22, 0.95) 100%);
             border: 1px solid var(--border-glow);
-            border-radius: 12px;
-            padding: 18px;
+            border-radius: 14px;
+            padding: 20px;
             position: relative;
             overflow: hidden;
-            height: 240px;
+            height: 260px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -261,38 +294,11 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 150px;
+            height: 180px;
             pointer-events: none;
         }
 
-        /* REPORTS TABLE SECTION */
-        .table-panel-box {
-            background: var(--card-surface);
-            border: 1px solid var(--border-glow);
-            border-radius: 12px;
-            padding: 18px;
-        }
-
-        .history-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            text-align: left;
-        }
-
-        .history-table th, .history-table td {
-            padding: 10px;
-            border-bottom: 1px solid var(--border-glow);
-        }
-
-        .history-table th {
-            background: #080d17;
-            color: var(--accent-main);
-            text-transform: uppercase;
-            font-size: 11px;
-        }
-
-        /* MODALS (PAREHO SA KANAAN) */
+        /* MODALS */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -316,6 +322,12 @@
             overflow-y: auto;
         }
 
+        .modal-box h3 {
+            margin-top: 0;
+            color: var(--accent-main);
+            text-transform: lowercase;
+        }
+
         .form-group {
             margin-bottom: 14px;
         }
@@ -336,7 +348,14 @@
             border: 1px solid var(--border-glow);
             color: #fff;
             border-radius: 6px;
+            font-family: inherit;
             font-size: 12px;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-main);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
         }
 
         .btn-action {
@@ -349,6 +368,16 @@
             cursor: pointer;
             width: 100%;
             text-transform: lowercase;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+        }
+
+        .btn-action:active {
+            transform: scale(0.98);
         }
 
         .btn-close {
@@ -360,132 +389,125 @@
             font-size: 16px;
         }
 
-        @media (max-width: 1100px) {
-            .app-layout-frame { grid-template-columns: 1fr; height: auto; }
-            .metrics-grid-box { grid-template-columns: repeat(2, 1fr); }
+        .btn-close:hover { color: #fff; }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        .history-table th, .history-table td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-glow);
+        }
+
+        .history-table th {
+            background: #090d16;
+            color: var(--accent-main);
+            position: sticky;
+            top: 0;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .metrics-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
 
-    <div class="app-layout-frame">
-        <!-- SIDEBAR NAVIGATION -->
-        <div class="app-sidebar">
-            <div class="brand-box">
-                <img id="app-logo" src="https://cdn-icons-png.flaticon.com/512/628/628324.png" class="brand-logo" alt="Logo">
-                <span>smart farm hub</span>
+    <div class="dashboard-frame">
+        <!-- HEADER -->
+        <div class="dashboard-header">
+            <div class="header-title-box">
+                <img id="app-logo" src="https://cdn-icons-png.flaticon.com/512/628/628324.png" class="custom-logo-img" alt="Logo">
+                <h2 id="app-title">smart farm management system</h2>
             </div>
-
-            <div class="sidebar-menu-list">
-                <div class="menu-category-title">main navigation</div>
-                <button class="sidebar-btn-item active" onclick="openModal('history-modal')">
-                    <i class="fa-solid fa-chart-pie"></i> sensor history logs
-                </button>
-                <button class="sidebar-btn-item" onclick="openModal('report-modal')">
-                    <i class="fa-solid fa-bug"></i> report bugs & issues
-                </button>
-                <button class="sidebar-btn-item" onclick="openModal('weather-modal')">
-                    <i class="fa-solid fa-cloud-sun"></i> weather update & map
-                </button>
-
-                <div class="menu-category-title">utilities</div>
-                <button class="sidebar-btn-item" onclick="openModal('music-modal')">
-                    <i class="fa-solid fa-music"></i> free music ambient
-                </button>
-                <button class="sidebar-btn-item" onclick="openModal('settings-modal')">
-                    <i class="fa-solid fa-sliders"></i> settings & theme
-                </button>
+            <div class="header-right">
+                <div class="status-badge">
+                    <span class="status-dot"></span> live
+                </div>
+                <button class="header-btn" onclick="openSettings()">settings</button>
             </div>
         </div>
 
-        <!-- MAIN CONTENT AREA -->
-        <div class="main-view-area">
-            <!-- TOP NAVBAR -->
-            <div class="top-navbar">
-                <div class="top-search-box">
-                    <i class="fa-solid fa-magnifying-glass" style="color: var(--text-sub);"></i>
-                    <input type="text" placeholder="Search telemetry, active nodes, reports...">
-                </div>
-                <div class="user-profile-box">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Admin">
-                    <div style="font-size: 12px; line-height: 1.2;">
-                        <div style="font-weight: 700; color: #fff;">Alfrancis Sastrillas</div>
-                        <div style="font-size: 10px; color: var(--accent-main);">System Admin</div>
+        <!-- MAIN LAYOUT -->
+        <div class="main-layout">
+            <!-- SIDEBAR WITH ANIMATED BUTTONS -->
+            <div class="left-sidebar">
+                <button class="sidebar-btn-box" onclick="openModal('history-modal')">
+                    <i class="fa-solid fa-clock-rotate-left"></i> sensor history logs
+                </button>
+                <button class="sidebar-btn-box" onclick="openModal('report-modal')">
+                    <i class="fa-solid fa-bug"></i> report bugs & issues
+                </button>
+                <button class="sidebar-btn-box" onclick="openModal('support-modal')">
+                    <i class="fa-solid fa-tools"></i> technical support & maintenance
+                </button>
+                <button class="sidebar-btn-box" onclick="openModal('weather-modal')">
+                    <i class="fa-solid fa-cloud-sun"></i> weather update & map
+                </button>
+                <button class="sidebar-btn-box" onclick="openModal('music-modal')">
+                    <i class="fa-solid fa-music"></i> free music
+                </button>
+            </div>
+
+            <!-- RIGHT CONTENT AREA -->
+            <div class="right-content">
+                <div class="metrics-grid">
+                    <!-- Humidity Card -->
+                    <div class="card">
+                        <div class="card-header">humidity</div>
+                        <div class="card-value" id="val-humidity">0 %</div>
+                        <span style="font-size: 10px; color: var(--text-sub);">atmospheric sensor</span>
+                    </div>
+
+                    <!-- Soil Moisture Card -->
+                    <div class="card">
+                        <div class="card-header">soil moisture</div>
+                        <div class="card-value" id="val-soil">0 %</div>
+                        <span style="font-size: 10px; color: var(--text-sub);">moisture sensor</span>
+                    </div>
+
+                    <!-- Rain Sensor Card -->
+                    <div class="card">
+                        <div class="card-header">rain sensor</div>
+                        <div class="card-value" id="val-rain" style="color: var(--accent-main);">NORMAL</div>
+                        <span style="font-size: 10px; color: var(--text-sub);">precipitation status</span>
+                    </div>
+
+                    <!-- Water Pump Status Card -->
+                    <div class="card">
+                        <div class="card-header">water pump status</div>
+                        <div class="card-value" id="val-pump" style="color: var(--accent-green);">OFF</div>
+                        <button id="btn-toggle-pump" class="btn-pump pump-off" onclick="togglePump()">turn on pump</button>
                     </div>
                 </div>
-            </div>
 
-            <!-- METRICS CARDS -->
-            <div class="metrics-grid-box">
-                <div class="card-surface-item">
-                    <div class="card-title-label">humidity</div>
-                    <div class="card-value-display" id="val-humidity">0 %</div>
-                    <span style="font-size: 10px; color: var(--text-sub);">atmospheric sensor</span>
-                </div>
+                <!-- ANALYTICAL TOPOGRAPHY & DYNAMIC WATER STREAM WAVE MATRIX -->
+                <div class="visualizer-card">
+                    <div style="display: flex; justify-content: space-between; position: relative; z-index: 2;">
+                        <span style="font-weight: 700; color: var(--accent-main); font-size: 12px; text-transform: lowercase;">analytical topography & realtime water stream wave matrix</span>
+                        <span style="color: var(--text-sub); font-size: 10px;" id="stream-status-text">live sensor stream: active</span>
+                    </div>
 
-                <div class="card-surface-item">
-                    <div class="card-title-label">soil moisture</div>
-                    <div class="card-value-display" id="val-soil">0 %</div>
-                    <span style="font-size: 10px; color: var(--text-sub);">moisture sensor</span>
-                </div>
-
-                <div class="card-surface-item">
-                    <div class="card-title-label">rain sensor</div>
-                    <div class="card-value-display" id="val-rain" style="color: var(--accent-main);">NORMAL</div>
-                    <span style="font-size: 10px; color: var(--text-sub);">precipitation status</span>
-                </div>
-
-                <div class="card-surface-item">
-                    <div class="card-title-label">water pump status</div>
-                    <div class="card-value-display" id="val-pump" style="color: var(--accent-green);">OFF</div>
-                    <button id="btn-toggle-pump" class="btn-pump-ctrl pump-off" onclick="togglePump()">turn on pump</button>
-                </div>
-            </div>
-
-            <!-- WAVE VISUALIZER CHART -->
-            <div class="visualizer-chart-box">
-                <div style="display: flex; justify-content: space-between; position: relative; z-index: 2;">
-                    <span style="font-weight: 700; color: var(--accent-main); font-size: 12px; text-transform: lowercase;">analytical topography & realtime water stream wave matrix</span>
-                    <span style="color: var(--accent-green); font-size: 10px; background: rgba(16,185,129,0.15); padding: 2px 8px; border-radius: 4px;">● live sync</span>
-                </div>
-                <svg class="wave-svg" viewBox="0 0 1200 160" preserveAspectRatio="none">
-                    <defs>
-                        <linearGradient id="waterGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.8"/>
-                            <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.9"/>
-                        </linearGradient>
-                        <linearGradient id="waterFill" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.4"/>
-                            <stop offset="100%" stop-color="#050b14" stop-opacity="0.95"/>
-                        </linearGradient>
-                    </defs>
-                    <path id="dynamic-wave-fill" d="M0,100 Q150,40 300,90 T600,70 T900,100 T1200,60 L1200,160 L0,160 Z" fill="url(#waterFill)" />
-                    <path id="dynamic-wave-line" d="M0,90 C150,20 250,130 400,60 C550,120 700,20 850,80 C1000,30 1100,110 1200,50" fill="none" stroke="url(#waterGrad)" stroke-width="3" />
-                </svg>
-            </div>
-
-            <!-- SUPABASE LIVE REPORTS TABLE -->
-            <div class="table-panel-box">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <span style="font-weight: 700; font-size: 12px; color: var(--accent-main); text-transform: uppercase;">live system reports & bug logs (supabase)</span>
-                    <span style="font-size: 11px; color: var(--text-sub);" id="report-count-text">fetching...</span>
-                </div>
-                <div style="max-height: 220px; overflow-y: auto;">
-                    <table class="history-table">
-                        <thead>
-                            <tr>
-                                <th>id</th>
-                                <th>name</th>
-                                <th>location</th>
-                                <th>category</th>
-                                <th>description</th>
-                                <th>timestamp</th>
-                            </tr>
-                        </thead>
-                        <tbody id="history-table-body">
-                            <tr><td colspan="6" style="text-align: center; color: var(--text-sub);">fetching live logs from supabase...</td></tr>
-                        </tbody>
-                    </table>
+                    <svg class="wave-svg" viewBox="0 0 1200 180" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="waterGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.8"/>
+                                <stop offset="50%" stop-color="#3b82f6" stop-opacity="0.9"/>
+                                <stop offset="100%" stop-color="#10b981" stop-opacity="0.8"/>
+                            </linearGradient>
+                            <linearGradient id="waterFill" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.5"/>
+                                <stop offset="100%" stop-color="#050b14" stop-opacity="0.95"/>
+                            </linearGradient>
+                        </defs>
+                        <path id="dynamic-wave-fill" d="M0,120 Q150,60 300,100 T600,80 T900,110 T1200,70 L1200,180 L0,180 Z" fill="url(#waterFill)" />
+                        <path id="dynamic-wave-line" d="M0,100 C150,40 250,140 400,70 C550,130 700,30 850,90 C1000,40 1100,120 1200,60" fill="none" stroke="url(#waterGrad)" stroke-width="4" />
+                    </svg>
                 </div>
             </div>
         </div>
@@ -493,12 +515,12 @@
 
     <!-- MODALS -->
 
-    <!-- Sensor History Modal -->
+    <!-- Sensor History Modal (Live from Supabase) -->
     <div class="modal-overlay" id="history-modal">
-        <div class="modal-box" style="max-width: 700px;">
+        <div class="modal-box" style="max-width: 750px;">
             <button class="btn-close" onclick="closeModal('history-modal')">✖</button>
-            <h3 style="color: var(--accent-main); margin-top: 0;">sensor history logs (live database)</h3>
-            <div style="max-height: 350px; overflow-y: auto; margin-top: 15px;">
+            <h3>sensor history logs (live database)</h3>
+            <div style="max-height: 380px; overflow-y: auto; margin-top: 15px;">
                 <table class="history-table">
                     <thead>
                         <tr>
@@ -510,19 +532,19 @@
                             <th>timestamp</th>
                         </tr>
                     </thead>
-                    <tbody id="modal-history-body">
-                        <tr><td colspan="6" style="text-align: center; color: var(--text-sub);">loading logs...</td></tr>
+                    <tbody id="history-table-body">
+                        <tr><td colspan="6" style="text-align: center; color: var(--text-sub);">fetching live logs from supabase...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- Report Bugs & Issues Modal -->
+    <!-- Report Bugs & Issues Modal (User Name & Location Input -> saves to farm_reports) -->
     <div class="modal-overlay" id="report-modal">
         <div class="modal-box">
             <button class="btn-close" onclick="closeModal('report-modal')">✖</button>
-            <h3 style="color: var(--accent-main); margin-top: 0;">report bugs & issues</h3>
+            <h3>report bugs & issues</h3>
             <div class="form-group" style="margin-top: 15px;">
                 <label>user name</label>
                 <input type="text" id="bug-name" placeholder="Isulat ang imong ngalan...">
@@ -548,23 +570,39 @@
         </div>
     </div>
 
-    <!-- Weather Update & Map Modal -->
+    <!-- Technical Support Modal -->
+    <div class="modal-overlay" id="support-modal">
+        <div class="modal-box" style="text-align: center;">
+            <button class="btn-close" onclick="closeModal('support-modal')">✖</button>
+            <h3>technical support & maintenance</h3>
+            <div style="margin: 25px 0; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                <a href="https://www.facebook.com" target="_blank" style="text-decoration: none; display: flex; align-items: center; gap: 12px; background: rgba(24, 119, 242, 0.15); border: 1px solid #1877f2; padding: 12px 24px; border-radius: 30px; color: #fff; font-weight: bold;">
+                    <i class="fa-brands fa-facebook" style="font-size: 28px; color: #1877f2;"></i>
+                    <span style="font-size: 15px;">Alfrancis Sastrillas</span>
+                </a>
+                <p style="font-size: 12px; color: var(--text-sub);">click the facebook button above to directly message developer support.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weather Update & Google Map Modal (Ubay, Bohol Live Map View) -->
     <div class="modal-overlay" id="weather-modal">
-        <div class="modal-box" style="max-width: 650px;">
+        <div class="modal-box" style="max-width: 700px;">
             <button class="btn-close" onclick="closeModal('weather-modal')">✖</button>
-            <h3 style="color: var(--accent-main); margin-top: 0;">weather update & live google map (ubay, bohol)[cite: 4]</h3>
-            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 12px;">
-                <div style="background: #121926; border: 1px solid var(--border-glow); padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+            <h3>weather update & live google map (ubay, bohol)[cite: 4]</h3>
+            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;">
+                <div style="background: #121926; border: 1px solid var(--border-glow); padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <h4 style="margin: 0; color: var(--accent-main); font-size: 14px;">Ubay Agricultural Hub, Bohol[cite: 4]</h4>
-                        <p style="margin: 4px 0 0 0; font-size: 11px; color: var(--text-sub);">Live Weather Conditions: Ideal for Farming & Smart Monitoring</p>
+                        <h4 style="margin: 0; color: var(--accent-main); font-size: 15px;">Ubay Agricultural Hub, Bohol[cite: 4]</h4>
+                        <p style="margin: 5px 0 0 0; font-size: 12px; color: var(--text-sub);">Live Weather Conditions: Ideal for Farming & Smart Monitoring</p>
                     </div>
                     <div style="text-align: right;">
-                        <span style="font-size: 22px; font-weight: 800; color: var(--accent-green);">31°C</span>
-                        <div style="font-size: 10px; color: var(--text-sub);">Humidity: 74% | Wind: 12 km/h</div>
+                        <span style="font-size: 24px; font-weight: 800; color: var(--accent-green);">31°C</span>
+                        <div style="font-size: 11px; color: var(--text-sub);">Humidity: 74% | Wind: 12 km/h</div>
                     </div>
                 </div>
-                <div style="width: 100%; height: 280px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-glow);">
+                <!-- Embedded Google Map with Ubay, Bohol Location Focus -->
+                <div style="width: 100%; height: 320px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-glow);">
                     <iframe 
                         width="100%" 
                         height="100%" 
@@ -579,14 +617,14 @@
         </div>
     </div>
 
-    <!-- Free Music Modal -->
+    <!-- Free Music Modal (Local Device Folder Import & Player) -->
     <div class="modal-overlay" id="music-modal">
         <div class="modal-box">
             <button class="btn-close" onclick="closeModal('music-modal')">✖</button>
-            <h3 style="color: var(--accent-main); margin-top: 0;">free music ambient player</h3>
+            <h3>free music ambient player</h3>
             <p style="font-size: 12px; color: var(--text-sub); margin-top: 10px;">pilia ug i-import ang musika gikan sa imong device folder:</p>
             <div class="form-group" style="margin-top: 15px;">
-                <input type="file" accept="audio/*" onchange="loadLocalMusic(event)">
+                <input type="file" id="local-audio-file" accept="audio/*" onchange="loadLocalMusic(event)">
             </div>
             <audio id="audio-player" controls style="width: 100%; margin-top: 10px; display: none;"></audio>
         </div>
@@ -596,7 +634,7 @@
     <div class="modal-overlay" id="settings-modal">
         <div class="modal-box">
             <button class="btn-close" onclick="closeModal('settings-modal')">✖</button>
-            <h3 style="color: var(--accent-main); margin-top: 0;">settings</h3>
+            <h3>settings</h3>
             <div class="form-group" style="margin-top: 15px;">
                 <label>accent color</label>
                 <select id="input-theme" onchange="changeTheme(this.value)">
@@ -621,7 +659,9 @@
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function openSettings() { openModal('settings-modal'); }
 
+        // Local Music File Import
         function loadLocalMusic(event) {
             const file = event.target.files[0];
             if (file) {
@@ -632,6 +672,7 @@
             }
         }
 
+        // Submit Bug Report to Supabase (farm_reports table) using user input name and location
         async function submitBug() {
             const name = document.getElementById('bug-name').value.trim();
             const location = document.getElementById('bug-location').value.trim();
@@ -651,6 +692,7 @@
             }]);
 
             if(error) {
+                console.error("Supabase Error:", error);
                 alert("Naay gamay nga sayop sa pag-submit sa Supabase: " + error.message);
             } else {
                 alert("Salamat, " + name + "! Na-submit na ang imong report gikan sa " + location + ".");
@@ -658,7 +700,6 @@
                 document.getElementById('bug-location').value = '';
                 document.getElementById('bug-desc').value = '';
                 closeModal('report-modal');
-                loadTelemetry();
             }
         }
 
@@ -679,10 +720,12 @@
             }
         }
 
+        // Live Telemetry & Dynamic Water Stream Wave Adjustment
         async function loadTelemetry() {
-            // Load Sensor Data
             let { data, error } = await _supabase.from('sensor_data').select('*').order('id', { ascending: false }).limit(30);
-            if(!error && data && data.length > 0) {
+            if(error) return;
+
+            if(data && data.length > 0) {
                 let latest = data[0];
                 let hum = latest.humidity ?? 0;
                 let soil = latest.soil_moisture ?? 0;
@@ -690,12 +733,15 @@
                 document.getElementById('val-humidity').innerText = hum + ' %';
                 document.getElementById('val-soil').innerText = soil + ' %';
 
+                // Rain Sensor Status
                 let rainVal = document.getElementById('val-rain');
                 if(latest.rain_status !== undefined) {
                     let isRaining = !!latest.rain_status;
                     rainVal.innerText = isRaining ? 'RAINING' : 'NORMAL';
+                    rainVal.style.color = isRaining ? '#06b6d4' : 'var(--accent-main)';
                 }
 
+                // Water Pump Status
                 if(latest.pump_status !== undefined) {
                     let isPumpOn = !!latest.pump_status;
                     let pumpVal = document.getElementById('val-pump');
@@ -703,41 +749,24 @@
                     pumpVal.innerText = isPumpOn ? 'ON' : 'OFF';
                     pumpVal.style.color = isPumpOn ? '#ef4444' : '#10b981';
                     toggleBtn.innerText = isPumpOn ? "turn off pump" : "turn on pump";
-                    toggleBtn.className = isPumpOn ? "btn-pump-ctrl pump-on" : "btn-pump-ctrl pump-off";
+                    toggleBtn.className = isPumpOn ? "btn-pump pump-on" : "btn-pump pump-off";
                 }
 
-                let waveHeightOffset = Math.max(20, Math.min(130, 150 - (soil * 1.1)));
-                document.getElementById('dynamic-wave-fill').setAttribute('d', `M0,${waveHeightOffset} Q150,${waveHeightOffset - 30} 300,${waveHeightOffset} T600,${waveHeightOffset - 15} T900,${waveHeightOffset + 10} T1200,${waveHeightOffset - 20} L1200,160 L0,160 Z`);
+                // Dynamic Water Stream Wave adjustment based on soil/humidity data
+                let waveHeightOffset = Math.max(20, Math.min(140, 180 - (soil * 1.2)));
+                document.getElementById('dynamic-wave-fill').setAttribute('d', `M0,${waveHeightOffset} Q150,${waveHeightOffset - 40} 300,${waveHeightOffset} T600,${waveHeightOffset - 20} T900,${waveHeightOffset + 10} T1200,${waveHeightOffset - 30} L1200,180 L0,180 Z`);
 
-                // Modal History Table
-                const modalTbody = document.getElementById('modal-history-body');
-                modalTbody.innerHTML = '';
+                // History Table Logs
+                const tbody = document.getElementById('history-table-body');
+                tbody.innerHTML = '';
                 data.forEach(row => {
                     let tr = document.createElement('tr');
                     let dateStr = row.created_at ? new Date(row.created_at).toLocaleString() : 'N/A';
                     let pumpTxt = row.pump_status ? '<span style="color:#ef4444">ON</span>' : '<span style="color:#10b981">OFF</span>';
                     let rainTxt = row.rain_status ? 'RAINING' : 'NORMAL';
                     tr.innerHTML = `<td>${row.id}</td><td>${row.humidity}%</td><td>${row.soil_moisture}%</td><td>${rainTxt}</td><td>${pumpTxt}</td><td>${dateStr}</td>`;
-                    modalTbody.appendChild(tr);
-                });
-            }
-
-            // Load Reports Table from Supabase
-            let { data: reportsData } = await _supabase.from('farm_reports').select('*').order('id', { ascending: false }).limit(20);
-            const tbody = document.getElementById('history-table-body');
-            tbody.innerHTML = '';
-            
-            if(reportsData && reportsData.length > 0) {
-                document.getElementById('report-count-text').innerText = reportsData.length + ' logs recorded';
-                reportsData.forEach(row => {
-                    let tr = document.createElement('tr');
-                    let timeStr = row.created_at ? new Date(row.created_at).toLocaleString() : 'N/A';
-                    tr.innerHTML = `<td>#${row.id}</td><td>${row.name || 'N/A'}</td><td>${row.location || 'N/A'}</td><td><span style="color:var(--accent-main)">${row.issue_type}</span></td><td>${row.description}</td><td>${timeStr}</td>`;
                     tbody.appendChild(tr);
                 });
-            } else {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-sub);">walay pangrekord sa database karon.</td></tr>`;
-                document.getElementById('report-count-text').innerText = '0 logs';
             }
         }
 
@@ -752,6 +781,7 @@
             loadTelemetry();
         }
 
+        // Init loads
         if(localStorage.getItem('theme_color')) {
             document.documentElement.style.setProperty('--accent-main', localStorage.getItem('theme_color'));
             document.getElementById('input-theme').value = localStorage.getItem('theme_color');
@@ -760,8 +790,7 @@
             document.getElementById('app-logo').src = localStorage.getItem('custom_logo');
         }
 
+        // Poll telemetry every 3 seconds
         setInterval(loadTelemetry, 3000);
         loadTelemetry();
     </script>
-</body>
-</html>
