@@ -9,9 +9,9 @@
     <style>
         :root {
             --bg-dark: #050b14;
-            --panel-bg: rgba(13, 19, 29, 0.95);
+            --panel-bg: rgba(13, 19, 29, 0.96);
             --card-surface: rgba(18, 25, 38, 0.95);
-            --border-glow: rgba(6, 182, 212, 0.3);
+            --border-glow: rgba(6, 182, 212, 0.25);
             --accent-main: #06b6d4;
             --accent-orange: #f97316;
             --accent-green: #10b981;
@@ -27,12 +27,12 @@
 
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(rgba(5, 11, 20, 0.8), rgba(5, 11, 20, 0.9)), 
+            background: linear-gradient(rgba(5, 11, 20, 0.85), rgba(5, 11, 20, 0.95)), 
                         url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
             background-size: cover;
             color: var(--text-main);
             margin: 0;
-            padding: 8px;
+            padding: 6px;
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -43,17 +43,16 @@
         .dashboard-frame {
             background: var(--panel-bg);
             backdrop-filter: blur(12px);
-            border: 2px solid var(--border-glow);
-            border-radius: 12px;
-            padding: 12px;
+            border: 1.5px solid var(--border-glow);
+            border-radius: 10px;
+            padding: 8px 10px;
             width: 100%;
-            max-width: 1400px;
-            height: 100vh;
-            max-height: 98vh;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            max-width: 1250px;
+            height: 96vh;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             overflow: hidden;
         }
 
@@ -63,8 +62,8 @@
             justify-content: space-between;
             align-items: center;
             background: var(--card-surface);
-            padding: 8px 14px;
-            border-radius: 8px;
+            padding: 6px 12px;
+            border-radius: 6px;
             border: 1px solid var(--border-glow);
             flex-shrink: 0;
         }
@@ -72,14 +71,14 @@
         .header-title-box {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             overflow: hidden;
         }
 
         .custom-logo-img {
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
             object-fit: cover;
             border: 1px solid var(--accent-main);
             flex-shrink: 0;
@@ -87,7 +86,7 @@
 
         .dashboard-header h2 {
             margin: 0;
-            font-size: 16px;
+            font-size: 14px;
             letter-spacing: 0.5px;
             text-transform: lowercase;
             background: linear-gradient(90deg, var(--accent-main), var(--accent-purple));
@@ -102,36 +101,36 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             flex-shrink: 0;
         }
 
         .status-badge {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             background: rgba(16, 185, 129, 0.15);
-            padding: 3px 8px;
+            padding: 2px 6px;
             border-radius: 20px;
-            border: 1px solid rgba(16, 185, 129, 0.4);
+            border: 1px solid rgba(16, 185, 129, 0.3);
             color: var(--accent-green);
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             text-transform: lowercase;
         }
 
         .status-dot {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             background: var(--accent-green);
             border-radius: 50%;
-            box-shadow: 0 0 8px var(--accent-green);
+            box-shadow: 0 0 6px var(--accent-green);
             animation: pulse-dot 1.5s infinite;
         }
 
         @keyframes pulse-dot {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            70% { transform: scale(1); box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
@@ -139,9 +138,9 @@
             background: transparent;
             color: var(--text-main);
             border: 1px solid var(--border-glow);
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 10px;
             font-weight: 600;
             cursor: pointer;
             text-transform: lowercase;
@@ -156,8 +155,8 @@
         /* MAIN LAYOUT */
         .main-layout {
             display: grid;
-            grid-template-columns: 240px 1fr;
-            gap: 10px;
+            grid-template-columns: 210px 1fr;
+            gap: 8px;
             flex: 1;
             overflow: hidden;
             align-items: stretch;
@@ -168,11 +167,11 @@
             grid-template-columns: 0px 1fr;
         }
 
-        /* SIDEBAR (ORANGE COLOR & FULL STRETCH) */
+        /* SIDEBAR */
         .left-sidebar {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
             overflow: hidden;
             height: 100%;
             transition: opacity 0.2s ease, transform 0.2s ease;
@@ -181,40 +180,40 @@
         .main-layout.sidebar-hidden .left-sidebar {
             opacity: 0;
             pointer-events: none;
-            transform: translateX(-20px);
+            transform: translateX(-15px);
         }
 
         .sidebar-btn-box {
             background: var(--card-surface);
             border: 1px solid rgba(249, 115, 22, 0.3);
-            border-radius: 8px;
-            padding: 8px 10px;
+            border-radius: 6px;
+            padding: 6px 8px;
             color: var(--text-main);
             text-align: left;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
             text-transform: lowercase;
             position: relative;
             overflow: hidden;
-            flex: 1; /* Mo-stretch padong sa ubos aron mapuno ang espasyo evenly */
+            flex: 1; 
             width: 100%;
         }
 
         .sidebar-btn-box:hover {
             border-color: var(--accent-orange);
             background: rgba(249, 115, 22, 0.15);
-            transform: translateX(3px);
-            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+            transform: translateX(2px);
+            box-shadow: 0 3px 10px rgba(249, 115, 22, 0.2);
         }
 
         .sidebar-btn-box i {
             color: var(--accent-orange);
-            width: 16px;
-            font-size: 13px;
+            width: 14px;
+            font-size: 11px;
             text-align: center;
         }
 
@@ -222,75 +221,130 @@
         .right-content {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             height: 100%;
             overflow: hidden;
         }
 
+        /* 3 METRICS CARDS (Gihimong 3 columns kay gitangtang ang water pump card) */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
             flex-shrink: 0;
         }
 
         .card {
             background: var(--card-surface);
             border: 1px solid var(--border-glow);
-            border-radius: 8px;
-            padding: 10px;
+            border-radius: 6px;
+            padding: 8px 10px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 95px;
+            min-height: 75px;
         }
 
         .card:hover {
             border-color: var(--accent-main);
-            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.2);
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.15);
         }
 
         .card-header {
             color: var(--text-sub);
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 700;
             text-transform: lowercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
 
         .card-value {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 800;
-            margin: 4px 0 2px 0;
+            margin: 2px 0;
             color: #fff;
         }
 
-        .btn-pump {
-            width: 100%;
-            padding: 5px;
+        /* WATER PUMP CONTROL SECTION (Gisunod ang style sa imong old design) */
+        .pump-control-card {
+            background: var(--card-surface);
+            border: 1px solid var(--border-glow);
+            border-radius: 6px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .pump-control-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--accent-green);
+            text-transform: lowercase;
+        }
+
+        .pump-control-body {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(5, 11, 20, 0.5);
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .pump-status-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pump-status-label {
+            font-size: 8px;
+            color: var(--text-sub);
+            text-transform: lowercase;
+        }
+
+        .pump-status-val {
+            font-size: 14px;
+            font-weight: 800;
+            color: #10b981;
+        }
+
+        .pump-buttons-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-pump-action {
+            padding: 5px 12px;
             border: none;
             border-radius: 4px;
             font-weight: 700;
             cursor: pointer;
             color: #fff;
-            font-size: 10px;
+            font-size: 9px;
             text-transform: lowercase;
-            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        .btn-pump:hover {
-            opacity: 0.9;
-        }
+        .btn-turn-on { background: #10b981; }
+        .btn-turn-on:hover { background: #059669; }
 
-        .pump-off { background: #10b981; }
-        .pump-on { background: #ef4444; }
+        .btn-turn-off { background: #ef4444; }
+        .btn-turn-off:hover { background: #dc2626; }
 
         /* VISUALIZER */
         .visualizer-card {
             background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(9, 13, 22, 0.95) 100%);
             border: 1px solid var(--border-glow);
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: 6px;
+            padding: 10px;
             position: relative;
             overflow: hidden;
             flex: 1;
@@ -304,7 +358,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 110px;
+            height: 90px;
             pointer-events: none;
         }
 
@@ -312,24 +366,24 @@
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(6px);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 999;
-            padding: 10px;
+            padding: 8px;
         }
 
         .modal-box {
             background: #0d131d;
-            border: 2px solid var(--accent-main);
-            border-radius: 12px;
-            padding: 20px;
+            border: 1.5px solid var(--accent-main);
+            border-radius: 10px;
+            padding: 16px;
             width: 100%;
-            max-width: 500px;
-            box-shadow: 0 0 30px rgba(6, 182, 212, 0.3);
-            max-height: 90vh;
+            max-width: 440px;
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.25);
+            max-height: 85vh;
             overflow-y: auto;
         }
 
@@ -337,44 +391,44 @@
             margin-top: 0;
             color: var(--accent-main);
             text-transform: lowercase;
-            font-size: 15px;
+            font-size: 13px;
         }
 
         .form-group {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .form-group label {
             display: block;
-            font-size: 10px;
+            font-size: 9px;
             color: var(--text-sub);
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             font-weight: 700;
             text-transform: lowercase;
         }
 
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 7px;
+            padding: 5px 7px;
             background: #121926;
             border: 1px solid var(--border-glow);
             color: #fff;
-            border-radius: 6px;
+            border-radius: 5px;
             font-family: inherit;
-            font-size: 11px;
+            font-size: 10px;
         }
 
         .btn-action {
             background: linear-gradient(135deg, var(--accent-main), var(--accent-purple));
             color: #fff;
             border: none;
-            padding: 8px;
-            border-radius: 6px;
+            padding: 6px;
+            border-radius: 5px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
             text-transform: lowercase;
-            font-size: 11px;
+            font-size: 10px;
         }
 
         .btn-close {
@@ -383,7 +437,7 @@
             border: none;
             cursor: pointer;
             float: right;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .btn-close:hover { color: #fff; }
@@ -391,12 +445,12 @@
         .history-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 11px;
+            font-size: 10px;
             text-align: left;
         }
 
         .history-table th, .history-table td {
-            padding: 8px;
+            padding: 6px;
             border-bottom: 1px solid var(--border-glow);
         }
 
@@ -412,7 +466,7 @@
             .dashboard-frame { height: auto; max-height: none; }
             .main-layout { grid-template-columns: 1fr !important; overflow: visible; }
             .metrics-grid { grid-template-columns: repeat(2, 1fr); }
-            .visualizer-card { height: 180px; }
+            .visualizer-card { height: 160px; }
         }
     </style>
 </head>
@@ -422,7 +476,7 @@
         <!-- HEADER -->
         <div class="dashboard-header">
             <div class="header-title-box">
-                <button class="header-btn" onclick="toggleSidebar()" title="hide/show sidebar" style="padding: 4px 7px; margin-right: 2px;">
+                <button class="header-btn" onclick="toggleSidebar()" title="hide/show sidebar" style="padding: 3px 6px; margin-right: 2px;">
                     <i class="fa-solid fa-bars"></i>
                 </button>
                 <img id="app-logo" src="https://cdn-icons-png.flaticon.com/512/628/628324.png" class="custom-logo-img" alt="Logo">
@@ -438,7 +492,7 @@
 
         <!-- MAIN LAYOUT -->
         <div class="main-layout" id="main-layout">
-            <!-- SIDEBAR WITH ORANGE BUTTONS -->
+            <!-- SIDEBAR -->
             <div class="left-sidebar">
                 <button class="sidebar-btn-box" onclick="openModal('history-modal')">
                     <i class="fa-solid fa-clock-rotate-left"></i> sensor history logs
@@ -459,41 +513,56 @@
 
             <!-- RIGHT CONTENT AREA -->
             <div class="right-content">
+                <!-- 3 METRICS CARDS -->
                 <div class="metrics-grid">
-                    <!-- Humidity Card -->
-                    <div class="card">
-                        <div class="card-header">humidity</div>
-                        <div class="card-value" id="val-humidity">0 %</div>
-                        <span style="font-size: 9px; color: var(--text-sub);">atmospheric sensor</span>
-                    </div>
-
                     <!-- Soil Moisture Card -->
                     <div class="card">
                         <div class="card-header">soil moisture</div>
                         <div class="card-value" id="val-soil">0 %</div>
-                        <span style="font-size: 9px; color: var(--text-sub);">moisture sensor</span>
+                        <span style="font-size: 8px; color: var(--text-sub);">moisture sensor</span>
+                    </div>
+
+                    <!-- Humidity Card -->
+                    <div class="card">
+                        <div class="card-header">humidity</div>
+                        <div class="card-value" id="val-humidity">0 %</div>
+                        <span style="font-size: 8px; color: var(--text-sub);">atmospheric sensor</span>
                     </div>
 
                     <!-- Rain Sensor Card -->
                     <div class="card">
                         <div class="card-header">rain sensor</div>
-                        <div class="card-value" id="val-rain" style="color: var(--accent-main); font-size: 15px;">NORMAL</div>
-                        <span style="font-size: 9px; color: var(--text-sub);">precipitation status</span>
+                        <div class="card-value" id="val-rain" style="color: var(--accent-main); font-size: 13px;">NORMAL</div>
+                        <span style="font-size: 8px; color: var(--text-sub);">precipitation status</span>
                     </div>
+                </div>
 
-                    <!-- Water Pump Status Card -->
-                    <div class="card">
-                        <div class="card-header">water pump status</div>
-                        <div class="card-value" id="val-pump" style="color: var(--accent-green); font-size: 15px;">OFF</div>
-                        <button id="btn-toggle-pump" class="btn-pump pump-off" onclick="togglePump()">turn on pump</button>
+                <!-- WATER PUMP CONTROL SECTION (Gisunod sa daan nga design) -->
+                <div class="pump-control-card">
+                    <div class="pump-control-header">
+                        <i class="fa-solid fa-faucet-drip"></i> water pump control
+                    </div>
+                    <div class="pump-control-body">
+                        <div class="pump-status-info">
+                            <span class="pump-status-label">pump status</span>
+                            <span class="pump-status-val" id="val-pump">OFF</span>
+                        </div>
+                        <div class="pump-buttons-group">
+                            <button class="btn-pump-action btn-turn-on" onclick="setPumpState(true)">
+                                <i class="fa-solid fa-power-off"></i> turn on water pump
+                            </button>
+                            <button class="btn-pump-action btn-turn-off" onclick="setPumpState(false)">
+                                <i class="fa-solid fa-power-off"></i> turn off water pump
+                            </button>
+                        </div>
                     </div>
                 </div>
 
                 <!-- ANALYTICAL TOPOGRAPHY & DYNAMIC WATER STREAM WAVE MATRIX -->
                 <div class="visualizer-card">
                     <div style="display: flex; justify-content: space-between; position: relative; z-index: 2;">
-                        <span style="font-weight: 700; color: var(--accent-main); font-size: 11px; text-transform: lowercase;">analytical topography & realtime water stream wave matrix</span>
-                        <span style="color: var(--text-sub); font-size: 9px;" id="stream-status-text">live sensor stream: active</span>
+                        <span style="font-weight: 700; color: var(--accent-main); font-size: 10px; text-transform: lowercase;">analytical topography & realtime water stream wave matrix</span>
+                        <span style="color: var(--text-sub); font-size: 8px;" id="stream-status-text">live sensor stream: active</span>
                     </div>
 
                     <svg class="wave-svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
@@ -509,7 +578,7 @@
                             </linearGradient>
                         </defs>
                         <path id="dynamic-wave-fill" d="M0,80 Q150,30 300,70 T600,50 T900,80 T1200,40 L1200,120 L0,120 Z" fill="url(#waterFill)" />
-                        <path id="dynamic-wave-line" d="M0,70 C150,10 250,90 400,40 C550,80 700,10 850,60 C1000,20 1100,80 1200,30" fill="none" stroke="url(#waterGrad)" stroke-width="3" />
+                        <path id="dynamic-wave-line" d="M0,70 C150,10 250,90 400,40 C550,80 700,10 850,60 C1000,20 1100,80 1200,30" fill="none" stroke="url(#waterGrad)" stroke-width="2.5" />
                     </svg>
                 </div>
             </div>
@@ -518,10 +587,10 @@
 
     <!-- MODALS -->
     <div class="modal-overlay" id="history-modal">
-        <div class="modal-box" style="max-width: 700px;">
+        <div class="modal-box" style="max-width: 600px;">
             <button class="btn-close" onclick="closeModal('history-modal')">✖</button>
             <h3>sensor history logs (live database)</h3>
-            <div style="max-height: 320px; overflow-y: auto; margin-top: 10px;">
+            <div style="max-height: 260px; overflow-y: auto; margin-top: 8px;">
                 <table class="history-table">
                     <thead>
                         <tr>
@@ -545,7 +614,7 @@
         <div class="modal-box">
             <button class="btn-close" onclick="closeModal('report-modal')">✖</button>
             <h3>report bugs & issues</h3>
-            <div class="form-group" style="margin-top: 10px;">
+            <div class="form-group" style="margin-top: 8px;">
                 <label>user name</label>
                 <input type="text" id="bug-name" placeholder="Isulat ang imong ngalan...">
             </div>
@@ -564,7 +633,7 @@
             </div>
             <div class="form-group">
                 <label>description</label>
-                <textarea id="bug-desc" rows="3" placeholder="Describe the issue..."></textarea>
+                <textarea id="bug-desc" rows="2" placeholder="Describe the issue..."></textarea>
             </div>
             <button class="btn-action" onclick="submitBug()">submit report</button>
         </div>
@@ -574,32 +643,32 @@
         <div class="modal-box" style="text-align: center;">
             <button class="btn-close" onclick="closeModal('support-modal')">✖</button>
             <h3>technical support & maintenance</h3>
-            <div style="margin: 20px 0; display: flex; flex-direction: column; align-items: center; gap: 12px;">
-                <a href="https://www.facebook.com" target="_blank" style="text-decoration: none; display: flex; align-items: center; gap: 10px; background: rgba(24, 119, 242, 0.15); border: 1px solid #1877f2; padding: 10px 20px; border-radius: 30px; color: #fff; font-weight: bold;">
-                    <i class="fa-brands fa-facebook" style="font-size: 24px; color: #1877f2;"></i>
-                    <span style="font-size: 14px;">Alfrancis Sastrillas</span>
+            <div style="margin: 15px 0; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                <a href="https://www.facebook.com" target="_blank" style="text-decoration: none; display: flex; align-items: center; gap: 8px; background: rgba(24, 119, 242, 0.15); border: 1px solid #1877f2; padding: 8px 16px; border-radius: 30px; color: #fff; font-weight: bold;">
+                    <i class="fa-brands fa-facebook" style="font-size: 20px; color: #1877f2;"></i>
+                    <span style="font-size: 12px;">Alfrancis Sastrillas</span>
                 </a>
-                <p style="font-size: 11px; color: var(--text-sub);">click the facebook button above to directly message support.</p>
+                <p style="font-size: 10px; color: var(--text-sub);">click the facebook button above to directly message support.</p>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="weather-modal">
-        <div class="modal-box" style="max-width: 650px;">
+        <div class="modal-box" style="max-width: 580px;">
             <button class="btn-close" onclick="closeModal('weather-modal')">✖</button>
             <h3>weather update & live google map (ubay, bohol)</h3>
-            <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 10px;">
-                <div style="background: #121926; border: 1px solid var(--border-glow); padding: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 8px;">
+                <div style="background: #121926; border: 1px solid var(--border-glow); padding: 8px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <h4 style="margin: 0; color: var(--accent-main); font-size: 13px;">Ubay Agricultural Hub, Bohol</h4>
-                        <p style="margin: 3px 0 0 0; font-size: 10px; color: var(--text-sub);">Live Weather Conditions: Ideal for Farming</p>
+                        <h4 style="margin: 0; color: var(--accent-main); font-size: 12px;">Ubay Agricultural Hub, Bohol</h4>
+                        <p style="margin: 2px 0 0 0; font-size: 9px; color: var(--text-sub);">Live Weather Conditions: Ideal for Farming</p>
                     </div>
                     <div style="text-align: right;">
-                        <span style="font-size: 20px; font-weight: 800; color: var(--accent-green);">31°C</span>
-                        <div style="font-size: 9px; color: var(--text-sub);">Humidity: 74% | Wind: 12 km/h</div>
+                        <span style="font-size: 16px; font-weight: 800; color: var(--accent-green);">31°C</span>
+                        <div style="font-size: 8px; color: var(--text-sub);">Humidity: 74% | Wind: 12 km/h</div>
                     </div>
                 </div>
-                <div style="width: 100%; height: 220px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-glow);">
+                <div style="width: 100%; height: 180px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border-glow);">
                     <iframe 
                         width="100%" 
                         height="100%" 
@@ -618,11 +687,11 @@
         <div class="modal-box">
             <button class="btn-close" onclick="closeModal('music-modal')">✖</button>
             <h3>free music ambient player</h3>
-            <p style="font-size: 11px; color: var(--text-sub); margin-top: 8px;">pilia ug i-import ang musika gikan sa imong device folder:</p>
-            <div class="form-group" style="margin-top: 10px;">
+            <p style="font-size: 10px; color: var(--text-sub); margin-top: 6px;">pilia ug i-import ang musika gikan sa imong device folder:</p>
+            <div class="form-group" style="margin-top: 8px;">
                 <input type="file" id="local-audio-file" accept="audio/*" onchange="loadLocalMusic(event)">
             </div>
-            <audio id="audio-player" controls style="width: 100%; margin-top: 8px; display: none;"></audio>
+            <audio id="audio-player" controls style="width: 100%; margin-top: 6px; display: none; height: 32px;"></audio>
         </div>
     </div>
 
@@ -630,7 +699,7 @@
         <div class="modal-box">
             <button class="btn-close" onclick="closeModal('settings-modal')">✖</button>
             <h3>settings</h3>
-            <div class="form-group" style="margin-top: 10px;">
+            <div class="form-group" style="margin-top: 8px;">
                 <label>accent color</label>
                 <select id="input-theme" onchange="changeTheme(this.value)">
                     <option value="#06b6d4">Teal Blue</option>
@@ -739,15 +808,12 @@
                 if(latest.pump_status !== undefined) {
                     let isPumpOn = !!latest.pump_status;
                     let pumpVal = document.getElementById('val-pump');
-                    let toggleBtn = document.getElementById('btn-toggle-pump');
                     pumpVal.innerText = isPumpOn ? 'ON' : 'OFF';
                     pumpVal.style.color = isPumpOn ? '#ef4444' : '#10b981';
-                    toggleBtn.innerText = isPumpOn ? "turn off pump" : "turn on pump";
-                    toggleBtn.className = isPumpOn ? "btn-pump pump-on" : "btn-pump pump-off";
                 }
 
-                let waveHeightOffset = Math.max(15, Math.min(90, 100 - (soil * 0.75)));
-                document.getElementById('dynamic-wave-fill').setAttribute('d', `M0,${waveHeightOffset} Q150,${waveHeightOffset - 25} 300,${waveHeightOffset} T600,${waveHeightOffset - 15} T900,${waveHeightOffset + 10} T1200,${waveHeightOffset - 20} L1200,120 L0,120 Z`);
+                let waveHeightOffset = Math.max(15, Math.min(80, 90 - (soil * 0.65)));
+                document.getElementById('dynamic-wave-fill').setAttribute('d', `M0,${waveHeightOffset} Q150,${waveHeightOffset - 20} 300,${waveHeightOffset} T600,${waveHeightOffset - 12} T900,${waveHeightOffset + 8} T1200,${waveHeightOffset - 15} L1200,120 L0,120 Z`);
 
                 const tbody = document.getElementById('history-table-body');
                 tbody.innerHTML = '';
@@ -762,15 +828,22 @@
             }
         }
 
-        async function togglePump() {
+        async function setPumpState(newState) {
             let { data } = await _supabase.from('sensor_data').select('*').order('id', { ascending: false }).limit(1);
-            let currentStatus = data && data.length > 0 ? !!data[0].pump_status : false;
-            let newStatus = !currentStatus;
             let soil = data && data[0] ? data[0].soil_moisture : 0;
             let hum = data && data[0] ? data[0].humidity : 0;
 
-            await _supabase.from('sensor_data').insert([{ humidity: hum, soil_moisture: soil, pump_status: newStatus }]);
-            loadTelemetry();
+            let { error } = await _supabase.from('sensor_data').insert([{ 
+                humidity: hum, 
+                soil_moisture: soil, 
+                pump_status: newState 
+            }]);
+
+            if(error) {
+                alert("Sayop sa pag-update sa pump: " + error.message);
+            } else {
+                loadTelemetry();
+            }
         }
 
         if(localStorage.getItem('theme_color')) {
