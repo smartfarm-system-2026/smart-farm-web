@@ -547,7 +547,7 @@
             <h3>report bugs & issues</h3>
             <div class="form-group" style="margin-top: 15px;">
                 <label>user name</label>
-                <input type="text" id="bug-name" placeholder="Isulat ang imong pangalan...">
+                <input type="text" id="bug-name" placeholder="Isulat ang imong ngalan...">
             </div>
             <div class="form-group">
                 <label>farm location</label>
@@ -672,7 +672,7 @@
             }
         }
 
-        // Submit Bug Report to Supabase (farm_reports table)
+        // Submit Bug Report to Supabase (farm_reports table) using user input name and location
         async function submitBug() {
             const name = document.getElementById('bug-name').value.trim();
             const location = document.getElementById('bug-location').value.trim();
@@ -685,7 +685,7 @@
             }
 
             let { error } = await _supabase.from('farm_reports').insert([{
-                customer_name: name,
+                name: name,
                 location: location,
                 issue_type: category,
                 description: description
@@ -693,7 +693,7 @@
 
             if(error) {
                 console.error("Supabase Error:", error);
-                alert("Sayop sa Supabase: " + error.message);
+                alert("Naay gamay nga sayop sa pag-submit sa Supabase: " + error.message);
             } else {
                 alert("Salamat, " + name + "! Na-submit na ang imong report gikan sa " + location + ".");
                 document.getElementById('bug-name').value = '';
