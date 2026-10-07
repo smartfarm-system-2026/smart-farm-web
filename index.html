@@ -50,7 +50,6 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            position: relative;
         }
 
         .dashboard-header {
@@ -90,7 +89,7 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
         .status-badge {
@@ -114,19 +113,36 @@
             box-shadow: 0 0 10px var(--accent-green);
         }
 
-        .btn-settings {
+        .btn-action {
             background: #1e293b;
             color: #fff;
             border: 1px solid var(--border-glow);
-            padding: 8px 12px;
+            padding: 8px 14px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .btn-settings:hover {
+        .btn-action:hover {
             background: var(--accent-main);
             color: #000;
+            border-color: var(--accent-main);
+        }
+
+        .btn-report {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-report:hover {
+            background: #ef4444;
+            color: #fff;
+            border-color: #ef4444;
         }
 
         .grid-container {
@@ -179,7 +195,7 @@
             position: relative;
             overflow: hidden;
             box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
-            height: 220px;
+            height: 200px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -190,13 +206,13 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 160px;
+            height: 140px;
             pointer-events: none;
         }
 
         .btn-pump {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             border: none;
             border-radius: 10px;
             font-weight: 700;
@@ -218,9 +234,10 @@
             box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3);
         }
 
-        .lower-section-full {
-            display: flex;
-            flex-direction: column;
+        /* SPLIT LAYOUT: History on Left, Support & Controls on Right */
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
             gap: 20px;
         }
 
@@ -229,39 +246,45 @@
             border: 1px solid var(--border-glow);
             border-radius: 14px;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 520px;
         }
 
         .history-panel h3 {
             margin-top: 0;
-            font-size: 16px;
+            font-size: 15px;
             color: var(--accent-main);
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .table-responsive {
+        /* SCROLLABLE LOGS CONTAINER */
+        .table-scroll-container {
             width: 100%;
-            overflow-x: auto;
-            max-height: 300px;
+            flex: 1;
             overflow-y: auto;
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+            background: #090d16;
         }
 
         .history-table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .history-table th, .history-table td {
-            padding: 12px 15px;
+            padding: 10px 12px;
             border-bottom: 1px solid var(--border-glow);
         }
 
         .history-table th {
-            background: #090d16;
+            background: #0d131d;
             color: var(--accent-main);
             position: sticky;
             top: 0;
@@ -272,32 +295,39 @@
             background: rgba(6, 182, 212, 0.05);
         }
 
+        .right-side-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
         .support-panel {
             background: var(--card-surface);
             border: 1px solid var(--border-glow);
             border-radius: 14px;
             padding: 20px;
+            flex: 1;
         }
 
         .support-panel h3 {
             margin-top: 0;
-            font-size: 16px;
+            font-size: 15px;
             color: var(--accent-main);
         }
 
         .contact-row {
             display: flex;
-            gap: 20px;
-            margin-top: 12px;
-            font-size: 13px;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+            font-size: 12px;
         }
 
         .contact-item {
             background: #090d16;
-            padding: 12px 15px;
+            padding: 10px 12px;
             border-radius: 8px;
             border-left: 3px solid var(--accent-main);
-            flex: 1;
         }
 
         .contact-item.fb-box {
@@ -307,38 +337,36 @@
         .contact-item span {
             display: block;
             color: var(--text-sub);
-            font-size: 11px;
-            margin-bottom: 4px;
+            font-size: 10px;
+            margin-bottom: 2px;
         }
 
         .fb-link {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             color: #1877f2;
             text-decoration: none;
             font-weight: 700;
-            transition: 0.2s;
         }
 
         .fb-link:hover {
             color: #4292f8;
-            transform: translateX(3px);
         }
 
         .report-guide {
             background: rgba(37, 40, 20, 0.9);
-            border-left: 4px solid #eab308;
-            padding: 15px;
+            border-left: 3px solid #eab308;
+            padding: 10px 12px;
             border-radius: 8px;
-            margin-top: 20px;
-            font-size: 13px;
+            margin-top: 12px;
+            font-size: 12px;
             color: #fef08a;
         }
 
         .report-guide ul {
-            margin: 5px 0 0 0;
-            padding-left: 20px;
+            margin: 4px 0 0 0;
+            padding-left: 15px;
         }
 
         .modal-overlay {
@@ -378,13 +406,14 @@
             font-weight: 700;
         }
 
-        .form-group input, .form-group select {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 10px;
             background: #121926;
             border: 1px solid var(--border-glow);
             color: #fff;
             border-radius: 8px;
+            font-family: inherit;
         }
 
         .btn-save {
@@ -407,10 +436,11 @@
             font-size: 16px;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1000px) {
             .grid-container { grid-template-columns: repeat(1, 1fr); }
             .visualizer-card { grid-column: span 1; }
-            .contact-row { flex-direction: column; }
+            .split-layout { grid-template-columns: 1fr; }
+            .history-panel { height: 400px; }
         }
     </style>
 </head>
@@ -425,9 +455,12 @@
             </div>
             <div class="header-right">
                 <div class="status-badge">
-                    <span class="status-dot"></span> Live System Monitoring
+                    <span class="status-dot"></span> Live
                 </div>
-                <button class="btn-settings" onclick="openSettings()" title="Settings & Customization">
+                <button class="btn-action btn-report" onclick="openReportModal()">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Report Bugs & Issues
+                </button>
+                <button class="btn-action" onclick="openSettings()" title="Settings">
                     <i class="fa-solid fa-gear"></i>
                 </button>
             </div>
@@ -463,11 +496,11 @@
             <!-- ANALYTICAL TOPOGRAPHY & WAVE MATRIX -->
             <div class="visualizer-card">
                 <div style="display: flex; justify-content: space-between; position: relative; z-index: 2;">
-                    <span style="font-weight: 700; color: var(--accent-main); font-size: 14px;">ANALYTICAL TOPOGRAPHY & WAVE MATRIX</span>
-                    <span style="color: var(--text-sub); font-size: 12px;">Realtime Data Stream</span>
+                    <span style="font-weight: 700; color: var(--accent-main); font-size: 13px;">ANALYTICAL TOPOGRAPHY & WAVE MATRIX</span>
+                    <span style="color: var(--text-sub); font-size: 11px;">Realtime Stream</span>
                 </div>
 
-                <svg class="wave-svg" viewBox="0 0 1200 160" preserveAspectRatio="none">
+                <svg class="wave-svg" viewBox="0 0 1200 140" preserveAspectRatio="none">
                     <defs>
                         <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
                             <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.7"/>
@@ -479,26 +512,25 @@
                             <stop offset="100%" stop-color="#080b10" stop-opacity="0.9"/>
                         </linearGradient>
                     </defs>
-
-                    <path d="M0,120 Q150,40 300,90 T600,60 T900,100 T1200,40 L1200,160 L0,160 Z" fill="url(#grad2)" />
-                    <path d="M0,100 C150,20 250,130 400,50 C550,120 700,10 850,80 C1000,30 1100,110 1200,60" fill="none" stroke="url(#grad1)" stroke-width="4" />
+                    <path d="M0,100 Q150,30 300,70 T600,50 T900,80 T1200,30 L1200,140 L0,140 Z" fill="url(#grad2)" />
+                    <path d="M0,80 C150,10 250,110 400,40 C550,100 700,10 850,70 C1000,20 1100,90 1200,50" fill="none" stroke="url(#grad1)" stroke-width="3" />
                 </svg>
             </div>
         </div>
 
-        <!-- LOWER SECTION: HISTORY LOGS & SUPPORT -->
-        <div class="lower-section-full">
-            <!-- SENSOR HISTORY LOGS TABLE -->
+        <!-- SPLIT LAYOUT: HISTORY LOGS ON LEFT, SUPPORT ON RIGHT -->
+        <div class="split-layout">
+            <!-- LEFT SIDE: SCROLLABLE SENSOR HISTORY LOGS TABLE -->
             <div class="history-panel">
-                <h3><i class="fa-solid fa-clock-rotate-left"></i> Sensor History Logs (Supabase Realtime Data)</h3>
-                <div class="table-responsive">
+                <h3><i class="fa-solid fa-clock-rotate-left"></i> Sensor History Logs (Scroll Down)</h3>
+                <div class="table-scroll-container">
                     <table class="history-table">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Humidity (%)</th>
-                                <th>Soil Moisture (%)</th>
-                                <th>Pump Status</th>
+                                <th>Humidity</th>
+                                <th>Soil</th>
+                                <th>Pump</th>
                                 <th>Recorded At</th>
                             </tr>
                         </thead>
@@ -511,198 +543,17 @@
                 </div>
             </div>
 
-            <!-- TECHNICAL SUPPORT -->
-            <div class="support-panel">
-                <h3>🛠️ Technical Support & Maintenance Assistance</h3>
-                <p style="font-size: 13px; color: #ccc; margin-bottom: 15px;">
-                    Are you experiencing any hardware, sensor, or pump control issues? Contact our Technical Team for immediate assistance:
-                </p>
+            <!-- RIGHT SIDE: TECHNICAL SUPPORT & GUIDELINES -->
+            <div class="right-side-stack">
+                <div class="support-panel">
+                    <h3>🛠️ Technical Support & Maintenance</h3>
+                    <p style="font-size: 12px; color: #ccc; margin-bottom: 10px;">
+                        Need assistance regarding sensors or hardware connectivity? Reach out below:
+                    </p>
 
-                <div class="contact-row">
-                    <div class="contact-item">
-                        <span>Call / SMS Support</span>
-                        <strong>09855094913</strong>
-                    </div>
-                    <div class="contact-item">
-                        <span>Official Email</span>
-                        <strong>alfrancisis69@gmail.com</strong>
-                    </div>
-                    <div class="contact-item fb-box">
-                        <span>Facebook Support Profile</span>
-                        <a href="https://www.facebook.com/alfrancis.sastrillas/" target="_blank" class="fb-link">
-                            <i class="fa-brands fa-facebook fa-lg"></i> Alfrancis Sastrillas
-                        </a>
-                    </div>
-                </div>
-
-                <div class="report-guide">
-                    <strong>📋 What should the Buyer / Farmer report when contacting support?</strong>
-                    <ul>
-                        <li><strong>Specific Issue:</strong> (e.g., Water pump not activating, Soil Sensor not responding, Wi-Fi connection issue).</li>
-                        <li><strong>LED Indicator Status:</strong> State whether the Power LED or Wi-Fi LED on the Control Box is lit.</li>
-                        <li><strong>Time of Occurrence:</strong> (e.g., Occurred after a heavy rainstorm or power outage).</li>
-                        <li><strong>Farm Location:</strong> To determine if an on-site technician visit or hardware replacement is required.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- SETTINGS & CUSTOMIZATION MODAL -->
-    <div class="modal-overlay" id="settings-modal">
-        <div class="modal-box">
-            <button class="btn-close" onclick="closeSettings()">✖</button>
-            <h3>⚙️ Dashboard Settings</h3>
-
-            <div class="form-group">
-                <label>Theme / Accent Color</label>
-                <select id="input-theme" onchange="changeTheme(this.value)">
-                    <option value="#06b6d4">Teal Blue (Default)</option>
-                    <option value="#10b981">Emerald Green</option>
-                    <option value="#8b5cf6">Neon Purple</option>
-                    <option value="#ec4899">Hot Pink</option>
-                    <option value="#eab308">Cyber Gold</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Custom System Logo (Max 2MB - Developer Limit)</label>
-                <input type="file" id="input-logo" accept="image/*" onchange="uploadLogo(event)">
-            </div>
-
-            <div class="form-group">
-                <label>Developer PIN Code</label>
-                <input type="password" id="input-pin" placeholder="Enter PIN to unlock full settings">
-            </div>
-
-            <button class="btn-save" onclick="saveSettings()">Save & Apply Changes</button>
-        </div>
-    </div>
-
-    <script>
-        const SUPABASE_URL = 'https://fqqwlvreqnxkbvbjjrol.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxcXdsdnJlcW54a2J2Ympqcm9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NjI4NjksImV4cCI6MjEwMzIzODg2OX0.J_-GrhljQrMhJnzmSMhSJYUFCR7moiUF3oBIOW0YWUQ';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        function openSettings() {
-            document.getElementById('settings-modal').style.display = 'flex';
-        }
-        function closeSettings() {
-            document.getElementById('settings-modal').style.display = 'none';
-        }
-
-        function changeTheme(colorHex) {
-            document.documentElement.style.setProperty('--accent-main', colorHex);
-            localStorage.setItem('theme_color', colorHex);
-        }
-
-        function uploadLogo(event) {
-            const file = event.target.files[0];
-            if (file) {
-                if (file.size > 2 * 1024 * 1024) {
-                    alert("Developer Limit: Ang image file dili pwedeng molapas sa 2MB!");
-                    event.target.value = "";
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('app-logo').src = e.target.result;
-                    localStorage.setItem('custom_logo', e.target.result);
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function saveSettings() {
-            alert("Customizations successfully applied!");
-            closeSettings();
-        }
-
-        function loadSavedCustomizations() {
-            const savedColor = localStorage.getItem('theme_color');
-            if (savedColor) {
-                document.documentElement.style.setProperty('--accent-main', savedColor);
-                document.getElementById('input-theme').value = savedColor;
-            }
-
-            const savedLogo = localStorage.getItem('custom_logo');
-            if (savedLogo) {
-                document.getElementById('app-logo').src = savedLogo;
-            }
-        }
-
-        async function loadLiveSensorData() {
-            // Kuhaon ang pinakabag-o para sa cards ug ang top 20 para sa history table
-            let { data, error } = await _supabase.from('sensor_data').select('*').order('id', { ascending: false }).limit(20);
-
-            if (error) {
-                console.error("Error fetching telemetry:", error);
-                return;
-            }
-
-            if (data && data.length > 0) {
-                let latest = data[0];
-                document.getElementById('val-humidity').innerText = (latest.humidity ?? '0') + ' %';
-                document.getElementById('val-soil').innerText = (latest.soil_moisture ?? '0') + ' %';
-
-                if (latest.pump_status !== undefined) {
-                    const isPumpOn = !!latest.pump_status;
-                    const pumpVal = document.getElementById('val-pump');
-                    const toggleBtn = document.getElementById('btn-toggle-pump');
-
-                    pumpVal.innerText = isPumpOn ? 'ON' : 'OFF';
-                    pumpVal.style.color = isPumpOn ? '#ef4444' : '#10b981';
-
-                    toggleBtn.innerText = isPumpOn ? "TURN OFF PUMP" : "TURN ON PUMP";
-                    toggleBtn.className = isPumpOn ? "btn-pump pump-on" : "btn-pump pump-off";
-                }
-
-                // I-populate ang History Logs table
-                const tableBody = document.getElementById('history-table-body');
-                tableBody.innerHTML = '';
-
-                data.forEach(row => {
-                    let tr = document.createElement('tr');
-                    let formattedDate = row.recorded_at ? new Date(row.recorded_at).toLocaleString() : 'N/A';
-                    let pumpStatusText = row.pump_status ? '<span style="color: #ef4444; font-weight: bold;">ON</span>' : '<span style="color: #10b981; font-weight: bold;">OFF</span>';
-
-                    tr.innerHTML = `
-                        <td>${row.id}</td>
-                        <td>${row.humidity ?? '0'} %</td>
-                        <td>${row.soil_moisture ?? '0'} %</td>
-                        <td>${pumpStatusText}</td>
-                        <td>${formattedDate}</td>
-                    `;
-                    tableBody.appendChild(tr);
-                });
-            }
-        }
-
-        async function togglePump() {
-            let { data } = await _supabase.from('sensor_data').select('*').order('id', { ascending: false }).limit(1);
-            let currentStatus = data && data.length > 0 ? !!data[0].pump_status : false;
-            let newStatus = !currentStatus;
-
-            let currentSoil = data && data[0] ? data[0].soil_moisture : 0;
-            let currentHumidity = data && data[0] ? data[0].humidity : 0;
-
-            let { error } = await _supabase.from('sensor_data').insert([{
-                humidity: currentHumidity,
-                soil_moisture: currentSoil,
-                pump_status: newStatus
-            }]);
-
-            if (error) {
-                alert("Error modifying pump status: " + error.message);
-            } else {
-                loadLiveSensorData();
-            }
-        }
-
-        loadSavedCustomizations();
-        loadLiveSensorData();
-        setInterval(loadLiveSensorData, 3000);
-    </script>
-</body>
-</html>
+                    <div class="contact-row">
+                        <div class="contact-item">
+                            <span>Phone Support</span>
+                            <strong>09855094913</strong>
+                        </div>
+                        <div
