@@ -447,7 +447,7 @@
                     <i class="fa-solid fa-tools"></i> technical support & maintenance
                 </button>
                 <button class="sidebar-btn-box" onclick="openModal('weather-modal')">
-                    <i class="fa-solid fa-cloud-sun"></i> weather update
+                    <i class="fa-solid fa-cloud-sun"></i> weather update & map
                 </button>
                 <button class="sidebar-btn-box" onclick="openModal('music-modal')">
                     <i class="fa-solid fa-music"></i> free music
@@ -540,18 +540,18 @@
         </div>
     </div>
 
-    <!-- Report Bugs & Issues Modal (Saves to Supabase with Username & Location) -->
+    <!-- Report Bugs & Issues Modal (User Name & Location Input -> saves to farm_reports) -->
     <div class="modal-overlay" id="report-modal">
         <div class="modal-box">
             <button class="btn-close" onclick="closeModal('report-modal')">✖</button>
             <h3>report bugs & issues</h3>
             <div class="form-group" style="margin-top: 15px;">
                 <label>user name</label>
-                <input type="text" id="bug-name" value="Alfrancis Sastrillas" readonly style="color: var(--accent-main); font-weight: bold;">
+                <input type="text" id="bug-name" placeholder="Isulat ang imong pangalan...">
             </div>
             <div class="form-group">
                 <label>farm location</label>
-                <input type="text" id="bug-location" value="Ubay, Bohol, Philippines" readonly style="color: var(--accent-green); font-weight: bold;">
+                <input type="text" id="bug-location" placeholder="Pananglitan: Ubay, Bohol">
             </div>
             <div class="form-group">
                 <label>issue category</label>
@@ -570,7 +570,7 @@
         </div>
     </div>
 
-    <!-- Technical Support Modal (Facebook Direct Link with Logo & Name) -->
+    <!-- Technical Support Modal -->
     <div class="modal-overlay" id="support-modal">
         <div class="modal-box" style="text-align: center;">
             <button class="btn-close" onclick="closeModal('support-modal')">✖</button>
@@ -585,29 +585,33 @@
         </div>
     </div>
 
-    <!-- Weather Update Modal (Live Real-Time Weather & Map Simulation) -->
+    <!-- Weather Update & Google Map Modal (Ubay, Bohol Live Map View) -->
     <div class="modal-overlay" id="weather-modal">
-        <div class="modal-box" style="max-width: 600px;">
+        <div class="modal-box" style="max-width: 700px;">
             <button class="btn-close" onclick="closeModal('weather-modal')">✖</button>
-            <h3>weather update & live map (ubay, bohol)[cite: 4]</h3>
+            <h3>weather update & live google map (ubay, bohol)[cite: 4]</h3>
             <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;">
                 <div style="background: #121926; border: 1px solid var(--border-glow); padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <h4 style="margin: 0; color: var(--accent-main); font-size: 16px;">Ubay Agricultural Hub</h4>
-                        <p style="margin: 5px 0 0 0; font-size: 13px; color: var(--text-sub);">Current Condition: Partly Cloudy & Ideal for Farming</p>
+                        <h4 style="margin: 0; color: var(--accent-main); font-size: 15px;">Ubay Agricultural Hub, Bohol[cite: 4]</h4>
+                        <p style="margin: 5px 0 0 0; font-size: 12px; color: var(--text-sub);">Live Weather Conditions: Ideal for Farming & Smart Monitoring</p>
                     </div>
                     <div style="text-align: right;">
-                        <span style="font-size: 26px; font-weight: 800; color: var(--accent-green);">31°C</span>
-                        <div style="font-size: 11px; color: var(--text-sub);">Humidity: 74%</div>
+                        <span style="font-size: 24px; font-weight: 800; color: var(--accent-green);">31°C</span>
+                        <div style="font-size: 11px; color: var(--text-sub);">Humidity: 74% | Wind: 12 km/h</div>
                     </div>
                 </div>
-                <!-- Simulated Live Mini Map View -->
-                <div style="width: 100%; height: 200px; background: #090d16; border: 1px solid var(--border-glow); border-radius: 10px; display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden;">
-                    <div style="position: absolute; inset: 0; opacity: 0.4; background: radial-gradient(circle, #06b6d4 10%, transparent 70%);"></div>
-                    <div style="z-index: 2; text-align: center;">
-                        <i class="fa-solid fa-location-dot" style="font-size: 32px; color: #ef4444; animation: bounce 1s infinite alternate;"></i>
-                        <div style="font-size: 12px; font-weight: bold; margin-top: 5px; color: #fff;">Ubay, Bohol Live Radar[cite: 4]</div>
-                    </div>
+                <!-- Embedded Google Map with Ubay, Bohol Location Focus -->
+                <div style="width: 100%; height: 320px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-glow);">
+                    <iframe 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62865.986874567!2d124.45!3d10.06!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33aa7556a8d8e5b9%3A0x4a0b2d6a3b2b0a0!2sUbay%2C%20Bohol%2C%20Philippines!5e0!3m2!1sen!2sph!4v1700000000000!5m2!1sen!2sph">
+                    </iframe>
                 </div>
             </div>
         </div>
@@ -668,27 +672,32 @@
             }
         }
 
-        // Submit Bug Report to Supabase
+        // Submit Bug Report to Supabase (farm_reports table)
         async function submitBug() {
-            const name = document.getElementById('bug-name').value;
-            const location = document.getElementById('bug-location').value;
+            const name = document.getElementById('bug-name').value.trim();
+            const location = document.getElementById('bug-location').value.trim();
             const category = document.getElementById('bug-cat').value;
-            const description = document.getElementById('bug-desc').value;
+            const description = document.getElementById('bug-desc').value.trim();
 
-            if(!description) { alert("Palihug og butang sa deskripsyon sa isyu."); return; }
+            if(!name || !location || !description) { 
+                alert("Palihug og butang sa imong ngalan, lokasyon, ug deskripsyon sa isyu."); 
+                return; 
+            }
 
-            let { error } = await _supabase.from('bug_reports').insert([{
-                user_name: name,
+            let { error } = await _supabase.from('farm_reports').insert([{
+                customer_name: name,
                 location: location,
-                category: category,
-                description: description,
-                reported_at: new Date()
+                issue_type: category,
+                description: description
             }]);
 
             if(error) {
-                alert("Naay gamay nga sayop sa pag-submit sa Supabase.");
+                console.error("Supabase Error:", error);
+                alert("Sayop sa Supabase: " + error.message);
             } else {
-                alert("Salamat, " + name + "! Na-submit na ang bug report gikan sa " + location + " ngadto sa Supabase.");
+                alert("Salamat, " + name + "! Na-submit na ang imong report gikan sa " + location + ".");
+                document.getElementById('bug-name').value = '';
+                document.getElementById('bug-location').value = '';
                 document.getElementById('bug-desc').value = '';
                 closeModal('report-modal');
             }
@@ -752,7 +761,7 @@
                 tbody.innerHTML = '';
                 data.forEach(row => {
                     let tr = document.createElement('tr');
-                    let dateStr = row.recorded_at ? new Date(row.recorded_at).toLocaleString() : 'N/A';
+                    let dateStr = row.created_at ? new Date(row.created_at).toLocaleString() : 'N/A';
                     let pumpTxt = row.pump_status ? '<span style="color:#ef4444">ON</span>' : '<span style="color:#10b981">OFF</span>';
                     let rainTxt = row.rain_status ? 'RAINING' : 'NORMAL';
                     tr.innerHTML = `<td>${row.id}</td><td>${row.humidity}%</td><td>${row.soil_moisture}%</td><td>${rainTxt}</td><td>${pumpTxt}</td><td>${dateStr}</td>`;
