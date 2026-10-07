@@ -3,290 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Farm Management System</title>
+    <title>Smart Farm Enterprise Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-dark: #050b14;
-            --panel-bg: rgba(13, 19, 29, 0.85);
-            --card-surface: rgba(18, 25, 38, 0.85);
-            --border-glow: rgba(6, 182, 212, 0.3);
-            --accent-main: #06b6d4;
+            --bg-deep: #030712;
+            --sidebar-bg: rgba(9, 14, 23, 0.95);
+            --panel-bg: rgba(13, 19, 32, 0.85);
+            --card-surface: rgba(17, 24, 39, 0.9);
+            --border-color: rgba(30, 41, 59, 0.8);
+            --border-glow: rgba(6, 182, 212, 0.35);
+            --accent-cyan: #06b6d4;
+            --accent-blue: #3b82f6;
             --accent-green: #10b981;
             --accent-purple: #8b5cf6;
-            --text-main: #f1f5f9;
+            --text-main: #f8fafc;
             --text-sub: #94a3b8;
         }
 
         * {
             box-sizing: border-box;
-            transition: all 0.25s ease-in-out;
+            transition: all 0.2s ease-in-out;
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(rgba(5, 11, 20, 0.8), rgba(5, 11, 20, 0.9)), 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, rgba(3, 7, 18, 0.92), rgba(15, 23, 42, 0.95)),
                         url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
             background-size: cover;
             color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 16px;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        .dashboard-frame {
-            background: var(--panel-bg);
-            backdrop-filter: blur(12px);
-            border: 2px solid var(--border-glow);
-            border-radius: 16px;
-            padding: 20px;
-            width: 100%;
-            max-width: 1450px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.9), inset 0 1px 2px rgba(255,255,255,0.2);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* HEADER */
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--card-surface);
-            padding: 14px 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border-glow);
-        }
-
-        .header-title-box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .custom-logo-img {
-            width: 36px;
-            height: 36px;
-            border-radius: 6px;
-            object-fit: cover;
-            border: 1px solid var(--accent-main);
-        }
-
-        .dashboard-header h2 {
-            margin: 0;
-            font-size: 20px;
-            letter-spacing: 0.5px;
-            text-transform: lowercase;
-            background: linear-gradient(90deg, var(--accent-main), var(--accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .status-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(16, 185, 129, 0.15);
-            padding: 6px 12px;
-            border-radius: 20px;
-            border: 1px solid rgba(16, 185, 129, 0.4);
-            color: var(--accent-green);
-            font-size: 13px;
-            font-weight: 600;
-            text-transform: lowercase;
-        }
-
-        .status-dot {
-            width: 7px;
-            height: 7px;
-            background: var(--accent-green);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent-green);
-            animation: pulse-dot 1.5s infinite;
-        }
-
-        @keyframes pulse-dot {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
-
-        .header-btn {
-            background: transparent;
-            color: var(--text-main);
-            border: 1px solid var(--border-glow);
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            text-transform: lowercase;
-        }
-
-        .header-btn:hover {
-            background: var(--accent-main);
-            color: #000;
-            border-color: var(--accent-main);
-            transform: translateY(-2px);
-        }
-
-        /* MAIN LAYOUT */
-        .main-layout {
+        .enterprise-wrapper {
             display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 20px;
-        }
-
-        /* SIDEBAR BUTTONS WITH ANIMATIONS */
-        .left-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .sidebar-btn-box {
-            background: var(--card-surface);
+            grid-template-columns: 260px 1fr;
+            gap: 16px;
+            width: 100%;
+            max-width: 1600px;
+            height: 95vh;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--border-glow);
-            border-radius: 10px;
-            padding: 14px 16px;
-            color: var(--text-main);
-            text-align: left;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-transform: lowercase;
-            position: relative;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
             overflow: hidden;
         }
 
-        .sidebar-btn-box::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.2), transparent);
-            transition: 0.5s;
+        /* SIDEBAR NAVIGATION */
+        .sidebar {
+            background: rgba(5, 9, 17, 0.95);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 24px;
         }
 
-        .sidebar-btn-box:hover::before {
-            left: 100%;
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 16px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .sidebar-btn-box:hover {
-            border-color: var(--accent-main);
-            background: rgba(6, 182, 212, 0.1);
-            transform: translateX(5px) scale(1.02);
-            box-shadow: 0 5px 15px rgba(6, 182, 212, 0.2);
+        .sidebar-brand img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid var(--accent-cyan);
         }
 
-        .sidebar-btn-box:active {
-            transform: scale(0.97);
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-grow: 1;
         }
 
-        .sidebar-btn-box i {
-            color: var(--accent-main);
+        .menu-section-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-sub);
+            margin: 12px 0 6px 8px;
+            font-weight: 700;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: var(--text-sub);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            background: transparent;
+            border: none;
+            text-align: left;
+            width: 100%;
+        }
+
+        .menu-item i {
             width: 18px;
             font-size: 15px;
         }
 
-        /* RIGHT CONTENT AREA */
-        .right-content {
+        .menu-item:hover, .menu-item.active {
+            background: rgba(6, 182, 212, 0.12);
+            color: var(--accent-cyan);
+            border-left: 3px solid var(--accent-cyan);
+            padding-left: 11px;
+        }
+
+        /* MAIN CONTENT VIEW */
+        .main-container {
             display: flex;
             flex-direction: column;
+            overflow-y: auto;
+            padding: 20px;
             gap: 20px;
         }
 
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
+        /* TOP NAVBAR */
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-surface);
+            border: 1px solid var(--border-color);
+            padding: 12px 20px;
+            border-radius: 12px;
         }
 
-        .card {
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(3, 7, 18, 0.6);
+            border: 1px solid var(--border-color);
+            padding: 8px 14px;
+            border-radius: 8px;
+            width: 350px;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 13px;
+            width: 100%;
+            outline: none;
+        }
+
+        .user-profile-widget {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(3, 7, 18, 0.6);
+            border: 1px solid var(--border-color);
+            padding: 6px 14px 6px 6px;
+            border-radius: 30px;
+        }
+
+        .user-profile-widget img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid var(--accent-cyan);
+            object-fit: cover;
+        }
+
+        /* DASHBOARD GRID AREA */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .enterprise-card {
             background: var(--card-surface);
-            border: 1px solid var(--border-glow);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 16px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 130px;
-            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
         }
 
-        .card:hover {
-            border-color: var(--accent-main);
-            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.25);
-            transform: translateY(-3px);
+        .enterprise-card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 10px 30px -10px rgba(6, 182, 212, 0.3);
+            transform: translateY(-2px);
         }
 
-        .card-header {
-            color: var(--text-sub);
+        .card-label {
             font-size: 11px;
             font-weight: 700;
-            text-transform: lowercase;
+            color: var(--text-sub);
+            text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .card-value {
-            font-size: 24px;
+        .card-metric {
+            font-size: 26px;
             font-weight: 800;
-            margin: 10px 0 5px 0;
             color: #fff;
+            margin: 12px 0;
         }
 
-        .btn-pump {
+        .action-button {
             width: 100%;
-            padding: 9px;
+            padding: 8px;
             border: none;
             border-radius: 6px;
             font-weight: 700;
+            font-size: 12px;
             cursor: pointer;
-            color: #fff;
-            font-size: 11px;
             text-transform: lowercase;
-            margin-top: 6px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            color: #fff;
         }
 
-        .btn-pump:hover {
-            transform: scale(1.03);
-            opacity: 0.9;
+        .btn-green { background: #10b981; }
+        .btn-red { background: #ef4444; }
+        .action-button:hover { opacity: 0.85; transform: scale(1.02); }
+
+        /* ANALYTICS & VISUALIZER SECTION */
+        .analytics-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px;
         }
 
-        .btn-pump:active {
-            transform: scale(0.96);
-        }
-
-        .pump-off { background: #10b981; }
-        .pump-on { background: #ef4444; }
-
-        /* ANALYTICAL TOPOGRAPHY & REALTIME WATER STREAM WAVE MATRIX */
-        .visualizer-card {
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(9, 13, 22, 0.95) 100%);
-            border: 1px solid var(--border-glow);
-            border-radius: 14px;
+        .chart-box {
+            background: var(--card-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
             padding: 20px;
-            position: relative;
-            overflow: hidden;
-            height: 260px;
+            height: 280px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            position: relative;
         }
 
         .wave-svg {
@@ -294,220 +269,240 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 180px;
+            height: 160px;
             pointer-events: none;
         }
 
-        /* MODALS */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            display: none;
-            justify-content: center;
+        /* DATA TABLE SECTION (SUPABASE REPORTS) */
+        .table-container-box {
+            background: var(--card-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .table-header-flex {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            z-index: 999;
-        }
-
-        .modal-box {
-            background: #0d131d;
-            border: 2px solid var(--accent-main);
-            border-radius: 14px;
-            padding: 24px;
-            width: 100%;
-            max-width: 550px;
-            box-shadow: 0 0 40px rgba(6, 182, 212, 0.4);
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-
-        .modal-box h3 {
-            margin-top: 0;
-            color: var(--accent-main);
-            text-transform: lowercase;
-        }
-
-        .form-group {
             margin-bottom: 14px;
         }
 
-        .form-group label {
-            display: block;
-            font-size: 11px;
-            color: var(--text-sub);
-            margin-bottom: 5px;
-            font-weight: 700;
-            text-transform: lowercase;
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            background: #121926;
-            border: 1px solid var(--border-glow);
-            color: #fff;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 12px;
-        }
-
-        .form-group input:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: var(--accent-main);
-            box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
-        }
-
-        .btn-action {
-            background: linear-gradient(135deg, var(--accent-main), var(--accent-purple));
-            color: #fff;
-            border: none;
-            padding: 11px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            text-transform: lowercase;
-            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
-        }
-
-        .btn-action:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
-        }
-
-        .btn-action:active {
-            transform: scale(0.98);
-        }
-
-        .btn-close {
-            background: transparent;
-            color: var(--text-sub);
-            border: none;
-            cursor: pointer;
-            float: right;
-            font-size: 16px;
-        }
-
-        .btn-close:hover { color: #fff; }
-
-        .history-table {
+        .enterprise-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 12px;
             text-align: left;
         }
 
-        .history-table th, .history-table td {
+        .enterprise-table th, .enterprise-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .enterprise-table th {
+            color: var(--accent-cyan);
+            background: rgba(3, 7, 18, 0.4);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .enterprise-table tr:hover td {
+            background: rgba(6, 182, 212, 0.05);
+        }
+
+        /* INTERACTIVE MODALS */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 7, 18, 0.85);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #0b1120;
+            border: 1px solid var(--accent-cyan);
+            border-radius: 14px;
+            padding: 24px;
+            width: 100%;
+            max-width: 550px;
+            box-shadow: 0 0 50px rgba(6, 182, 212, 0.3);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .form-row {
+            margin-bottom: 14px;
+        }
+
+        .form-row label {
+            display: block;
+            font-size: 11px;
+            color: var(--text-sub);
+            margin-bottom: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .form-row input, .form-row select, .form-row textarea {
+            width: 100%;
             padding: 10px;
-            border-bottom: 1px solid var(--border-glow);
+            background: #030712;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            border-radius: 8px;
+            font-size: 12px;
         }
 
-        .history-table th {
-            background: #090d16;
-            color: var(--accent-main);
-            position: sticky;
-            top: 0;
+        .form-row input:focus, .form-row textarea:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
         }
 
-        @media (max-width: 1024px) {
-            .main-layout { grid-template-columns: 1fr; }
-            .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+        .btn-submit {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        @media (max-width: 1200px) {
+            .enterprise-wrapper { grid-template-columns: 1fr; height: auto; }
+            .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+            .analytics-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <div class="dashboard-frame">
-        <!-- HEADER -->
-        <div class="dashboard-header">
-            <div class="header-title-box">
-                <img id="app-logo" src="https://cdn-icons-png.flaticon.com/512/628/628324.png" class="custom-logo-img" alt="Logo">
-                <h2 id="app-title">smart farm management system</h2>
+    <div class="enterprise-wrapper">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-brand">
+                <img id="app-logo" src="https://cdn-icons-png.flaticon.com/512/628/628324.png" alt="Logo">
+                <span>enterprise agritech</span>
             </div>
-            <div class="header-right">
-                <div class="status-badge">
-                    <span class="status-dot"></span> live
-                </div>
-                <button class="header-btn" onclick="openSettings()">settings</button>
+            
+            <div class="sidebar-menu">
+                <div class="menu-section-title">core navigation</div>
+                <button class="menu-item active" onclick="switchTab('dashboard')"><i class="fa-solid fa-chart-pie"></i> enterprise hub</button>
+                <button class="menu-item" onclick="openModal('report-modal')"><i class="fa-solid fa-bug"></i> submit issue report</button>
+                <button class="menu-item" onclick="openModal('weather-modal')"><i class="fa-solid fa-cloud-sun"></i> regional weather map</button>
+                
+                <div class="menu-section-title">management</div>
+                <button class="menu-item" onclick="openModal('music-modal')"><i class="fa-solid fa-music"></i> ambient sound stream</button>
+                <button class="menu-item" onclick="openModal('settings-modal')"><i class="fa-solid fa-sliders"></i> system preferences</button>
             </div>
         </div>
 
-        <!-- MAIN LAYOUT -->
-        <div class="main-layout">
-            <!-- SIDEBAR WITH ANIMATED BUTTONS -->
-            <div class="left-sidebar">
-                <button class="sidebar-btn-box" onclick="openModal('history-modal')">
-                    <i class="fa-solid fa-clock-rotate-left"></i> sensor history logs
-                </button>
-                <button class="sidebar-btn-box" onclick="openModal('report-modal')">
-                    <i class="fa-solid fa-bug"></i> report bugs & issues
-                </button>
-                <button class="sidebar-btn-box" onclick="openModal('support-modal')">
-                    <i class="fa-solid fa-tools"></i> technical support & maintenance
-                </button>
-                <button class="sidebar-btn-box" onclick="openModal('weather-modal')">
-                    <i class="fa-solid fa-cloud-sun"></i> weather update & map
-                </button>
-                <button class="sidebar-btn-box" onclick="openModal('music-modal')">
-                    <i class="fa-solid fa-music"></i> free music
-                </button>
-            </div>
-
-            <!-- RIGHT CONTENT AREA -->
-            <div class="right-content">
-                <div class="metrics-grid">
-                    <!-- Humidity Card -->
-                    <div class="card">
-                        <div class="card-header">humidity</div>
-                        <div class="card-value" id="val-humidity">0 %</div>
-                        <span style="font-size: 10px; color: var(--text-sub);">atmospheric sensor</span>
-                    </div>
-
-                    <!-- Soil Moisture Card -->
-                    <div class="card">
-                        <div class="card-header">soil moisture</div>
-                        <div class="card-value" id="val-soil">0 %</div>
-                        <span style="font-size: 10px; color: var(--text-sub);">moisture sensor</span>
-                    </div>
-
-                    <!-- Rain Sensor Card -->
-                    <div class="card">
-                        <div class="card-header">rain sensor</div>
-                        <div class="card-value" id="val-rain" style="color: var(--accent-main);">NORMAL</div>
-                        <span style="font-size: 10px; color: var(--text-sub);">precipitation status</span>
-                    </div>
-
-                    <!-- Water Pump Status Card -->
-                    <div class="card">
-                        <div class="card-header">water pump status</div>
-                        <div class="card-value" id="val-pump" style="color: var(--accent-green);">OFF</div>
-                        <button id="btn-toggle-pump" class="btn-pump pump-off" onclick="togglePump()">turn on pump</button>
+        <!-- MAIN CONTAINER -->
+        <div class="main-container">
+            <!-- TOP NAVBAR -->
+            <div class="top-navbar">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass" style="color: var(--text-sub);"></i>
+                    <input type="text" placeholder="Search telemetry, active nodes, reports...">
+                </div>
+                <div class="user-profile-widget">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="User">
+                    <div style="font-size: 12px; line-height: 1.2;">
+                        <div style="font-weight: 700; color: #fff;">Alfrancis Sastrillas</div>
+                        <div style="font-size: 10px; color: var(--accent-cyan);">System Admin</div>
                     </div>
                 </div>
+            </div>
 
-                <!-- ANALYTICAL TOPOGRAPHY & DYNAMIC WATER STREAM WAVE MATRIX -->
-                <div class="visualizer-card">
-                    <div style="display: flex; justify-content: space-between; position: relative; z-index: 2;">
-                        <span style="font-weight: 700; color: var(--accent-main); font-size: 12px; text-transform: lowercase;">analytical topography & realtime water stream wave matrix</span>
-                        <span style="color: var(--text-sub); font-size: 10px;" id="stream-status-text">live sensor stream: active</span>
+            <!-- DASHBOARD KPI METRICS -->
+            <div class="dashboard-grid">
+                <div class="enterprise-card">
+                    <div class="card-label">atmospheric humidity</div>
+                    <div class="card-metric" id="val-humidity">0 %</div>
+                    <span style="font-size: 11px; color: var(--text-sub);">sensor array #01</span>
+                </div>
+                <div class="enterprise-card">
+                    <div class="card-label">soil moisture index</div>
+                    <div class="card-metric" id="val-soil">0 %</div>
+                    <span style="font-size: 11px; color: var(--text-sub);">subsurface telemetry</span>
+                </div>
+                <div class="enterprise-card">
+                    <div class="card-label">precipitation status</div>
+                    <div class="card-metric" id="val-rain" style="color: var(--accent-cyan);">NORMAL</div>
+                    <span style="font-size: 11px; color: var(--text-sub);">weather monitoring unit</span>
+                </div>
+                <div class="enterprise-card">
+                    <div class="card-label">irrigation pump node</div>
+                    <div class="card-metric" id="val-pump" style="color: var(--accent-green);">OFF</div>
+                    <button id="btn-toggle-pump" class="action-button btn-green" onclick="togglePump()">turn on pump</button>
+                </div>
+            </div>
+
+            <!-- ANALYTICS ROW -->
+            <div class="analytics-row">
+                <div class="chart-box">
+                    <div style="display: flex; justify-content: space-between; align-items: center; z-index: 2;">
+                        <span style="font-weight: 700; font-size: 13px; color: var(--accent-cyan);">realtime telemetry stream & topograhic waveform</span>
+                        <span style="font-size: 10px; color: var(--accent-green); background: rgba(16,185,129,0.15); padding: 4px 8px; border-radius: 4px;">● live sync</span>
                     </div>
-
-                    <svg class="wave-svg" viewBox="0 0 1200 180" preserveAspectRatio="none">
+                    <svg class="wave-svg" viewBox="0 0 1200 160" preserveAspectRatio="none">
                         <defs>
-                            <linearGradient id="waterGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <linearGradient id="entGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                                 <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.8"/>
-                                <stop offset="50%" stop-color="#3b82f6" stop-opacity="0.9"/>
-                                <stop offset="100%" stop-color="#10b981" stop-opacity="0.8"/>
+                                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.9"/>
                             </linearGradient>
-                            <linearGradient id="waterFill" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.5"/>
-                                <stop offset="100%" stop-color="#050b14" stop-opacity="0.95"/>
+                            <linearGradient id="entFill" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.4"/>
+                                <stop offset="100%" stop-color="#030712" stop-opacity="0.95"/>
                             </linearGradient>
                         </defs>
-                        <path id="dynamic-wave-fill" d="M0,120 Q150,60 300,100 T600,80 T900,110 T1200,70 L1200,180 L0,180 Z" fill="url(#waterFill)" />
-                        <path id="dynamic-wave-line" d="M0,100 C150,40 250,140 400,70 C550,130 700,30 850,90 C1000,40 1100,120 1200,60" fill="none" stroke="url(#waterGrad)" stroke-width="4" />
+                        <path id="dynamic-wave-fill" d="M0,100 Q150,40 300,90 T600,70 T900,100 T1200,60 L1200,160 L0,160 Z" fill="url(#entFill)" />
+                        <path id="dynamic-wave-line" d="M0,90 C150,20 250,130 400,60 C550,120 700,20 850,80 C1000,30 1100,110 1200,50" fill="none" stroke="url(#entGrad)" stroke-width="3" />
                     </svg>
+                </div>
+
+                <div class="enterprise-card" style="justify-content: flex-start; gap: 12px;">
+                    <div class="card-label">quick system actions</div>
+                    <button class="action-button" style="background: rgba(6, 182, 212, 0.2); border: 1px solid var(--accent-cyan); color: var(--accent-cyan);" onclick="openModal('report-modal')"><i class="fa-solid fa-file-pen"></i> file new issue report</button>
+                    <button class="action-button" style="background: rgba(139, 92, 246, 0.2); border: 1px solid var(--accent-purple); color: var(--accent-purple);" onclick="openModal('weather-modal')"><i class="fa-solid fa-map-location-dot"></i> view regional maps</button>
+                    <button class="action-button" style="background: rgba(16, 185, 129, 0.2); border: 1px solid var(--accent-green); color: var(--accent-green);" onclick="location.reload()"><i class="fa-solid fa-rotate"></i> refresh node connection</button>
+                </div>
+            </div>
+
+            <!-- SUPABASE LIVE REPORTS TABLE -->
+            <div class="table-container-box">
+                <div class="table-header-flex">
+                    <span style="font-weight: 700; font-size: 13px; color: var(--accent-cyan); text-transform: uppercase;">live system reports & bug logs (supabase)</span>
+                    <span style="font-size: 11px; color: var(--text-sub);" id="report-count-text">syncing logs...</span>
+                </div>
+                <div style="max-height: 250px; overflow-y: auto;">
+                    <table class="enterprise-table">
+                        <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>user name</th>
+                                <th>location</th>
+                                <th>category</th>
+                                <th>description</th>
+                                <th>timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="enterprise-reports-body">
+                            <tr><td colspan="6" style="text-align: center; color: var(--text-sub);">fetching database logs...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -515,45 +510,20 @@
 
     <!-- MODALS -->
 
-    <!-- Sensor History Modal (Live from Supabase) -->
-    <div class="modal-overlay" id="history-modal">
-        <div class="modal-box" style="max-width: 750px;">
-            <button class="btn-close" onclick="closeModal('history-modal')">✖</button>
-            <h3>sensor history logs (live database)</h3>
-            <div style="max-height: 380px; overflow-y: auto; margin-top: 15px;">
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>id</th>
-                            <th>humidity</th>
-                            <th>soil moisture</th>
-                            <th>rain status</th>
-                            <th>pump status</th>
-                            <th>timestamp</th>
-                        </tr>
-                    </thead>
-                    <tbody id="history-table-body">
-                        <tr><td colspan="6" style="text-align: center; color: var(--text-sub);">fetching live logs from supabase...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Report Bugs & Issues Modal (User Name & Location Input -> saves to farm_reports) -->
+    <!-- Report Bugs & Issues Modal -->
     <div class="modal-overlay" id="report-modal">
-        <div class="modal-box">
-            <button class="btn-close" onclick="closeModal('report-modal')">✖</button>
-            <h3>report bugs & issues</h3>
-            <div class="form-group" style="margin-top: 15px;">
-                <label>user name</label>
+        <div class="modal-content">
+            <button style="background: transparent; color: var(--text-sub); border: none; float: right; cursor: pointer; font-size: 16px;" onclick="closeModal('report-modal')">✖</button>
+            <h3 style="margin-top: 0; color: var(--accent-cyan);">submit issue report</h3>
+            <div class="form-row" style="margin-top: 15px;">
+                <label>your name</label>
                 <input type="text" id="bug-name" placeholder="Isulat ang imong ngalan...">
             </div>
-            <div class="form-group">
+            <div class="form-row">
                 <label>farm location</label>
                 <input type="text" id="bug-location" placeholder="Pananglitan: Ubay, Bohol">
             </div>
-            <div class="form-group">
+            <div class="form-row">
                 <label>issue category</label>
                 <select id="bug-cat">
                     <option value="Sensor Disconnected">Sensor Disconnected</option>
@@ -562,47 +532,28 @@
                     <option value="UI Glitch">Dashboard UI Glitch</option>
                 </select>
             </div>
-            <div class="form-group">
+            <div class="form-row">
                 <label>description</label>
-                <textarea id="bug-desc" rows="3" placeholder="Describe the issue encountered..."></textarea>
+                <textarea id="bug-desc" rows="3" placeholder="Describe the issue..."></textarea>
             </div>
-            <button class="btn-action" onclick="submitBug()">submit report to supabase</button>
+            <button class="btn-submit" onclick="submitBug()">submit to database</button>
         </div>
     </div>
 
-    <!-- Technical Support Modal -->
-    <div class="modal-overlay" id="support-modal">
-        <div class="modal-box" style="text-align: center;">
-            <button class="btn-close" onclick="closeModal('support-modal')">✖</button>
-            <h3>technical support & maintenance</h3>
-            <div style="margin: 25px 0; display: flex; flex-direction: column; align-items: center; gap: 15px;">
-                <a href="https://www.facebook.com" target="_blank" style="text-decoration: none; display: flex; align-items: center; gap: 12px; background: rgba(24, 119, 242, 0.15); border: 1px solid #1877f2; padding: 12px 24px; border-radius: 30px; color: #fff; font-weight: bold;">
-                    <i class="fa-brands fa-facebook" style="font-size: 28px; color: #1877f2;"></i>
-                    <span style="font-size: 15px;">Alfrancis Sastrillas</span>
-                </a>
-                <p style="font-size: 12px; color: var(--text-sub);">click the facebook button above to directly message developer support.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Weather Update & Google Map Modal (Ubay, Bohol Live Map View) -->
+    <!-- Weather & Google Map Modal -->
     <div class="modal-overlay" id="weather-modal">
-        <div class="modal-box" style="max-width: 700px;">
-            <button class="btn-close" onclick="closeModal('weather-modal')">✖</button>
-            <h3>weather update & live google map (ubay, bohol)[cite: 4]</h3>
-            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;">
-                <div style="background: #121926; border: 1px solid var(--border-glow); padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <div class="modal-content" style="max-width: 650px;">
+            <button style="background: transparent; color: var(--text-sub); border: none; float: right; cursor: pointer; font-size: 16px;" onclick="closeModal('weather-modal')">✖</button>
+            <h3 style="margin-top: 0; color: var(--accent-cyan);">regional weather & map (ubay, bohol)[cite: 4]</h3>
+            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 12px;">
+                <div style="background: #030712; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <h4 style="margin: 0; color: var(--accent-main); font-size: 15px;">Ubay Agricultural Hub, Bohol[cite: 4]</h4>
-                        <p style="margin: 5px 0 0 0; font-size: 12px; color: var(--text-sub);">Live Weather Conditions: Ideal for Farming & Smart Monitoring</p>
+                        <div style="font-weight: 700; color: var(--accent-cyan);">Ubay Hub Central[cite: 4]</div>
+                        <div style="font-size: 11px; color: var(--text-sub);">Optimal Conditions for Smart Farm Automation</div>
                     </div>
-                    <div style="text-align: right;">
-                        <span style="font-size: 24px; font-weight: 800; color: var(--accent-green);">31°C</span>
-                        <div style="font-size: 11px; color: var(--text-sub);">Humidity: 74% | Wind: 12 km/h</div>
-                    </div>
+                    <div style="text-align: right; font-weight: 800; font-size: 20px; color: var(--accent-green);">31°C</div>
                 </div>
-                <!-- Embedded Google Map with Ubay, Bohol Location Focus -->
-                <div style="width: 100%; height: 320px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-glow);">
+                <div style="width: 100%; height: 280px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color);">
                     <iframe 
                         width="100%" 
                         height="100%" 
@@ -617,38 +568,29 @@
         </div>
     </div>
 
-    <!-- Free Music Modal (Local Device Folder Import & Player) -->
+    <!-- Music Stream Modal -->
     <div class="modal-overlay" id="music-modal">
-        <div class="modal-box">
-            <button class="btn-close" onclick="closeModal('music-modal')">✖</button>
-            <h3>free music ambient player</h3>
-            <p style="font-size: 12px; color: var(--text-sub); margin-top: 10px;">pilia ug i-import ang musika gikan sa imong device folder:</p>
-            <div class="form-group" style="margin-top: 15px;">
-                <input type="file" id="local-audio-file" accept="audio/*" onchange="loadLocalMusic(event)">
+        <div class="modal-content">
+            <button style="background: transparent; color: var(--text-sub); border: none; float: right; cursor: pointer; font-size: 16px;" onclick="closeModal('music-modal')">✖</button>
+            <h3 style="margin-top: 0; color: var(--accent-cyan);">ambient audio player</h3>
+            <p style="font-size: 12px; color: var(--text-sub);">pilia ang imong audio file gikan sa device:</p>
+            <div class="form-row" style="margin-top: 15px;">
+                <input type="file" accept="audio/*" onchange="loadMusic(event)">
             </div>
-            <audio id="audio-player" controls style="width: 100%; margin-top: 10px; display: none;"></audio>
+            <audio id="audio-element" controls style="width: 100%; margin-top: 10px; display: none;"></audio>
         </div>
     </div>
 
     <!-- Settings Modal -->
     <div class="modal-overlay" id="settings-modal">
-        <div class="modal-box">
-            <button class="btn-close" onclick="closeModal('settings-modal')">✖</button>
-            <h3>settings</h3>
-            <div class="form-group" style="margin-top: 15px;">
-                <label>accent color</label>
-                <select id="input-theme" onchange="changeTheme(this.value)">
-                    <option value="#06b6d4">Teal Blue</option>
-                    <option value="#10b981">Emerald Green</option>
-                    <option value="#8b5cf6">Neon Purple</option>
-                    <option value="#eab308">Cyber Gold</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>system logo upload</label>
+        <div class="modal-content">
+            <button style="background: transparent; color: var(--text-sub); border: none; float: right; cursor: pointer; font-size: 16px;" onclick="closeModal('settings-modal')">✖</button>
+            <h3 style="margin-top: 0; color: var(--accent-cyan);">system settings</h3>
+            <div class="form-row" style="margin-top: 15px;">
+                <label>upload enterprise logo</label>
                 <input type="file" accept="image/*" onchange="uploadLogo(event)">
             </div>
-            <button class="btn-action" onclick="closeModal('settings-modal')">save settings</button>
+            <button class="btn-submit" onclick="closeModal('settings-modal')">save configuration</button>
         </div>
     </div>
 
@@ -659,29 +601,46 @@
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function openSettings() { openModal('settings-modal'); }
+        function switchTab(tab) {
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
 
-        // Local Music File Import
-        function loadLocalMusic(event) {
+        function loadMusic(event) {
             const file = event.target.files[0];
-            if (file) {
-                const player = document.getElementById('audio-player');
+            if(file) {
+                const player = document.getElementById('audio-element');
                 player.src = URL.createObjectURL(file);
                 player.style.display = 'block';
                 player.play();
             }
         }
 
-        // Submit Bug Report to Supabase (farm_reports table) using user input name and location
+        function uploadLogo(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('app-logo').src = e.target.result;
+                    localStorage.setItem('enterprise_logo', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        if(localStorage.getItem('enterprise_logo')) {
+            document.getElementById('app-logo').src = localStorage.getItem('enterprise_logo');
+        }
+
         async function submitBug() {
             const name = document.getElementById('bug-name').value.trim();
             const location = document.getElementById('bug-location').value.trim();
             const category = document.getElementById('bug-cat').value;
             const description = document.getElementById('bug-desc').value.trim();
 
-            if(!name || !location || !description) { 
-                alert("Palihug og butang sa imong ngalan, lokasyon, ug deskripsyon sa isyu."); 
-                return; 
+            if(!name || !location || !description) {
+                alert("Palihug og butang sa imong ngalan, lokasyon, ug deskripsyon.");
+                return;
             }
 
             let { error } = await _supabase.from('farm_reports').insert([{
@@ -692,81 +651,63 @@
             }]);
 
             if(error) {
-                console.error("Supabase Error:", error);
-                alert("Naay gamay nga sayop sa pag-submit sa Supabase: " + error.message);
+                alert("Sayop sa pag-submit: " + error.message);
             } else {
-                alert("Salamat, " + name + "! Na-submit na ang imong report gikan sa " + location + ".");
+                alert("Salamat, " + name + "! Na-submit na ang imong report.");
                 document.getElementById('bug-name').value = '';
                 document.getElementById('bug-location').value = '';
                 document.getElementById('bug-desc').value = '';
                 closeModal('report-modal');
+                loadEnterpriseData();
             }
         }
 
-        function changeTheme(color) {
-            document.documentElement.style.setProperty('--accent-main', color);
-            localStorage.setItem('theme_color', color);
-        }
-
-        function uploadLogo(event) {
-            const file = event.target.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    document.getElementById('app-logo').src = e.target.result;
-                    localStorage.setItem('custom_logo', e.target.result);
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // Live Telemetry & Dynamic Water Stream Wave Adjustment
-        async function loadTelemetry() {
-            let { data, error } = await _supabase.from('sensor_data').select('*').order('id', { ascending: false }).limit(30);
-            if(error) return;
-
-            if(data && data.length > 0) {
-                let latest = data[0];
+        async function loadEnterpriseData() {
+            // Load Sensor Telemetry
+            let { data: sensorData } = await _supabase.from('sensor_data').select('*').order('id', { ascending: false }).limit(1);
+            if(sensorData && sensorData.length > 0) {
+                let latest = sensorData[0];
                 let hum = latest.humidity ?? 0;
                 let soil = latest.soil_moisture ?? 0;
 
                 document.getElementById('val-humidity').innerText = hum + ' %';
                 document.getElementById('val-soil').innerText = soil + ' %';
 
-                // Rain Sensor Status
-                let rainVal = document.getElementById('val-rain');
+                let rainEl = document.getElementById('val-rain');
                 if(latest.rain_status !== undefined) {
-                    let isRaining = !!latest.rain_status;
-                    rainVal.innerText = isRaining ? 'RAINING' : 'NORMAL';
-                    rainVal.style.color = isRaining ? '#06b6d4' : 'var(--accent-main)';
+                    rainEl.innerText = latest.rain_status ? 'RAINING' : 'NORMAL';
                 }
 
-                // Water Pump Status
                 if(latest.pump_status !== undefined) {
-                    let isPumpOn = !!latest.pump_status;
-                    let pumpVal = document.getElementById('val-pump');
+                    let pumpEl = document.getElementById('val-pump');
                     let toggleBtn = document.getElementById('btn-toggle-pump');
-                    pumpVal.innerText = isPumpOn ? 'ON' : 'OFF';
-                    pumpVal.style.color = isPumpOn ? '#ef4444' : '#10b981';
-                    toggleBtn.innerText = isPumpOn ? "turn off pump" : "turn on pump";
-                    toggleBtn.className = isPumpOn ? "btn-pump pump-on" : "btn-pump pump-off";
+                    let isPumpOn = !!latest.pump_status;
+                    pumpEl.innerText = isPumpOn ? 'ON' : 'OFF';
+                    pumpEl.style.color = isPumpOn ? '#ef4444' : '#10b981';
+                    toggleBtn.innerText = isPumpOn ? 'turn off pump' : 'turn on pump';
+                    toggleBtn.className = isPumpOn ? 'action-button btn-red' : 'action-button btn-green';
                 }
 
-                // Dynamic Water Stream Wave adjustment based on soil/humidity data
-                let waveHeightOffset = Math.max(20, Math.min(140, 180 - (soil * 1.2)));
-                document.getElementById('dynamic-wave-fill').setAttribute('d', `M0,${waveHeightOffset} Q150,${waveHeightOffset - 40} 300,${waveHeightOffset} T600,${waveHeightOffset - 20} T900,${waveHeightOffset + 10} T1200,${waveHeightOffset - 30} L1200,180 L0,180 Z`);
+                let waveOffset = Math.max(20, Math.min(120, 150 - (soil * 1.1)));
+                document.getElementById('dynamic-wave-fill').setAttribute('d', `M0,${waveOffset} Q150,${waveOffset-30} 300,${waveOffset} T600,${waveOffset-15} T900,${waveOffset+10} T1200,${waveOffset-20} L1200,160 L0,160 Z`);
+            }
 
-                // History Table Logs
-                const tbody = document.getElementById('history-table-body');
-                tbody.innerHTML = '';
-                data.forEach(row => {
+            // Load Reports Table from Supabase
+            let { data: reportsData } = await _supabase.from('farm_reports').select('*').order('id', { ascending: false }).limit(20);
+            const tbody = document.getElementById('enterprise-reports-body');
+            tbody.innerHTML = '';
+            
+            if(reportsData && reportsData.length > 0) {
+                document.getElementById('report-count-text').innerText = reportsData.length + ' active logs recorded';
+                reportsData.forEach(row => {
                     let tr = document.createElement('tr');
-                    let dateStr = row.created_at ? new Date(row.created_at).toLocaleString() : 'N/A';
-                    let pumpTxt = row.pump_status ? '<span style="color:#ef4444">ON</span>' : '<span style="color:#10b981">OFF</span>';
-                    let rainTxt = row.rain_status ? 'RAINING' : 'NORMAL';
-                    tr.innerHTML = `<td>${row.id}</td><td>${row.humidity}%</td><td>${row.soil_moisture}%</td><td>${rainTxt}</td><td>${pumpTxt}</td><td>${dateStr}</td>`;
+                    let timeStr = row.created_at ? new Date(row.created_at).toLocaleString() : 'N/A';
+                    tr.innerHTML = `<td>#${row.id}</td><td>${row.name || 'N/A'}</td><td>${row.location || 'N/A'}</td><td><span style="color:var(--accent-cyan)">${row.issue_type}</span></td><td>${row.description}</td><td>${timeStr}</td>`;
                     tbody.appendChild(tr);
                 });
+            } else {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-sub);">walay pangrekord sa database karon.</td></tr>`;
+                document.getElementById('report-count-text').innerText = '0 logs';
             }
         }
 
@@ -778,21 +719,11 @@
             let hum = data && data[0] ? data[0].humidity : 0;
 
             await _supabase.from('sensor_data').insert([{ humidity: hum, soil_moisture: soil, pump_status: newStatus }]);
-            loadTelemetry();
+            loadEnterpriseData();
         }
 
-        // Init loads
-        if(localStorage.getItem('theme_color')) {
-            document.documentElement.style.setProperty('--accent-main', localStorage.getItem('theme_color'));
-            document.getElementById('input-theme').value = localStorage.getItem('theme_color');
-        }
-        if(localStorage.getItem('custom_logo')) {
-            document.getElementById('app-logo').src = localStorage.getItem('custom_logo');
-        }
-
-        // Poll telemetry every 3 seconds
-        setInterval(loadTelemetry, 3000);
-        loadTelemetry();
+        setInterval(loadEnterpriseData, 3000);
+        loadEnterpriseData();
     </script>
 </body>
 </html>
