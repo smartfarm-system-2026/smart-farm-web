@@ -1,909 +1,796 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-50">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Farm Management System - AgriVision</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chart.js for data visualization -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Supabase Client -->
+    <title>Smart Farm Management System</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        agri: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
-                            500: '#22c55e',
-                            600: '#16a34a',
-                            700: '#15803d',
-                            900: '#14532d',
-                        }
-                    }
-                }
-            }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #050b14;
+            --panel-bg: rgba(13, 19, 29, 0.85);
+            --card-surface: rgba(18, 25, 38, 0.85);
+            --border-glow: rgba(6, 182, 212, 0.3);
+            --accent-main: #06b6d4;
+            --accent-green: #10b981;
+            --accent-purple: #8b5cf6;
+            --text-main: #f1f5f9;
+            --text-sub: #94a3b8;
         }
-    </script>
+
+        * {
+            box-sizing: border-box;
+            transition: all 0.25s ease-in-out;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(rgba(5, 11, 20, 0.8), rgba(5, 11, 20, 0.9)), 
+                        url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dashboard-frame {
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            border: 2px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            max-width: 1450px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9), inset 0 1px 2px rgba(255,255,255,0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* HEADER */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-surface);
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-glow);
+        }
+
+        .header-title-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .custom-logo-img {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 1px solid var(--accent-main);
+        }
+
+        .dashboard-header h2 {
+            margin: 0;
+            font-size: 20px;
+            letter-spacing: 0.5px;
+            text-transform: lowercase;
+            background: linear-gradient(90deg, var(--accent-main), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.15);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: var(--accent-green);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: lowercase;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-green);
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .header-btn {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-glow);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: lowercase;
+        }
+
+        .header-btn:hover {
+            background: var(--accent-main);
+            color: #000;
+            border-color: var(--accent-main);
+            transform: translateY(-2px);
+        }
+
+        /* MAIN LAYOUT */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+        }
+
+        /* SIDEBAR BUTTONS WITH ANIMATIONS */
+        .left-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sidebar-btn-box {
+            background: var(--card-surface);
+            border: 1px solid var(--border-glow);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: var(--text-main);
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: lowercase;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-btn-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .sidebar-btn-box:hover::before {
+            left: 100%;
+        }
+
+        .sidebar-btn-box:hover {
+            border-color: var(--accent-main);
+            background: rgba(6, 182, 212, 0.1);
+            transform: translateX(5px) scale(1.02);
+            box-shadow: 0 5px 15px rgba(6, 182, 212, 0.2);
+        }
+
+        .sidebar-btn-box:active {
+            transform: scale(0.97);
+        }
+
+        .sidebar-btn-box i {
+            color: var(--accent-main);
+            width: 18px;
+            font-size: 15px;
+        }
+
+        /* RIGHT CONTENT AREA */
+        .right-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .card {
+            background: var(--card-surface);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 130px;
+            backdrop-filter: blur(5px);
+        }
+
+        .card:hover {
+            border-color: var(--accent-main);
+            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .card-header {
+            color: var(--text-sub);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: lowercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-value {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 10px 0 5px 0;
+            color: #fff;
+        }
+
+        .btn-pump {
+            width: 100%;
+            padding: 9px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #fff;
+            font-size: 11px;
+            text-transform: lowercase;
+            margin-top: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .btn-pump:hover {
+            transform: scale(1.03);
+            opacity: 0.9;
+        }
+
+        .btn-pump:active {
+            transform: scale(0.96);
+        }
+
+        .pump-off { background: #10b981; }
+        .pump-on { background: #ef4444; }
+
+        /* ANALYTICAL TOPOGRAPHY & REALTIME WATER STREAM WAVE MATRIX */
+        .visualizer-card {
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(9, 13, 22, 0.95) 100%);
+            border: 1px solid var(--border-glow);
+            border-radius: 14px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            height: 260px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .wave-svg {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 180px;
+            pointer-events: none;
+        }
+
+        /* MODALS */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .modal-box {
+            background: #0d131d;
+            border: 2px solid var(--accent-main);
+            border-radius: 14px;
+            padding: 24px;
+            width: 100%;
+            max-width: 550px;
+            box-shadow: 0 0 40px rgba(6, 182, 212, 0.4);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .modal-box h3 {
+            margin-top: 0;
+            color: var(--accent-main);
+            text-transform: lowercase;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            color: var(--text-sub);
+            margin-bottom: 5px;
+            font-weight: 700;
+            text-transform: lowercase;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            background: #121926;
+            border: 1px solid var(--border-glow);
+            color: #fff;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 12px;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-main);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, var(--accent-main), var(--accent-purple));
+            color: #fff;
+            border: none;
+            padding: 11px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            text-transform: lowercase;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+        }
+
+        .btn-action:active {
+            transform: scale(0.98);
+        }
+
+        .btn-close {
+            background: transparent;
+            color: var(--text-sub);
+            border: none;
+            cursor: pointer;
+            float: right;
+            font-size: 16px;
+        }
+
+        .btn-close:hover { color: #fff; }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        .history-table th, .history-table td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-glow);
+        }
+
+        .history-table th {
+            background: #090d16;
+            color: var(--accent-main);
+            position: sticky;
+            top: 0;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
 </head>
-<body class="h-full font-sans text-slate-700 bg-slate-50 antialiased overflow-x-hidden">
+<body>
 
-    <div class="min-h-screen flex flex-col md:flex-row">
-        
-        <!-- SIDEBAR NAVIGATION -->
-        <aside class="w-full md:w-64 bg-white border-r border-slate-200 flex flex-col z-20">
-            <!-- Brand Logo -->
-            <div class="h-16 flex items-center px-6 border-b border-slate-100">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-xl bg-agri-500 flex items-center justify-center text-white shadow-md shadow-agri-500/20">
-                        <i class="fa-solid fa-seedling text-lg"></i>
-                    </div>
-                    <div>
-                        <span class="font-bold text-slate-900 text-lg tracking-tight">AgriVision</span>
-                        <span class="block text-[10px] text-slate-400 uppercase font-semibold tracking-wider">Smart Farm v2.5</span>
-                    </div>
-                </div>
+    <div class="dashboard-frame">
+        <!-- HEADER -->
+        <div class="dashboard-header">
+            <div class="header-title-box">
+                <img id="app-logo" src="https://cdn-icons-png.flaticon.com/512/628/628324.png" class="custom-logo-img" alt="Logo">
+                <h2 id="app-title">smart farm management system</h2>
             </div>
-
-            <!-- Navigation Links -->
-            <div class="px-4 py-6 flex-1 space-y-1">
-                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">Overview</div>
-                <a href="#dashboard" onclick="switchTab('dashboard')" id="nav-dashboard" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium bg-agri-50 text-agri-700 transition">
-                    <i class="fa-solid fa-chart-pie w-5 text-center"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="#fields" onclick="switchTab('fields')" id="nav-fields" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
-                    <i class="fa-solid fa-map-location-dot w-5 text-center"></i>
-                    <span>Fields & Zones</span>
-                </a>
-                <a href="#irrigation" onclick="switchTab('irrigation')" id="nav-irrigation" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
-                    <i class="fa-solid fa-droplet w-5 text-center"></i>
-                    <span>Irrigation Control</span>
-                </a>
-                <a href="#weather" onclick="switchTab('weather')" id="nav-weather" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
-                    <i class="fa-solid fa-cloud-sun w-5 text-center"></i>
-                    <span>Weather & Forecast</span>
-                </a>
-
-                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mt-6 mb-2">Management</div>
-                <a href="#tasks" onclick="switchTab('tasks')" id="nav-tasks" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
-                    <i class="fa-solid fa-list-check w-5 text-center"></i>
-                    <span>Upcoming Tasks</span>
-                </a>
-                <a href="#analytics" onclick="switchTab('analytics')" id="nav-analytics" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
-                    <i class="fa-solid fa-chart-line w-5 text-center"></i>
-                    <span>Crop Analytics</span>
-                </a>
-                <a href="#database" onclick="switchTab('database')" id="nav-database" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
-                    <i class="fa-solid fa-database w-5 text-center"></i>
-                    <span>Supabase Sync</span>
-                </a>
-            </div>
-
-            <!-- Farm Status Footer Widget in Sidebar -->
-            <div class="p-4 m-4 bg-slate-50 rounded-2xl border border-slate-100">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-semibold text-slate-600">System Status</span>
-                    <span class="flex h-2 w-2 relative">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-agri-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-agri-500"></span>
-                    </span>
+            <div class="header-right">
+                <div class="status-badge">
+                    <span class="status-dot"></span> live
                 </div>
-                <div class="text-xs text-slate-500 mb-3">All 14 IoT sensors online & streaming smoothly.</div>
-                <button onclick="openConfigModal()" class="w-full py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 transition shadow-sm">
-                    <i class="fa-solid fa-gear mr-1 text-slate-400"></i> Settings
+                <button class="header-btn" onclick="openSettings()">settings</button>
+            </div>
+        </div>
+
+        <!-- MAIN LAYOUT -->
+        <div class="main-layout">
+            <!-- SIDEBAR WITH ANIMATED BUTTONS -->
+            <div class="left-sidebar">
+                <button class="sidebar-btn-box" onclick="openModal('history-modal')">
+                    <i class="fa-solid fa-clock-rotate-left"></i> sensor history logs
+                </button>
+                <button class="sidebar-btn-box" onclick="openModal('report-modal')">
+                    <i class="fa-solid fa-bug"></i> report bugs & issues
+                </button>
+                <button class="sidebar-btn-box" onclick="openModal('support-modal')">
+                    <i class="fa-solid fa-tools"></i> technical support & maintenance
+                </button>
+                <button class="sidebar-btn-box" onclick="openModal('weather-modal')">
+                    <i class="fa-solid fa-cloud-sun"></i> weather update & map
+                </button>
+                <button class="sidebar-btn-box" onclick="openModal('music-modal')">
+                    <i class="fa-solid fa-music"></i> free music
                 </button>
             </div>
-        </aside>
 
-        <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
-            
-            <!-- TOP HEADER -->
-            <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between sticky top-0 z-10 shadow-sm">
-                <!-- Search & Breadcrumb -->
-                <div class="flex items-center space-x-4">
-                    <h1 id="page-title" class="text-xl font-bold text-slate-900">Dashboard Overview</h1>
-                    <div class="hidden sm:flex items-center bg-slate-100 rounded-xl px-3 py-1.5 w-64 border border-transparent focus-within:border-agri-500 focus-within:bg-white transition">
-                        <i class="fa-solid fa-magnifying-glass text-slate-400 text-sm mr-2"></i>
-                        <input type="text" placeholder="Search fields, crops, sensors..." class="bg-transparent text-sm text-slate-700 focus:outline-none w-full">
+            <!-- RIGHT CONTENT AREA -->
+            <div class="right-content">
+                <div class="metrics-grid">
+                    <!-- Humidity Card -->
+                    <div class="card">
+                        <div class="card-header">humidity</div>
+                        <div class="card-value" id="val-humidity">0 %</div>
+                        <span style="font-size: 10px; color: var(--text-sub);">atmospheric sensor</span>
+                    </div>
+
+                    <!-- Soil Moisture Card -->
+                    <div class="card">
+                        <div class="card-header">soil moisture</div>
+                        <div class="card-value" id="val-soil">0 %</div>
+                        <span style="font-size: 10px; color: var(--text-sub);">moisture sensor</span>
+                    </div>
+
+                    <!-- Rain Sensor Card -->
+                    <div class="card">
+                        <div class="card-header">rain sensor</div>
+                        <div class="card-value" id="val-rain" style="color: var(--accent-main);">NORMAL</div>
+                        <span style="font-size: 10px; color: var(--text-sub);">precipitation status</span>
+                    </div>
+
+                    <!-- Water Pump Status Card -->
+                    <div class="card">
+                        <div class="card-header">water pump status</div>
+                        <div class="card-value" id="val-pump" style="color: var(--accent-green);">OFF</div>
+                        <button id="btn-toggle-pump" class="btn-pump pump-off" onclick="togglePump()">turn on pump</button>
                     </div>
                 </div>
 
-                <!-- Right Actions: Notifications, Export Report, User Profile -->
-                <div class="flex items-center space-x-3">
-                    <button onclick="triggerNotifications()" class="relative p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition">
-                        <i class="fa-regular fa-bell text-lg"></i>
-                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-                    </button>
-                    
-                    <button onclick="downloadReport()" class="hidden sm:flex items-center space-x-2 bg-agri-500 hover:bg-agri-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition shadow-md shadow-agri-500/20">
-                        <i class="fa-solid fa-download text-xs"></i>
-                        <span>Download Report</span>
-                    </button>
-
-                    <div class="h-6 w-px bg-slate-200 mx-1"></div>
-
-                    <div class="flex items-center space-x-3 pl-1">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" alt="Admin" class="w-9 h-9 rounded-full object-cover border border-slate-200 shadow-sm">
-                        <div class="hidden lg:block text-left">
-                            <div class="text-xs font-bold text-slate-900">Elena Rostova</div>
-                            <div class="text-[10px] text-slate-400 font-medium">Head Agronomist</div>
-                        </div>
+                <!-- ANALYTICAL TOPOGRAPHY & DYNAMIC WATER STREAM WAVE MATRIX -->
+                <div class="visualizer-card">
+                    <div style="display: flex; justify-content: space-between; position: relative; z-index: 2;">
+                        <span style="font-weight: 700; color: var(--accent-main); font-size: 12px; text-transform: lowercase;">analytical topography & realtime water stream wave matrix</span>
+                        <span style="color: var(--text-sub); font-size: 10px;" id="stream-status-text">live sensor stream: active</span>
                     </div>
+
+                    <svg class="wave-svg" viewBox="0 0 1200 180" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="waterGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.8"/>
+                                <stop offset="50%" stop-color="#3b82f6" stop-opacity="0.9"/>
+                                <stop offset="100%" stop-color="#10b981" stop-opacity="0.8"/>
+                            </linearGradient>
+                            <linearGradient id="waterFill" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.5"/>
+                                <stop offset="100%" stop-color="#050b14" stop-opacity="0.95"/>
+                            </linearGradient>
+                        </defs>
+                        <path id="dynamic-wave-fill" d="M0,120 Q150,60 300,100 T600,80 T900,110 T1200,70 L1200,180 L0,180 Z" fill="url(#waterFill)" />
+                        <path id="dynamic-wave-line" d="M0,100 C150,40 250,140 400,70 C550,130 700,30 850,90 C1000,40 1100,120 1200,60" fill="none" stroke="url(#waterGrad)" stroke-width="4" />
+                    </svg>
                 </div>
-            </header>
-
-            <!-- TAB CONTENT CONTAINER -->
-            <div class="p-6 md:p-8 space-y-6 max-w-7xl mx-auto w-full">
-                
-                <!-- DASHBOARD TAB VIEW -->
-                <div id="tab-dashboard" class="space-y-6">
-                    
-                    <!-- METRIC SUMMARY CARDS -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                        <!-- Total Fields Card -->
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Fields Active</span>
-                                <div class="w-10 h-10 rounded-xl bg-agri-50 text-agri-600 flex items-center justify-center font-bold">
-                                    <i class="fa-solid fa-map"></i>
-                                </div>
-                            </div>
-                            <div class="flex items-baseline justify-between">
-                                <h3 class="text-2xl font-bold text-slate-900">12</h3>
-                                <span class="text-xs font-semibold text-agri-600 bg-agri-50 px-2 py-0.5 rounded-lg">+14.2% YoY</span>
-                            </div>
-                            <p class="text-xs text-slate-400 mt-2">Covering 480 Hectares</p>
-                        </div>
-
-                        <!-- Water Usage Today Card -->
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Water Usage Today</span>
-                                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
-                                    <i class="fa-solid fa-droplet"></i>
-                                </div>
-                            </div>
-                            <div class="flex items-baseline justify-between">
-                                <h3 class="text-2xl font-bold text-slate-900">24,580 L</h3>
-                                <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-lg">-4.1% vs avg</span>
-                            </div>
-                            <p class="text-xs text-slate-400 mt-2">Optimal efficiency rating</p>
-                        </div>
-
-                        <!-- Crop Health Score Card -->
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Crop Health Score</span>
-                                <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-                                    <i class="fa-solid fa-heart-pulse"></i>
-                                </div>
-                            </div>
-                            <div class="flex items-baseline justify-between">
-                                <h3 class="text-2xl font-bold text-slate-900">94.8%</h3>
-                                <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-lg">Excellent</span>
-                            </div>
-                            <p class="text-xs text-slate-400 mt-2">NDVI Index normalized</p>
-                        </div>
-
-                        <!-- Active Alerts Card -->
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Active System Alerts</span>
-                                <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
-                                    <i class="fa-solid fa-triangle-exclamation"></i>
-                                </div>
-                            </div>
-                            <div class="flex items-baseline justify-between">
-                                <h3 class="text-2xl font-bold text-slate-900">2 Warnings</h3>
-                                <span class="text-xs font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-lg">Low priority</span>
-                            </div>
-                            <p class="text-xs text-slate-400 mt-2">Sector B drip check needed</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        
-                        <!-- Soil Moisture Overview Chart (Span 2) -->
-                        <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
-                            <div class="flex items-center justify-between mb-4">
-                                <div>
-                                    <h2 class="text-base font-bold text-slate-900">Soil Moisture & Hydration Trends</h2>
-                                    <p class="text-xs text-slate-400">Real-time telemetry across top 4 active zones</p>
-                                </div>
-                                <div class="flex items-center space-x-2">
-                                    <select onchange="updateMoistureChart(this.value)" class="bg-slate-100 border border-slate-200 text-xs font-semibold rounded-xl px-3 py-1.5 text-slate-700 focus:outline-none">
-                                        <option value="24h">Last 24 Hours</option>
-                                        <option value="7d">Last 7 Days</option>
-                                        <option value="30d">Last 30 Days</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="relative w-full h-72">
-                                <canvas id="moistureChart"></canvas>
-                            </div>
-                        </div>
-
-                        <!-- Upcoming Tasks List -->
-                        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center justify-between mb-4">
-                                    <h2 class="text-base font-bold text-slate-900">Upcoming Tasks</h2>
-                                    <button onclick="openAddTaskModal()" class="text-xs font-semibold text-agri-600 hover:text-agri-700 bg-agri-50 px-2.5 py-1 rounded-xl">
-                                        <i class="fa-solid fa-plus mr-1"></i> Add Task
-                                    </button>
-                                </div>
-                                <div id="tasks-list" class="space-y-3">
-                                    <!-- Dynamic tasks rendered here -->
-                                    <div class="p-3 bg-slate-50 border border-slate-100 rounded-xl flex items-start justify-between">
-                                        <div class="flex items-start space-x-3">
-                                            <input type="checkbox" checked class="mt-1 h-4 w-4 text-agri-600 rounded border-slate-300 focus:ring-agri-500">
-                                            <div>
-                                                <div class="text-xs font-bold text-slate-800 line-through">Calibrate pH Sensors (Zone A)</div>
-                                                <div class="text-[10px] text-slate-400">Completed at 08:30 AM</div>
-                                            </div>
-                                        </div>
-                                        <span class="text-[10px] bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded-md">Done</span>
-                                    </div>
-                                    <div class="p-3 bg-slate-50 border border-slate-100 rounded-xl flex items-start justify-between">
-                                        <div class="flex items-start space-x-3">
-                                            <input type="checkbox" class="mt-1 h-4 w-4 text-agri-600 rounded border-slate-300 focus:ring-agri-500">
-                                            <div>
-                                                <div class="text-xs font-bold text-slate-800">Nitrogen Fertilizer Injection</div>
-                                                <div class="text-[10px] text-slate-400">Today, 02:00 PM • Sector 3</div>
-                                            </div>
-                                        </div>
-                                        <span class="text-[10px] bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-md">Pending</span>
-                                    </div>
-                                    <div class="p-3 bg-slate-50 border border-slate-100 rounded-xl flex items-start justify-between">
-                                        <div class="flex items-start space-x-3">
-                                            <input type="checkbox" class="mt-1 h-4 w-4 text-agri-600 rounded border-slate-300 focus:ring-agri-500">
-                                            <div>
-                                                <div class="text-xs font-bold text-slate-800">Drone Thermal Crop Scan</div>
-                                                <div class="text-[10px] text-slate-400">Tomorrow, 06:00 AM</div>
-                                            </div>
-                                        </div>
-                                        <span class="text-[10px] bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded-md">Scheduled</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mt-4 pt-3 border-t border-slate-100 text-center">
-                                <button onclick="switchTab('tasks')" class="text-xs font-semibold text-slate-500 hover:text-slate-800">View All Tasks & Logs &rarr;</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        
-                        <!-- Field Status Table (Span 2) -->
-                        <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-                            <div class="flex items-center justify-between mb-4">
-                                <div>
-                                    <h2 class="text-base font-bold text-slate-900">Active Field Status & Telemetry</h2>
-                                    <p class="text-xs text-slate-400">Live sensor monitoring across crops and soil types</p>
-                                </div>
-                                <button onclick="openAddFieldModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-xl text-xs font-semibold transition">
-                                    <i class="fa-solid fa-plus mr-1"></i> Add Field
-                                </button>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left border-collapse">
-                                    <thead>
-                                        <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                                            <th class="py-3 px-3">Field Name</th>
-                                            <th class="py-3 px-3">Crop Type</th>
-                                            <th class="py-3 px-3">Soil Moisture</th>
-                                            <th class="py-3 px-3">Temperature</th>
-                                            <th class="py-3 px-3">Irrigation Status</th>
-                                            <th class="py-3 px-3 text-right">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="field-table-body" class="divide-y divide-slate-100 text-sm">
-                                        <tr class="hover:bg-slate-50/80 transition">
-                                            <td class="py-3.5 px-3 font-semibold text-slate-800">North Valley Alpha</td>
-                                            <td class="py-3.5 px-3 text-slate-600">Organic Corn</td>
-                                            <td class="py-3.5 px-3">
-                                                <div class="flex items-center space-x-2">
-                                                    <span class="text-xs font-bold text-slate-700">42%</span>
-                                                    <div class="w-20 bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                                                        <div class="bg-agri-500 h-1.5 rounded-full" style="width: 42%"></div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="py-3.5 px-3 text-slate-600">26.4°C</td>
-                                            <td class="py-3.5 px-3">
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-agri-50 text-agri-700">
-                                                    <span class="w-1.5 h-1.5 mr-1.5 bg-agri-500 rounded-full animate-pulse"></span> Active
-                                                </span>
-                                            </td>
-                                            <td class="py-3.5 px-3 text-right">
-                                                <button onclick="toggleIrrigation('North Valley Alpha')" class="text-xs font-semibold text-agri-600 hover:text-agri-700 bg-agri-50 hover:bg-agri-100 px-3 py-1 rounded-lg transition">Control</button>
-                                            </td>
-                                        </tr>
-                                        <tr class="hover:bg-slate-50/80 transition">
-                                            <td class="py-3.5 px-3 font-semibold text-slate-800">South Basin Beta</td>
-                                            <td class="py-3.5 px-3 text-slate-600">Durum Wheat</td>
-                                            <td class="py-3.5 px-3">
-                                                <div class="flex items-center space-x-2">
-                                                    <span class="text-xs font-bold text-slate-700">31%</span>
-                                                    <div class="w-20 bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                                                        <div class="bg-amber-500 h-1.5 rounded-full" style="width: 31%"></div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="py-3.5 px-3 text-slate-600">28.1°C</td>
-                                            <td class="py-3.5 px-3">
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700">
-                                                    <span class="w-1.5 h-1.5 mr-1.5 bg-amber-500 rounded-full"></span> Standby
-                                                </span>
-                                            </td>
-                                            <td class="py-3.5 px-3 text-right">
-                                                <button onclick="toggleIrrigation('South Basin Beta')" class="text-xs font-semibold text-agri-600 hover:text-agri-700 bg-agri-50 hover:bg-agri-100 px-3 py-1 rounded-lg transition">Control</button>
-                                            </td>
-                                        </tr>
-                                        <tr class="hover:bg-slate-50/80 transition">
-                                            <td class="py-3.5 px-3 font-semibold text-slate-800">Greenhouse Delta</td>
-                                            <td class="py-3.5 px-3 text-slate-600">Roma Tomatoes</td>
-                                            <td class="py-3.5 px-3">
-                                                <div class="flex items-center space-x-2">
-                                                    <span class="text-xs font-bold text-slate-700">68%</span>
-                                                    <div class="w-20 bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                                                        <div class="bg-blue-500 h-1.5 rounded-full" style="width: 68%"></div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="py-3.5 px-3 text-slate-600">24.2°C</td>
-                                            <td class="py-3.5 px-3">
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-agri-50 text-agri-700">
-                                                    <span class="w-1.5 h-1.5 mr-1.5 bg-agri-500 rounded-full animate-pulse"></span> Active
-                                                </span>
-                                            </td>
-                                            <td class="py-3.5 px-3 text-right">
-                                                <button onclick="toggleIrrigation('Greenhouse Delta')" class="text-xs font-semibold text-agri-600 hover:text-agri-700 bg-agri-50 hover:bg-agri-100 px-3 py-1 rounded-lg transition">Control</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- Weather Forecast Widget -->
-                        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center justify-between mb-4">
-                                    <h2 class="text-base font-bold text-slate-900">Weather Forecast</h2>
-                                    <span class="text-xs font-semibold text-slate-400"><i class="fa-solid fa-location-dot mr-1"></i> Sector 7 Hub</span>
-                                </div>
-                                <div class="bg-gradient-to-br from-agri-500 to-agri-700 text-white p-5 rounded-2xl shadow-md mb-4">
-                                    <div class="flex items-center justify-between">
-                                        <div>
-                                            <div class="text-3xl font-bold">29°C</div>
-                                            <div class="text-xs text-agri-100 font-medium mt-0.5">Partly Cloudy & Warm</div>
-                                        </div>
-                                        <i class="fa-solid fa-cloud-sun text-4xl text-agri-100"></i>
-                                    </div>
-                                    <div class="mt-4 pt-3 border-t border-white/20 grid grid-cols-3 text-center text-xs">
-                                        <div>
-                                            <div class="text-agri-100 text-[10px]">Humidity</div>
-                                            <div class="font-bold mt-0.5">62%</div>
-                                        </div>
-                                        <div>
-                                            <div class="text-agri-100 text-[10px]">Wind</div>
-                                            <div class="font-bold mt-0.5">12 km/h</div>
-                                        </div>
-                                        <div>
-                                            <div class="text-agri-100 text-[10px]">Rain Prob</div>
-                                            <div class="font-bold mt-0.5">10%</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="space-y-2">
-                                    <div class="flex items-center justify-between text-xs px-2 py-1.5 bg-slate-50 rounded-xl">
-                                        <span class="font-semibold text-slate-700">Thursday</span>
-                                        <div class="flex items-center space-x-2">
-                                            <i class="fa-solid fa-sun text-amber-500"></i>
-                                            <span class="text-slate-600 font-medium">31°C / 19°C</span>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center justify-between text-xs px-2 py-1.5 bg-slate-50 rounded-xl">
-                                        <span class="font-semibold text-slate-700">Friday</span>
-                                        <div class="flex items-center space-x-2">
-                                            <i class="fa-solid fa-cloud-rain text-blue-500"></i>
-                                            <span class="text-slate-600 font-medium">24°C / 17°C</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- FIELDS TAB VIEW (Hidden by default) -->
-                <div id="tab-fields" class="space-y-6 hidden">
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-                        <div>
-                            <h2 class="text-lg font-bold text-slate-900">Fields & Geographic Zones</h2>
-                            <p class="text-xs text-slate-400">Manage sector boundaries, crop rotations, and soil profiles</p>
-                        </div>
-                        <button onclick="openAddFieldModal()" class="bg-agri-500 hover:bg-agri-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition shadow-md">
-                            <i class="fa-solid fa-plus mr-1"></i> Register New Field
-                        </button>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="fields-grid-container">
-                        <!-- Rendered via JS -->
-                    </div>
-                </div>
-
-                <!-- IRRIGATION TAB VIEW -->
-                <div id="tab-irrigation" class="space-y-6 hidden">
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-                        <div>
-                            <h2 class="text-lg font-bold text-slate-900">Automated & Manual Irrigation Control</h2>
-                            <p class="text-xs text-slate-400">Manage valve actuators, water pumps, and threshold schedules</p>
-                        </div>
-                        <button onclick="triggerEmergencyIrrigation()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition shadow-md">
-                            <i class="fa-solid fa-triangle-exclamation mr-1"></i> Emergency Valve Cutoff
-                        </button>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="irrigation-panels-container">
-                        <!-- Rendered via JS -->
-                    </div>
-                </div>
-
-                <!-- WEATHER TAB VIEW -->
-                <div id="tab-weather" class="space-y-6 hidden">
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <h2 class="text-lg font-bold text-slate-900 mb-1">Advanced Agrometeorology</h2>
-                        <p class="text-xs text-slate-400 mb-4">Evapotranspiration rates, frost warnings, and satellite precipitation radar</p>
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                            <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                                <div class="text-xs text-slate-400">Solar Radiation</div>
-                                <div class="text-xl font-bold text-slate-900 mt-1">820 W/m²</div>
-                            </div>
-                            <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                                <div class="text-xs text-slate-400">Soil Temperature (10cm)</div>
-                                <div class="text-xl font-bold text-slate-900 mt-1">22.4°C</div>
-                            </div>
-                            <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                                <div class="text-xs text-slate-400">Leaf Wetness Index</div>
-                                <div class="text-xl font-bold text-slate-900 mt-1">34% (Dry)</div>
-                            </div>
-                            <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                                <div class="text-xs text-slate-400">Barometric Pressure</div>
-                                <div class="text-xl font-bold text-slate-900 mt-1">1014 hPa</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TASKS TAB VIEW -->
-                <div id="tab-tasks" class="space-y-6 hidden">
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-                        <div>
-                            <h2 class="text-lg font-bold text-slate-900">Task Management & Field Operations</h2>
-                            <p class="text-xs text-slate-400">Coordinate agronomist visits, spraying schedules, and maintenance</p>
-                        </div>
-                        <button onclick="openAddTaskModal()" class="bg-agri-500 hover:bg-agri-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition shadow-md">
-                            <i class="fa-solid fa-plus mr-1"></i> Add New Task
-                        </button>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm" id="full-tasks-container">
-                        <!-- Full Task List -->
-                    </div>
-                </div>
-
-                <!-- ANALYTICS TAB VIEW -->
-                <div id="tab-analytics" class="space-y-6 hidden">
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <h2 class="text-lg font-bold text-slate-900 mb-1">Crop Health & Yield Analytics</h2>
-                        <p class="text-xs text-slate-400 mb-6">Multispectral indices and historical biomass comparison</p>
-                        <div class="relative w-full h-80">
-                            <canvas id="yieldChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SUPABASE DATABASE SYNC TAB VIEW -->
-                <div id="tab-database" class="space-y-6 hidden">
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h2 class="text-lg font-bold text-slate-900">Supabase Database Integration</h2>
-                                <p class="text-xs text-slate-400">Connect your Supabase project instance to persist sensor telemetry and logs</p>
-                            </div>
-                            <span id="supabase-status-badge" class="px-3 py-1 bg-amber-50 text-amber-700 text-xs font-semibold rounded-full border border-amber-200">
-                                <i class="fa-solid fa-triangle-exclamation mr-1"></i> Not Connected
-                            </span>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">Supabase Project URL</label>
-                                <input type="text" id="supabase-url" placeholder="https://xyzproject.supabase.co" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-agri-500">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">Supabase Anon / Public Key</label>
-                                <input type="password" id="supabase-key" placeholder="eyJhbGciOiJIUzI1NiIsIn..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-agri-500">
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-3 pt-2">
-                            <button onclick="initSupabaseConnection()" class="bg-agri-500 hover:bg-agri-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition shadow-md">
-                                <i class="fa-solid fa-plug mr-1.5"></i> Connect & Sync Telemetry
-                            </button>
-                            <button onclick="testSupabaseQuery()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl text-sm font-semibold transition">
-                                <i class="fa-solid fa-rotate mr-1.5"></i> Test Fetch
-                            </button>
-                        </div>
-                        <div id="supabase-log-box" class="bg-slate-900 text-slate-200 p-4 rounded-xl font-mono text-xs h-36 overflow-y-auto mt-4">
-                            [System] Ready for Supabase authentication credentials...
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </main>
-    </div>
-
-    <!-- Modal Add Task -->
-    <div id="taskModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-100 space-y-4">
-            <div class="flex items-center justify-between">
-                <h3 class="font-bold text-slate-900 text-base">Add New Farm Task</h3>
-                <button onclick="closeAddTaskModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Task Title</label>
-                <input type="text" id="new-task-title" placeholder="e.g., Soil Sample Testing Sector C" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-agri-500">
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Due Date & Time</label>
-                <input type="text" id="new-task-date" placeholder="e.g., Tomorrow, 08:00 AM" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-agri-500">
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Priority Level</label>
-                <select id="new-task-priority" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-agri-500">
-                    <option value="Scheduled">Scheduled (Blue)</option>
-                    <option value="Pending">Pending (Amber)</option>
-                    <option value="Urgent">Urgent (Red)</option>
-                </select>
-            </div>
-            <div class="flex justify-end space-x-3 pt-3">
-                <button onclick="closeAddTaskModal()" class="px-4 py-2 bg-slate-100 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-200">Cancel</button>
-                <button onclick="saveNewTask()" class="px-4 py-2 bg-agri-500 hover:bg-agri-600 rounded-xl text-xs font-semibold text-white shadow-md">Save Task</button>
             </div>
         </div>
     </div>
 
-    <!-- Notification Toast / Box -->
-    <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center space-x-3 transform translate-y-24 opacity-0 transition-all duration-300 z-50">
-        <i class="fa-solid fa-circle-check text-agri-400 text-lg"></i>
-        <span id="toast-message" class="text-xs font-medium">Action completed successfully.</span>
+    <!-- MODALS -->
+
+    <!-- Sensor History Modal (Live from Supabase) -->
+    <div class="modal-overlay" id="history-modal">
+        <div class="modal-box" style="max-width: 750px;">
+            <button class="btn-close" onclick="closeModal('history-modal')">✖</button>
+            <h3>sensor history logs (live database)</h3>
+            <div style="max-height: 380px; overflow-y: auto; margin-top: 15px;">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>humidity</th>
+                            <th>soil moisture</th>
+                            <th>rain status</th>
+                            <th>pump status</th>
+                            <th>timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        <tr><td colspan="6" style="text-align: center; color: var(--text-sub);">fetching live logs from supabase...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Bugs & Issues Modal (User Name & Location Input -> saves to farm_reports) -->
+    <div class="modal-overlay" id="report-modal">
+        <div class="modal-box">
+            <button class="btn-close" onclick="closeModal('report-modal')">✖</button>
+            <h3>report bugs & issues</h3>
+            <div class="form-group" style="margin-top: 15px;">
+                <label>user name</label>
+                <input type="text" id="bug-name" placeholder="Isulat ang imong ngalan...">
+            </div>
+            <div class="form-group">
+                <label>farm location</label>
+                <input type="text" id="bug-location" placeholder="Pananglitan: Ubay, Bohol">
+            </div>
+            <div class="form-group">
+                <label>issue category</label>
+                <select id="bug-cat">
+                    <option value="Sensor Disconnected">Sensor Disconnected</option>
+                    <option value="Water Pump Failure">Water Pump Failure</option>
+                    <option value="Database Sync Error">Database Sync Error</option>
+                    <option value="UI Glitch">Dashboard UI Glitch</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>description</label>
+                <textarea id="bug-desc" rows="3" placeholder="Describe the issue encountered..."></textarea>
+            </div>
+            <button class="btn-action" onclick="submitBug()">submit report to supabase</button>
+        </div>
+    </div>
+
+    <!-- Technical Support Modal -->
+    <div class="modal-overlay" id="support-modal">
+        <div class="modal-box" style="text-align: center;">
+            <button class="btn-close" onclick="closeModal('support-modal')">✖</button>
+            <h3>technical support & maintenance</h3>
+            <div style="margin: 25px 0; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                <a href="https://www.facebook.com" target="_blank" style="text-decoration: none; display: flex; align-items: center; gap: 12px; background: rgba(24, 119, 242, 0.15); border: 1px solid #1877f2; padding: 12px 24px; border-radius: 30px; color: #fff; font-weight: bold;">
+                    <i class="fa-brands fa-facebook" style="font-size: 28px; color: #1877f2;"></i>
+                    <span style="font-size: 15px;">Alfrancis Sastrillas</span>
+                </a>
+                <p style="font-size: 12px; color: var(--text-sub);">click the facebook button above to directly message developer support.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weather Update & Google Map Modal (Ubay, Bohol Live Map View) -->
+    <div class="modal-overlay" id="weather-modal">
+        <div class="modal-box" style="max-width: 700px;">
+            <button class="btn-close" onclick="closeModal('weather-modal')">✖</button>
+            <h3>weather update & live google map (ubay, bohol)[cite: 4]</h3>
+            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;">
+                <div style="background: #121926; border: 1px solid var(--border-glow); padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="margin: 0; color: var(--accent-main); font-size: 15px;">Ubay Agricultural Hub, Bohol[cite: 4]</h4>
+                        <p style="margin: 5px 0 0 0; font-size: 12px; color: var(--text-sub);">Live Weather Conditions: Ideal for Farming & Smart Monitoring</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 24px; font-weight: 800; color: var(--accent-green);">31°C</span>
+                        <div style="font-size: 11px; color: var(--text-sub);">Humidity: 74% | Wind: 12 km/h</div>
+                    </div>
+                </div>
+                <!-- Embedded Google Map with Ubay, Bohol Location Focus -->
+                <div style="width: 100%; height: 320px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-glow);">
+                    <iframe 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62865.986874567!2d124.45!3d10.06!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33aa7556a8d8e5b9%3A0x4a0b2d6a3b2b0a0!2sUbay%2C%20Bohol%2C%20Philippines!5e0!3m2!1sen!2sph!4v1700000000000!5m2!1sen!2sph">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Free Music Modal (Local Device Folder Import & Player) -->
+    <div class="modal-overlay" id="music-modal">
+        <div class="modal-box">
+            <button class="btn-close" onclick="closeModal('music-modal')">✖</button>
+            <h3>free music ambient player</h3>
+            <p style="font-size: 12px; color: var(--text-sub); margin-top: 10px;">pilia ug i-import ang musika gikan sa imong device folder:</p>
+            <div class="form-group" style="margin-top: 15px;">
+                <input type="file" id="local-audio-file" accept="audio/*" onchange="loadLocalMusic(event)">
+            </div>
+            <audio id="audio-player" controls style="width: 100%; margin-top: 10px; display: none;"></audio>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-box">
+            <button class="btn-close" onclick="closeModal('settings-modal')">✖</button>
+            <h3>settings</h3>
+            <div class="form-group" style="margin-top: 15px;">
+                <label>accent color</label>
+                <select id="input-theme" onchange="changeTheme(this.value)">
+                    <option value="#06b6d4">Teal Blue</option>
+                    <option value="#10b981">Emerald Green</option>
+                    <option value="#8b5cf6">Neon Purple</option>
+                    <option value="#eab308">Cyber Gold</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>system logo upload</label>
+                <input type="file" accept="image/*" onchange="uploadLogo(event)">
+            </div>
+            <button class="btn-action" onclick="closeModal('settings-modal')">save settings</button>
+        </div>
     </div>
 
     <script>
-        let moistureChartInstance = null;
-        let yieldChartInstance = null;
-        let supabaseClient = null;
+        const SUPABASE_URL = 'https://fqqwlvreqnxkbvbjjrol.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxcXdsdnJlcW54a2J2Ympqcm9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NjI4NjksImV4cCI6MjEwMzIzODg2OX0.J_-GrhljQrMhJnzmSMhSJYUFCR7moiUF3oBIOW0YWUQ';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const tasksData = [
-            { id: 1, title: 'Calibrate pH Sensors (Zone A)', time: 'Completed at 08:30 AM', priority: 'Done', completed: true },
-            { id: 2, title: 'Nitrogen Fertilizer Injection', time: 'Today, 02:00 PM • Sector 3', priority: 'Pending', completed: false },
-            { id: 3, title: 'Drone Thermal Crop Scan', time: 'Tomorrow, 06:00 AM', priority: 'Scheduled', completed: false }
-        ];
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function openSettings() { openModal('settings-modal'); }
 
-        const fieldsData = [
-            { name: 'North Valley Alpha', crop: 'Organic Corn', moisture: 42, temp: '26.4°C', status: 'Active' },
-            { name: 'South Basin Beta', crop: 'Durum Wheat', moisture: 31, temp: '28.1°C', status: 'Standby' },
-            { name: 'Greenhouse Delta', crop: 'Roma Tomatoes', moisture: 68, temp: '24.2°C', status: 'Active' },
-            { name: 'East Plateau Gamma', crop: 'Soybeans', moisture: 54, temp: '27.0°C', status: 'Active' }
-        ];
+        // Local Music File Import
+        function loadLocalMusic(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const player = document.getElementById('audio-player');
+                player.src = URL.createObjectURL(file);
+                player.style.display = 'block';
+                player.play();
+            }
+        }
 
-        window.onload = function() {
-            initMoistureChart();
-            initYieldChart();
-            renderFieldsGrid();
-            renderIrrigationPanels();
-            renderTasksList();
-        };
+        // Submit Bug Report to Supabase (farm_reports table) using user input name and location
+        async function submitBug() {
+            const name = document.getElementById('bug-name').value.trim();
+            const location = document.getElementById('bug-location').value.trim();
+            const category = document.getElementById('bug-cat').value;
+            const description = document.getElementById('bug-desc').value.trim();
 
-        function switchTab(tabId) {
-            const tabs = ['dashboard', 'fields', 'irrigation', 'weather', 'tasks', 'analytics', 'database'];
-            tabs.forEach(t => {
-                const el = document.getElementById('tab-' + t);
-                const nav = document.getElementById('nav-' + t);
-                if (el) el.classList.add('hidden');
-                if (nav) {
-                    nav.classList.remove('bg-agri-50', 'text-agri-700');
-                    nav.classList.add('text-slate-600', 'hover:bg-slate-50', 'hover:text-slate-900');
+            if(!name || !location || !description) { 
+                alert("Palihug og butang sa imong ngalan, lokasyon, ug deskripsyon sa isyu."); 
+                return; 
+            }
+
+            let { error } = await _supabase.from('farm_reports').insert([{
+                name: name,
+                location: location,
+                issue_type: category,
+                description: description
+            }]);
+
+            if(error) {
+                console.error("Supabase Error:", error);
+                alert("Naay gamay nga sayop sa pag-submit sa Supabase: " + error.message);
+            } else {
+                alert("Salamat, " + name + "! Na-submit na ang imong report gikan sa " + location + ".");
+                document.getElementById('bug-name').value = '';
+                document.getElementById('bug-location').value = '';
+                document.getElementById('bug-desc').value = '';
+                closeModal('report-modal');
+            }
+        }
+
+        function changeTheme(color) {
+            document.documentElement.style.setProperty('--accent-main', color);
+            localStorage.setItem('theme_color', color);
+        }
+
+        function uploadLogo(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('app-logo').src = e.target.result;
+                    localStorage.setItem('custom_logo', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Live Telemetry & Dynamic Water Stream Wave Adjustment
+        async function loadTelemetry() {
+            let { data, error } = await _supabase.from('sensor_data').select('*').order('id', { ascending: false }).limit(30);
+            if(error) return;
+
+            if(data && data.length > 0) {
+                let latest = data[0];
+                let hum = latest.humidity ?? 0;
+                let soil = latest.soil_moisture ?? 0;
+
+                document.getElementById('val-humidity').innerText = hum + ' %';
+                document.getElementById('val-soil').innerText = soil + ' %';
+
+                // Rain Sensor Status
+                let rainVal = document.getElementById('val-rain');
+                if(latest.rain_status !== undefined) {
+                    let isRaining = !!latest.rain_status;
+                    rainVal.innerText = isRaining ? 'RAINING' : 'NORMAL';
+                    rainVal.style.color = isRaining ? '#06b6d4' : 'var(--accent-main)';
                 }
-            });
 
-            const activeEl = document.getElementById('tab-' + tabId);
-            const activeNav = document.getElementById('nav-' + tabId);
-            if (activeEl) activeEl.classList.remove('hidden');
-            if (activeNav) {
-                activeNav.classList.remove('text-slate-600', 'hover:bg-slate-50', 'hover:text-slate-900');
-                activeNav.classList.add('bg-agri-50', 'text-agri-700');
-            }
-
-            const titles = {
-                dashboard: 'Dashboard Overview',
-                fields: 'Fields & Zones Management',
-                irrigation: 'Irrigation & Valve Control',
-                weather: 'Weather & Agrometeorology',
-                tasks: 'Upcoming Tasks & Operations',
-                analytics: 'Crop Analytics & Yield',
-                database: 'Supabase Database Integration'
-            };
-            document.getElementById('page-title').innerText = titles[tabId] || 'Dashboard';
-        }
-
-        function initMoistureChart() {
-            const ctx = document.getElementById('moistureChart').getContext('2d');
-            moistureChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', 'Now'],
-                    datasets: [
-                        {
-                            label: 'North Valley Alpha',
-                            data: [45, 43, 40, 38, 41, 44, 42],
-                            borderColor: '#22c55e',
-                            backgroundColor: 'rgba(34, 197, 94, 0.05)',
-                            fill: true,
-                            tension: 0.3
-                        },
-                        {
-                            label: 'South Basin Beta',
-                            data: [35, 34, 32, 29, 30, 31, 31],
-                            borderColor: '#f59e0b',
-                            backgroundColor: 'rgba(245, 158, 11, 0.05)',
-                            fill: true,
-                            tension: 0.3
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Inter', size: 11 } } } },
-                    scales: {
-                        y: { grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Inter', size: 10 } } },
-                        x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 10 } } }
-                    }
+                // Water Pump Status
+                if(latest.pump_status !== undefined) {
+                    let isPumpOn = !!latest.pump_status;
+                    let pumpVal = document.getElementById('val-pump');
+                    let toggleBtn = document.getElementById('btn-toggle-pump');
+                    pumpVal.innerText = isPumpOn ? 'ON' : 'OFF';
+                    pumpVal.style.color = isPumpOn ? '#ef4444' : '#10b981';
+                    toggleBtn.innerText = isPumpOn ? "turn off pump" : "turn on pump";
+                    toggleBtn.className = isPumpOn ? "btn-pump pump-on" : "btn-pump pump-off";
                 }
-            });
-        }
 
-        function initYieldChart() {
-            const ctx = document.getElementById('yieldChart').getContext('2d');
-            yieldChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
-                    datasets: [{
-                        label: 'Estimated Yield Index (Tons/Ha)',
-                        data: [4.2, 4.5, 5.1, 6.0, 7.4, 8.2, 8.9, 9.2, 8.8, 9.4],
-                        backgroundColor: '#22c55e',
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Inter', size: 10 } } },
-                        x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 10 } } }
-                    }
-                }
-            });
-        }
+                // Dynamic Water Stream Wave adjustment based on soil/humidity data
+                let waveHeightOffset = Math.max(20, Math.min(140, 180 - (soil * 1.2)));
+                document.getElementById('dynamic-wave-fill').setAttribute('d', `M0,${waveHeightOffset} Q150,${waveHeightOffset - 40} 300,${waveHeightOffset} T600,${waveHeightOffset - 20} T900,${waveHeightOffset + 10} T1200,${waveHeightOffset - 30} L1200,180 L0,180 Z`);
 
-        function renderFieldsGrid() {
-            const container = document.getElementById('fields-grid-container');
-            if(!container) return;
-            container.innerHTML = fieldsData.map(f => `
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold text-slate-400 uppercase">Sector Zone</span>
-                        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold ${f.status === 'Active' ? 'bg-agri-50 text-agri-700' : 'bg-amber-50 text-amber-700'}">${f.status}</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-900 text-base">${f.name}</h3>
-                        <p class="text-xs text-slate-500">Primary Crop: <strong class="text-slate-700">${f.crop}</strong></p>
-                    </div>
-                    <div class="pt-3 border-t border-slate-100 grid grid-cols-2 text-xs">
-                        <div>
-                            <span class="text-slate-400">Moisture</span>
-                            <div class="font-bold text-slate-800 text-sm mt-0.5">${f.moisture}%</div>
-                        </div>
-                        <div>
-                            <span class="text-slate-400">Temperature</span>
-                            <div class="font-bold text-slate-800 text-sm mt-0.5">${f.temp}</div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderIrrigationPanels() {
-            const container = document.getElementById('irrigation-panels-container');
-            if(!container) return;
-            container.innerHTML = fieldsData.map(f => `
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                    <div class="flex items-center justify-between">
-                        <h3 class="font-bold text-slate-900">${f.name}</h3>
-                        <span class="text-xs text-slate-400">${f.crop}</span>
-                    </div>
-                    <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl">
-                        <div>
-                            <div class="text-xs font-bold text-slate-700">Valve Actuator</div>
-                            <div class="text-[10px] text-slate-400">Automated schedule enabled</div>
-                        </div>
-                        <button onclick="toggleIrrigation('${f.name}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold ${f.status === 'Active' ? 'bg-agri-500 text-white shadow-md' : 'bg-slate-200 text-slate-700'} transition">
-                            ${f.status === 'Active' ? 'Open (ON)' : 'Closed (OFF)'}
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderTasksList() {
-            const listEl = document.getElementById('tasks-list');
-            const fullEl = document.getElementById('full-tasks-container');
-            
-            const html = tasksData.map(t => `
-                <div class="p-3 bg-slate-50 border border-slate-100 rounded-xl flex items-start justify-between">
-                    <div class="flex items-start space-x-3">
-                        <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTask(${t.id})" class="mt-1 h-4 w-4 text-agri-600 rounded border-slate-300 focus:ring-agri-500">
-                        <div>
-                            <div class="text-xs font-bold text-slate-800 ${t.completed ? 'line-through text-slate-400' : ''}">${t.title}</div>
-                            <div class="text-[10px] text-slate-400">${t.time}</div>
-                        </div>
-                    </div>
-                    <span class="text-[10px] ${t.priority === 'Done' ? 'bg-emerald-100 text-emerald-800' : t.priority === 'Urgent' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'} font-semibold px-2 py-0.5 rounded-md">${t.priority}</span>
-                </div>
-            `).join('');
-
-            if(listEl) listEl.innerHTML = html;
-            if(fullEl) {
-                fullEl.innerHTML = `
-                    <div class="space-y-3 mb-4">
-                        <h3 class="font-bold text-slate-900 text-sm">All Scheduled Field Operations</h3>
-                        ${html}
-                    </div>
-                `;
+                // History Table Logs
+                const tbody = document.getElementById('history-table-body');
+                tbody.innerHTML = '';
+                data.forEach(row => {
+                    let tr = document.createElement('tr');
+                    let dateStr = row.created_at ? new Date(row.created_at).toLocaleString() : 'N/A';
+                    let pumpTxt = row.pump_status ? '<span style="color:#ef4444">ON</span>' : '<span style="color:#10b981">OFF</span>';
+                    let rainTxt = row.rain_status ? 'RAINING' : 'NORMAL';
+                    tr.innerHTML = `<td>${row.id}</td><td>${row.humidity}%</td><td>${row.soil_moisture}%</td><td>${rainTxt}</td><td>${pumpTxt}</td><td>${dateStr}</td>`;
+                    tbody.appendChild(tr);
+                });
             }
         }
 
-        function toggleTask(id) {
-            const task = tasksData.find(t => t.id === id);
-            if(task) {
-                task.completed = !task.completed;
-                task.priority = task.completed ? 'Done' : 'Pending';
-                renderTasksList();
-                showToast('Task updated successfully.');
-            }
+        async function togglePump() {
+            let { data } = await _supabase.from('sensor_data').select('*').order('id', { ascending: false }).limit(1);
+            let currentStatus = data && data.length > 0 ? !!data[0].pump_status : false;
+            let newStatus = !currentStatus;
+            let soil = data && data[0] ? data[0].soil_moisture : 0;
+            let hum = data && data[0] ? data[0].humidity : 0;
+
+            await _supabase.from('sensor_data').insert([{ humidity: hum, soil_moisture: soil, pump_status: newStatus }]);
+            loadTelemetry();
         }
 
-        function openAddTaskModal() {
-            document.getElementById('taskModal').classList.remove('hidden');
-            document.getElementById('taskModal').classList.add('flex');
+        // Init loads
+        if(localStorage.getItem('theme_color')) {
+            document.documentElement.style.setProperty('--accent-main', localStorage.getItem('theme_color'));
+            document.getElementById('input-theme').value = localStorage.getItem('theme_color');
+        }
+        if(localStorage.getItem('custom_logo')) {
+            document.getElementById('app-logo').src = localStorage.getItem('custom_logo');
         }
 
-        function closeAddTaskModal() {
-            document.getElementById('taskModal').classList.add('hidden');
-            document.getElementById('taskModal').classList.remove('flex');
-        }
-
-        function saveNewTask() {
-            const title = document.getElementById('new-task-title').value;
-            const time = document.getElementById('new-task-date').value || 'Today';
-            const priority = document.getElementById('new-task-priority').value;
-            
-            if(!title) {
-                showToast('Please enter a task title.');
-                return;
-            }
-
-            tasksData.push({ id: Date.now(), title, time, priority, completed: false });
-            renderTasksList();
-            closeAddTaskModal();
-            showToast('New task added successfully.');
-        }
-
-        function toggleIrrigation(fieldName) {
-            const field = fieldsData.find(f => f.name === fieldName);
-            if(field) {
-                field.status = field.status === 'Active' ? 'Standby' : 'Active';
-                renderIrrigationPanels();
-                showToast(`Irrigation valve for ${fieldName} toggled.`);
-            }
-        }
-
-        function triggerEmergencyIrrigation() {
-            fieldsData.forEach(f => f.status = 'Standby');
-            renderIrrigationPanels();
-            showToast('EMERGENCY: All irrigation valves closed successfully.');
-        }
-
-        function downloadReport() {
-            showToast('AgriVision PDF Telemetry Report generated & downloaded.');
-        }
-
-        function triggerNotifications() {
-            showToast('No new urgent weather warnings. All systems normal.');
-        }
-
-        function openAddFieldModal() {
-            showToast('Redirecting to Field Registration Wizard...');
-        }
-
-        function openConfigModal() {
-            switchTab('database');
-        }
-
-        function initSupabaseConnection() {
-            const url = document.getElementById('supabase-url').value;
-            const key = document.getElementById('supabase-key').value;
-            const logBox = document.getElementById('supabase-log-box');
-            const badge = document.getElementById('supabase-status-badge');
-
-            if(!url || !key) {
-                showToast('Please provide valid Supabase URL and Key.');
-                return;
-            }
-
-            try {
-                supabaseClient = supabase.createClient(url, key);
-                badge.className = 'px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full border border-emerald-200';
-                badge.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i> Connected to Supabase';
-                logBox.innerHTML += `\n[Success] Connected successfully to Supabase instance at ${url}`;
-                showToast('Supabase Client initialized successfully.');
-            } catch(e) {
-                logBox.innerHTML += `\n[Error] Failed to connect: ${e.message}`;
-                showToast('Connection failed. Check credentials.');
-            }
-        }
-
-        async function testSupabaseQuery() {
-            const logBox = document.getElementById('supabase-log-box');
-            logBox.innerHTML += `\n[Query] Fetching telemetry data from 'farm_sensors' table...`;
-            if(!supabaseClient) {
-                logBox.innerHTML += `\n[Warning] Supabase client not initialized. Simulating mock remote response...`;
-                setTimeout(() => {
-                    logBox.innerHTML += `\n[Success] Received 14 records from mock database schema. Latency: 42ms`;
-                }, 600);
-                return;
-            }
-            try {
-                const { data, error } = await supabaseClient.from('farm_sensors').select('*').limit(5);
-                if(error) throw error;
-                logBox.innerHTML += `\n[Success] Fetched ${data ? data.length : 0} rows from Supabase.`;
-            } catch(err) {
-                logBox.innerHTML += `\n[Notice] Table 'farm_sensors' not found or offline. Ensure tables are created in Supabase.`;
-            }
-        }
-
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-message').innerText = message;
-            toast.classList.remove('translate-y-24', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-24', 'opacity-0');
-            }, 3000);
-        }
+        // Poll telemetry every 3 seconds
+        setInterval(loadTelemetry, 3000);
+        loadTelemetry();
     </script>
-</body>
-</html>
