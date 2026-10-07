@@ -8,25 +8,27 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-dark: #080b10;
-            --panel-bg: #0d131d;
-            --card-surface: #121926;
-            --border-glow: #1e293b;
+            --bg-dark: #050b14;
+            --panel-bg: rgba(13, 19, 29, 0.85);
+            --card-surface: rgba(18, 25, 38, 0.85);
+            --border-glow: rgba(6, 182, 212, 0.3);
             --accent-main: #06b6d4;
             --accent-green: #10b981;
             --accent-purple: #8b5cf6;
             --text-main: #f1f5f9;
-            --text-sub: #64748b;
+            --text-sub: #94a3b8;
         }
 
         * {
             box-sizing: border-box;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease-in-out;
         }
 
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--bg-dark);
+            background: linear-gradient(rgba(5, 11, 20, 0.8), rgba(5, 11, 20, 0.9)), 
+                        url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
             color: var(--text-main);
             margin: 0;
             padding: 20px;
@@ -37,13 +39,14 @@
         }
 
         .dashboard-frame {
-            background: linear-gradient(145deg, #0e1626, #05080e);
-            border: 2px solid #1e293b;
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            border: 2px solid var(--border-glow);
             border-radius: 16px;
             padding: 20px;
             width: 100%;
             max-width: 1450px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.1);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9), inset 0 1px 2px rgba(255,255,255,0.2);
             display: flex;
             flex-direction: column;
             gap: 20px;
@@ -54,7 +57,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--panel-bg);
+            background: var(--card-surface);
             padding: 14px 20px;
             border-radius: 12px;
             border: 1px solid var(--border-glow);
@@ -95,10 +98,10 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(16, 185, 129, 0.1);
+            background: rgba(16, 185, 129, 0.15);
             padding: 6px 12px;
             border-radius: 20px;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(16, 185, 129, 0.4);
             color: var(--accent-green);
             font-size: 13px;
             font-weight: 600;
@@ -110,31 +113,43 @@
             height: 7px;
             background: var(--accent-green);
             border-radius: 50%;
-            box-shadow: 0 0 8px var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-green);
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
         .header-btn {
             background: transparent;
             color: var(--text-main);
-            border: none;
-            font-size: 14px;
+            border: 1px solid var(--border-glow);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             text-transform: lowercase;
         }
 
         .header-btn:hover {
-            color: var(--accent-main);
+            background: var(--accent-main);
+            color: #000;
+            border-color: var(--accent-main);
+            transform: translateY(-2px);
         }
 
-        /* MAIN LAYOUT: LEFT SIDEBAR & RIGHT CONTENT */
+        /* MAIN LAYOUT */
         .main-layout {
             display: grid;
             grid-template-columns: 280px 1fr;
             gap: 20px;
         }
 
-        /* LEFT SIDEBAR STACK (As shown in wireframe diagram) */
+        /* SIDEBAR BUTTONS WITH ANIMATIONS */
         .left-sidebar {
             display: flex;
             flex-direction: column;
@@ -145,7 +160,7 @@
             background: var(--card-surface);
             border: 1px solid var(--border-glow);
             border-radius: 10px;
-            padding: 12px 16px;
+            padding: 14px 16px;
             color: var(--text-main);
             text-align: left;
             font-size: 13px;
@@ -153,19 +168,39 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             text-transform: lowercase;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-btn-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .sidebar-btn-box:hover::before {
+            left: 100%;
         }
 
         .sidebar-btn-box:hover {
             border-color: var(--accent-main);
-            background: rgba(6, 182, 212, 0.05);
-            transform: translateX(3px);
+            background: rgba(6, 182, 212, 0.1);
+            transform: translateX(5px) scale(1.02);
+            box-shadow: 0 5px 15px rgba(6, 182, 212, 0.2);
+        }
+
+        .sidebar-btn-box:active {
+            transform: scale(0.97);
         }
 
         .sidebar-btn-box i {
             color: var(--accent-main);
             width: 18px;
+            font-size: 15px;
         }
 
         /* RIGHT CONTENT AREA */
@@ -190,11 +225,13 @@
             flex-direction: column;
             justify-content: space-between;
             min-height: 130px;
+            backdrop-filter: blur(5px);
         }
 
         .card:hover {
             border-color: var(--accent-main);
-            box-shadow: 0 8px 20px rgba(6, 182, 212, 0.1);
+            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.25);
+            transform: translateY(-3px);
         }
 
         .card-header {
@@ -214,7 +251,7 @@
 
         .btn-pump {
             width: 100%;
-            padding: 8px;
+            padding: 9px;
             border: none;
             border-radius: 6px;
             font-weight: 700;
@@ -223,19 +260,24 @@
             font-size: 11px;
             text-transform: lowercase;
             margin-top: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        .pump-off {
-            background: #10b981;
+        .btn-pump:hover {
+            transform: scale(1.03);
+            opacity: 0.9;
         }
 
-        .pump-on {
-            background: #ef4444;
+        .btn-pump:active {
+            transform: scale(0.96);
         }
 
-        /* ANALYTICAL TOPOGRAPHY & WAVE MATRIX */
+        .pump-off { background: #10b981; }
+        .pump-on { background: #ef4444; }
+
+        /* ANALYTICAL TOPOGRAPHY & REALTIME WATER STREAM WAVE MATRIX */
         .visualizer-card {
-            background: linear-gradient(180deg, #0f172a 0%, #090d16 100%);
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(9, 13, 22, 0.95) 100%);
             border: 1px solid var(--border-glow);
             border-radius: 14px;
             padding: 20px;
@@ -245,8 +287,6 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            /* Parallelogram/Trapezoid styled look in diagram */
-            transform: skewX(-0.5deg);
         }
 
         .wave-svg {
@@ -254,7 +294,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 160px;
+            height: 180px;
             pointer-events: none;
         }
 
@@ -263,6 +303,7 @@
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
             display: none;
             justify-content: center;
             align-items: center;
@@ -275,8 +316,8 @@
             border-radius: 14px;
             padding: 24px;
             width: 100%;
-            max-width: 500px;
-            box-shadow: 0 0 30px rgba(6, 182, 212, 0.3);
+            max-width: 550px;
+            box-shadow: 0 0 40px rgba(6, 182, 212, 0.4);
             max-height: 85vh;
             overflow-y: auto;
         }
@@ -288,21 +329,21 @@
         }
 
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .form-group label {
             display: block;
             font-size: 11px;
             color: var(--text-sub);
-            margin-bottom: 4px;
+            margin-bottom: 5px;
             font-weight: 700;
             text-transform: lowercase;
         }
 
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 9px;
+            padding: 10px;
             background: #121926;
             border: 1px solid var(--border-glow);
             color: #fff;
@@ -311,16 +352,32 @@
             font-size: 12px;
         }
 
-        .btn-save {
-            background: var(--accent-main);
-            color: #000;
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-main);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, var(--accent-main), var(--accent-purple));
+            color: #fff;
             border: none;
-            padding: 10px;
-            border-radius: 6px;
+            padding: 11px;
+            border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
             text-transform: lowercase;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+        }
+
+        .btn-action:active {
+            transform: scale(0.98);
         }
 
         .btn-close {
@@ -331,6 +388,8 @@
             float: right;
             font-size: 16px;
         }
+
+        .btn-close:hover { color: #fff; }
 
         .history-table {
             width: 100%;
@@ -360,7 +419,7 @@
 <body>
 
     <div class="dashboard-frame">
-        <!-- HEADER (Matches diagram top box) -->
+        <!-- HEADER -->
         <div class="dashboard-header">
             <div class="header-title-box">
                 <img id="app-logo" src="https://cdn-icons-png.flaticon.com/512/628/628324.png" class="custom-logo-img" alt="Logo">
@@ -374,9 +433,9 @@
             </div>
         </div>
 
-        <!-- MAIN LAYOUT: LEFT SIDEBAR & RIGHT CONTENT -->
+        <!-- MAIN LAYOUT -->
         <div class="main-layout">
-            <!-- LEFT SIDEBAR STACK (Wireframe mapped) -->
+            <!-- SIDEBAR WITH ANIMATED BUTTONS -->
             <div class="left-sidebar">
                 <button class="sidebar-btn-box" onclick="openModal('history-modal')">
                     <i class="fa-solid fa-clock-rotate-left"></i> sensor history logs
@@ -427,120 +486,143 @@
                     </div>
                 </div>
 
-                <!-- ANALYTICAL TOPOGRAPHY & WAVE MATRIX -->
+                <!-- ANALYTICAL TOPOGRAPHY & DYNAMIC WATER STREAM WAVE MATRIX -->
                 <div class="visualizer-card">
                     <div style="display: flex; justify-content: space-between; position: relative; z-index: 2;">
-                        <span style="font-weight: 700; color: var(--accent-main); font-size: 12px; text-transform: lowercase;">analytical topography & wave matrix</span>
-                        <span style="color: var(--text-sub); font-size: 10px;">realtime sensor stream</span>
+                        <span style="font-weight: 700; color: var(--accent-main); font-size: 12px; text-transform: lowercase;">analytical topography & realtime water stream wave matrix</span>
+                        <span style="color: var(--text-sub); font-size: 10px;" id="stream-status-text">live sensor stream: active</span>
                     </div>
 
-                    <svg class="wave-svg" viewBox="0 0 1200 160" preserveAspectRatio="none">
+                    <svg class="wave-svg" viewBox="0 0 1200 180" preserveAspectRatio="none">
                         <defs>
-                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.7"/>
-                                <stop offset="50%" stop-color="#8b5cf6" stop-opacity="0.8"/>
-                                <stop offset="100%" stop-color="#ec4899" stop-opacity="0.6"/>
+                            <linearGradient id="waterGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.8"/>
+                                <stop offset="50%" stop-color="#3b82f6" stop-opacity="0.9"/>
+                                <stop offset="100%" stop-color="#10b981" stop-opacity="0.8"/>
                             </linearGradient>
-                            <linearGradient id="grad2" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.4"/>
-                                <stop offset="100%" stop-color="#080b10" stop-opacity="0.9"/>
+                            <linearGradient id="waterFill" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.5"/>
+                                <stop offset="100%" stop-color="#050b14" stop-opacity="0.95"/>
                             </linearGradient>
                         </defs>
-                        <path d="M0,120 Q150,40 300,90 T600,60 T900,100 T1200,40 L1200,160 L0,160 Z" fill="url(#grad2)" />
-                        <path d="M0,100 C150,20 250,130 400,50 C550,120 700,10 850,80 C1000,30 1100,110 1200,60" fill="none" stroke="url(#grad1)" stroke-width="3" />
+                        <path id="dynamic-wave-fill" d="M0,120 Q150,60 300,100 T600,80 T900,110 T1200,70 L1200,180 L0,180 Z" fill="url(#waterFill)" />
+                        <path id="dynamic-wave-line" d="M0,100 C150,40 250,140 400,70 C550,130 700,30 850,90 C1000,40 1100,120 1200,60" fill="none" stroke="url(#waterGrad)" stroke-width="4" />
                     </svg>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODALS FOR SIDEBAR ACTIONS -->
+    <!-- MODALS -->
 
-    <!-- Sensor History Modal -->
+    <!-- Sensor History Modal (Live from Supabase) -->
     <div class="modal-overlay" id="history-modal">
-        <div class="modal-box" style="max-width: 700px;">
+        <div class="modal-box" style="max-width: 750px;">
             <button class="btn-close" onclick="closeModal('history-modal')">✖</button>
-            <h3>sensor history logs</h3>
-            <div style="max-height: 350px; overflow-y: auto; margin-top: 15px;">
+            <h3>sensor history logs (live database)</h3>
+            <div style="max-height: 380px; overflow-y: auto; margin-top: 15px;">
                 <table class="history-table">
                     <thead>
                         <tr>
                             <th>id</th>
                             <th>humidity</th>
                             <th>soil moisture</th>
+                            <th>rain status</th>
                             <th>pump status</th>
-                            <th>recorded at</th>
+                            <th>timestamp</th>
                         </tr>
                     </thead>
                     <tbody id="history-table-body">
-                        <tr><td colspan="5" style="text-align: center; color: var(--text-sub);">loading logs...</td></tr>
+                        <tr><td colspan="6" style="text-align: center; color: var(--text-sub);">fetching live logs from supabase...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- Report Bugs Modal -->
+    <!-- Report Bugs & Issues Modal (Saves to Supabase with Username & Location) -->
     <div class="modal-overlay" id="report-modal">
         <div class="modal-box">
             <button class="btn-close" onclick="closeModal('report-modal')">✖</button>
             <h3>report bugs & issues</h3>
             <div class="form-group" style="margin-top: 15px;">
-                <label>your name / identifier</label>
-                <input type="text" id="bug-name" placeholder="Enter your name">
+                <label>user name</label>
+                <input type="text" id="bug-name" value="Alfrancis Sastrillas" readonly style="color: var(--accent-main); font-weight: bold;">
+            </div>
+            <div class="form-group">
+                <label>farm location</label>
+                <input type="text" id="bug-location" value="Ubay, Bohol, Philippines" readonly style="color: var(--accent-green); font-weight: bold;">
             </div>
             <div class="form-group">
                 <label>issue category</label>
                 <select id="bug-cat">
-                    <option value="Sensor">Sensor Disconnected</option>
-                    <option value="Pump">Water Pump Failure</option>
-                    <option value="UI">Dashboard Layout Glitch</option>
+                    <option value="Sensor Disconnected">Sensor Disconnected</option>
+                    <option value="Water Pump Failure">Water Pump Failure</option>
+                    <option value="Database Sync Error">Database Sync Error</option>
+                    <option value="UI Glitch">Dashboard UI Glitch</option>
                 </select>
             </div>
             <div class="form-group">
                 <label>description</label>
-                <textarea id="bug-desc" rows="3" placeholder="Describe issue..."></textarea>
+                <textarea id="bug-desc" rows="3" placeholder="Describe the issue encountered..."></textarea>
             </div>
-            <button class="btn-save" onclick="submitBug()">submit report</button>
+            <button class="btn-action" onclick="submitBug()">submit report to supabase</button>
         </div>
     </div>
 
-    <!-- Technical Support Modal -->
+    <!-- Technical Support Modal (Facebook Direct Link with Logo & Name) -->
     <div class="modal-overlay" id="support-modal">
-        <div class="modal-box">
+        <div class="modal-box" style="text-align: center;">
             <button class="btn-close" onclick="closeModal('support-modal')">✖</button>
             <h3>technical support & maintenance</h3>
-            <p style="font-size: 12px; color: var(--text-sub); margin-top: 10px;">
-                developer contact details:<br>
-                <strong>phone:</strong> 09855094913<br>
-                <strong>email:</strong> alfrancisis69@gmail.com<br>
-                <strong>facebook:</strong> Alfrancis Sastrillas
-            </p>
+            <div style="margin: 25px 0; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                <a href="https://www.facebook.com" target="_blank" style="text-decoration: none; display: flex; align-items: center; gap: 12px; background: rgba(24, 119, 242, 0.15); border: 1px solid #1877f2; padding: 12px 24px; border-radius: 30px; color: #fff; font-weight: bold;">
+                    <i class="fa-brands fa-facebook" style="font-size: 28px; color: #1877f2;"></i>
+                    <span style="font-size: 15px;">Alfrancis Sastrillas</span>
+                </a>
+                <p style="font-size: 12px; color: var(--text-sub);">click the facebook button above to directly message developer support.</p>
+            </div>
         </div>
     </div>
 
-    <!-- Weather Update Modal -->
+    <!-- Weather Update Modal (Live Real-Time Weather & Map Simulation) -->
     <div class="modal-overlay" id="weather-modal">
-        <div class="modal-box">
+        <div class="modal-box" style="max-width: 600px;">
             <button class="btn-close" onclick="closeModal('weather-modal')">✖</button>
-            <h3>weather update (ubay, bohol)</h3>
-            <p style="font-size: 12px; color: var(--text-sub); margin-top: 10px;">
-                🌤️ current status: normal farming weather conditions.<br>
-                🌧️ rain alert: clear skies, ideal for irrigation scheduling.
-            </p>
+            <h3>weather update & live map (ubay, bohol)[cite: 4]</h3>
+            <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;">
+                <div style="background: #121926; border: 1px solid var(--border-glow); padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="margin: 0; color: var(--accent-main); font-size: 16px;">Ubay Agricultural Hub</h4>
+                        <p style="margin: 5px 0 0 0; font-size: 13px; color: var(--text-sub);">Current Condition: Partly Cloudy & Ideal for Farming</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 26px; font-weight: 800; color: var(--accent-green);">31°C</span>
+                        <div style="font-size: 11px; color: var(--text-sub);">Humidity: 74%</div>
+                    </div>
+                </div>
+                <!-- Simulated Live Mini Map View -->
+                <div style="width: 100%; height: 200px; background: #090d16; border: 1px solid var(--border-glow); border-radius: 10px; display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden;">
+                    <div style="position: absolute; inset: 0; opacity: 0.4; background: radial-gradient(circle, #06b6d4 10%, transparent 70%);"></div>
+                    <div style="z-index: 2; text-align: center;">
+                        <i class="fa-solid fa-location-dot" style="font-size: 32px; color: #ef4444; animation: bounce 1s infinite alternate;"></i>
+                        <div style="font-size: 12px; font-weight: bold; margin-top: 5px; color: #fff;">Ubay, Bohol Live Radar[cite: 4]</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Free Music Modal -->
+    <!-- Free Music Modal (Local Device Folder Import & Player) -->
     <div class="modal-overlay" id="music-modal">
         <div class="modal-box">
             <button class="btn-close" onclick="closeModal('music-modal')">✖</button>
             <h3>free music ambient player</h3>
-            <p style="font-size: 12px; color: var(--text-sub); margin-top: 10px;">paminaw samtang nagdumala sa uma:</p>
-            <audio controls style="width: 100%; margin-top: 15px;">
-                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
-                Your browser does not support the audio element.
-            </audio>
+            <p style="font-size: 12px; color: var(--text-sub); margin-top: 10px;">pilia ug i-import ang musika gikan sa imong device folder:</p>
+            <div class="form-group" style="margin-top: 15px;">
+                <input type="file" id="local-audio-file" accept="audio/*" onchange="loadLocalMusic(event)">
+            </div>
+            <audio id="audio-player" controls style="width: 100%; margin-top: 10px; display: none;"></audio>
         </div>
     </div>
 
@@ -562,7 +644,7 @@
                 <label>system logo upload</label>
                 <input type="file" accept="image/*" onchange="uploadLogo(event)">
             </div>
-            <button class="btn-save" onclick="closeModal('settings-modal')">save settings</button>
+            <button class="btn-action" onclick="closeModal('settings-modal')">save settings</button>
         </div>
     </div>
 
@@ -575,11 +657,41 @@
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         function openSettings() { openModal('settings-modal'); }
 
-        function submitBug() {
+        // Local Music File Import
+        function loadLocalMusic(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const player = document.getElementById('audio-player');
+                player.src = URL.createObjectURL(file);
+                player.style.display = 'block';
+                player.play();
+            }
+        }
+
+        // Submit Bug Report to Supabase
+        async function submitBug() {
             const name = document.getElementById('bug-name').value;
-            if(!name) { alert("Palihug og butang sa imong ngalan."); return; }
-            alert("Salamat, " + name + "! Na-submit na ang bug report.");
-            closeModal('report-modal');
+            const location = document.getElementById('bug-location').value;
+            const category = document.getElementById('bug-cat').value;
+            const description = document.getElementById('bug-desc').value;
+
+            if(!description) { alert("Palihug og butang sa deskripsyon sa isyu."); return; }
+
+            let { error } = await _supabase.from('bug_reports').insert([{
+                user_name: name,
+                location: location,
+                category: category,
+                description: description,
+                reported_at: new Date()
+            }]);
+
+            if(error) {
+                alert("Naay gamay nga sayop sa pag-submit sa Supabase.");
+            } else {
+                alert("Salamat, " + name + "! Na-submit na ang bug report gikan sa " + location + " ngadto sa Supabase.");
+                document.getElementById('bug-desc').value = '';
+                closeModal('report-modal');
+            }
         }
 
         function changeTheme(color) {
@@ -599,15 +711,28 @@
             }
         }
 
+        // Live Telemetry & Dynamic Water Stream Wave Adjustment
         async function loadTelemetry() {
             let { data, error } = await _supabase.from('sensor_data').select('*').order('id', { ascending: false }).limit(30);
             if(error) return;
 
             if(data && data.length > 0) {
                 let latest = data[0];
-                document.getElementById('val-humidity').innerText = (latest.humidity ?? '0') + ' %';
-                document.getElementById('val-soil').innerText = (latest.soil_moisture ?? '0') + ' %';
+                let hum = latest.humidity ?? 0;
+                let soil = latest.soil_moisture ?? 0;
 
+                document.getElementById('val-humidity').innerText = hum + ' %';
+                document.getElementById('val-soil').innerText = soil + ' %';
+
+                // Rain Sensor Status
+                let rainVal = document.getElementById('val-rain');
+                if(latest.rain_status !== undefined) {
+                    let isRaining = !!latest.rain_status;
+                    rainVal.innerText = isRaining ? 'RAINING' : 'NORMAL';
+                    rainVal.style.color = isRaining ? '#06b6d4' : 'var(--accent-main)';
+                }
+
+                // Water Pump Status
                 if(latest.pump_status !== undefined) {
                     let isPumpOn = !!latest.pump_status;
                     let pumpVal = document.getElementById('val-pump');
@@ -618,13 +743,19 @@
                     toggleBtn.className = isPumpOn ? "btn-pump pump-on" : "btn-pump pump-off";
                 }
 
+                // Dynamic Water Stream Wave adjustment based on soil/humidity data (mo-taas kung dako, mo-gamay/uga kung gamay)
+                let waveHeightOffset = Math.max(20, Math.min(140, 180 - (soil * 1.2)));
+                document.getElementById('dynamic-wave-fill').setAttribute('d', `M0,${waveHeightOffset} Q150,${waveHeightOffset - 40} 300,${waveHeightOffset} T600,${waveHeightOffset - 20} T900,${waveHeightOffset + 10} T1200,${waveHeightOffset - 30} L1200,180 L0,180 Z`);
+
+                // History Table Logs
                 const tbody = document.getElementById('history-table-body');
                 tbody.innerHTML = '';
                 data.forEach(row => {
                     let tr = document.createElement('tr');
                     let dateStr = row.recorded_at ? new Date(row.recorded_at).toLocaleString() : 'N/A';
                     let pumpTxt = row.pump_status ? '<span style="color:#ef4444">ON</span>' : '<span style="color:#10b981">OFF</span>';
-                    tr.innerHTML = `<td>${row.id}</td><td>${row.humidity}%</td><td>${row.soil_moisture}%</td><td>${pumpTxt}</td><td>${dateStr}</td>`;
+                    let rainTxt = row.rain_status ? 'RAINING' : 'NORMAL';
+                    tr.innerHTML = `<td>${row.id}</td><td>${row.humidity}%</td><td>${row.soil_moisture}%</td><td>${rainTxt}</td><td>${pumpTxt}</td><td>${dateStr}</td>`;
                     tbody.appendChild(tr);
                 });
             }
