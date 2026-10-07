@@ -218,10 +218,58 @@
             box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3);
         }
 
-        .lower-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
+        .lower-section-full {
+            display: flex;
+            flex-direction: column;
             gap: 20px;
+        }
+
+        .history-panel {
+            background: var(--card-surface);
+            border: 1px solid var(--border-glow);
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .history-panel h3 {
+            margin-top: 0;
+            font-size: 16px;
+            color: var(--accent-main);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .history-table th, .history-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-glow);
+        }
+
+        .history-table th {
+            background: #090d16;
+            color: var(--accent-main);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .history-table tr:hover {
+            background: rgba(6, 182, 212, 0.05);
         }
 
         .support-panel {
@@ -293,46 +341,6 @@
             padding-left: 20px;
         }
 
-        .music-panel {
-            background: var(--card-surface);
-            border: 1px solid var(--border-glow);
-            border-radius: 14px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .music-panel h4 {
-            margin: 0 0 10px 0;
-            font-size: 14px;
-            color: var(--accent-purple);
-        }
-
-        .custom-audio-player {
-            width: 100%;
-            margin-top: 10px;
-            border-radius: 8px;
-            outline: none;
-        }
-
-        .upload-audio-btn {
-            background: #1e293b;
-            color: var(--accent-main);
-            border: 1px dashed var(--accent-main);
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .upload-audio-btn:hover {
-            background: rgba(6, 182, 212, 0.1);
-        }
-
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -402,7 +410,6 @@
         @media (max-width: 900px) {
             .grid-container { grid-template-columns: repeat(1, 1fr); }
             .visualizer-card { grid-column: span 1; }
-            .lower-grid { grid-template-columns: 1fr; }
             .contact-row { flex-direction: column; }
         }
     </style>
@@ -426,7 +433,7 @@
             </div>
         </div>
 
-        <!-- SENSOR METRICS (Idinagdag ang Humidity Card) -->
+        <!-- SENSOR METRICS -->
         <div class="grid-container">
             <div class="card">
                 <div class="card-header">
@@ -453,7 +460,7 @@
                 <button id="btn-toggle-pump" class="btn-pump pump-off" onclick="togglePump()">TURN ON PUMP</button>
             </div>
 
-            <!-- 3D MOUNTAIN WAVE VISUALIZER LAYER -->
+            <!-- ANALYTICAL TOPOGRAPHY & WAVE MATRIX -->
             <div class="visualizer-card">
                 <div style="display: flex; justify-content: space-between; position: relative; z-index: 2;">
                     <span style="font-weight: 700; color: var(--accent-main); font-size: 14px;">ANALYTICAL TOPOGRAPHY & WAVE MATRIX</span>
@@ -472,15 +479,39 @@
                             <stop offset="100%" stop-color="#080b10" stop-opacity="0.9"/>
                         </linearGradient>
                     </defs>
-                    
+
                     <path d="M0,120 Q150,40 300,90 T600,60 T900,100 T1200,40 L1200,160 L0,160 Z" fill="url(#grad2)" />
                     <path d="M0,100 C150,20 250,130 400,50 C550,120 700,10 850,80 C1000,30 1100,110 1200,60" fill="none" stroke="url(#grad1)" stroke-width="4" />
                 </svg>
             </div>
         </div>
 
-        <!-- LOWER SECTION: SUPPORT & CUSTOM AUDIO UPLOADER PLAYER -->
-        <div class="lower-grid">
+        <!-- LOWER SECTION: HISTORY LOGS & SUPPORT -->
+        <div class="lower-section-full">
+            <!-- SENSOR HISTORY LOGS TABLE -->
+            <div class="history-panel">
+                <h3><i class="fa-solid fa-clock-rotate-left"></i> Sensor History Logs (Supabase Realtime Data)</h3>
+                <div class="table-responsive">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Humidity (%)</th>
+                                <th>Soil Moisture (%)</th>
+                                <th>Pump Status</th>
+                                <th>Recorded At</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: var(--text-sub);">Loading history logs...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TECHNICAL SUPPORT -->
             <div class="support-panel">
                 <h3>🛠️ Technical Support & Maintenance Assistance</h3>
                 <p style="font-size: 13px; color: #ccc; margin-bottom: 15px;">
@@ -513,26 +544,6 @@
                         <li><strong>Farm Location:</strong> To determine if an on-site technician visit or hardware replacement is required.</li>
                     </ul>
                 </div>
-            </div>
-
-            <!-- CUSTOM MUSIC UPLOADER & PLAYER -->
-            <div class="music-panel">
-                <h4>🎵 System Background Audio</h4>
-                <div style="font-size: 12px; color: var(--text-sub); margin-bottom: 10px;">
-                    Upload custom music track (.mp3, .wav)
-                </div>
-
-                <label for="audio-file-input" class="upload-audio-btn">
-                    <i class="fa-solid fa-upload"></i> Choose Music File
-                </label>
-                <input type="file" id="audio-file-input" accept="audio/*" style="display: none;" onchange="handleAudioUpload(event)">
-
-                <div id="file-name-display" style="font-size: 11px; color: var(--accent-main); margin-bottom: 8px; text-align: center; word-break: break-all;">
-                    No audio selected
-                </div>
-
-                <!-- STANDARD PLAYER WITH PLAY, PAUSE, VOLUME CONTROLS -->
-                <audio id="custom-audio-player" class="custom-audio-player" controls loop></audio>
             </div>
         </div>
     </div>
@@ -608,21 +619,6 @@
             closeSettings();
         }
 
-        // AUDIO UPLOAD & PLAYER FUNCTIONALITY
-        function handleAudioUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const audioPlayer = document.getElementById('custom-audio-player');
-                const nameDisplay = document.getElementById('file-name-display');
-                
-                const fileURL = URL.createObjectURL(file);
-                audioPlayer.src = fileURL;
-                nameDisplay.innerText = "Playing: " + file.name;
-
-                audioPlayer.play().catch(e => console.log("User interaction needed to autoplay: ", e));
-            }
-        }
-
         function loadSavedCustomizations() {
             const savedColor = localStorage.getItem('theme_color');
             if (savedColor) {
@@ -637,21 +633,21 @@
         }
 
         async function loadLiveSensorData() {
-            let { data, error } = await _supabase.from('sensor_data').select('*').order('id', { ascending: false }).limit(1);
-            
+            // Kuhaon ang pinakabag-o para sa cards ug ang top 20 para sa history table
+            let { data, error } = await _supabase.from('sensor_data').select('*').order('id', { ascending: false }).limit(20);
+
             if (error) {
                 console.error("Error fetching telemetry:", error);
                 return;
             }
 
             if (data && data.length > 0) {
-                let reading = data[0];
-                // Ipakita ang humidity gikan sa database
-                document.getElementById('val-humidity').innerText = (reading.humidity ?? '0') + ' %';
-                document.getElementById('val-soil').innerText = (reading.soil_moisture ?? '0') + ' %';
-                
-                if (reading.pump_status !== undefined) {
-                    const isPumpOn = !!reading.pump_status;
+                let latest = data[0];
+                document.getElementById('val-humidity').innerText = (latest.humidity ?? '0') + ' %';
+                document.getElementById('val-soil').innerText = (latest.soil_moisture ?? '0') + ' %';
+
+                if (latest.pump_status !== undefined) {
+                    const isPumpOn = !!latest.pump_status;
                     const pumpVal = document.getElementById('val-pump');
                     const toggleBtn = document.getElementById('btn-toggle-pump');
 
@@ -661,6 +657,25 @@
                     toggleBtn.innerText = isPumpOn ? "TURN OFF PUMP" : "TURN ON PUMP";
                     toggleBtn.className = isPumpOn ? "btn-pump pump-on" : "btn-pump pump-off";
                 }
+
+                // I-populate ang History Logs table
+                const tableBody = document.getElementById('history-table-body');
+                tableBody.innerHTML = '';
+
+                data.forEach(row => {
+                    let tr = document.createElement('tr');
+                    let formattedDate = row.recorded_at ? new Date(row.recorded_at).toLocaleString() : 'N/A';
+                    let pumpStatusText = row.pump_status ? '<span style="color: #ef4444; font-weight: bold;">ON</span>' : '<span style="color: #10b981; font-weight: bold;">OFF</span>';
+
+                    tr.innerHTML = `
+                        <td>${row.id}</td>
+                        <td>${row.humidity ?? '0'} %</td>
+                        <td>${row.soil_moisture ?? '0'} %</td>
+                        <td>${pumpStatusText}</td>
+                        <td>${formattedDate}</td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
             }
         }
 
