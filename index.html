@@ -13,6 +13,7 @@
             --card-surface: rgba(18, 25, 38, 0.9);
             --border-glow: rgba(6, 182, 212, 0.3);
             --accent-main: #06b6d4;
+            --accent-orange: #f97316; /* Gi-set ang orange color para sa sidebar */
             --accent-green: #10b981;
             --accent-purple: #8b5cf6;
             --text-main: #f1f5f9;
@@ -155,18 +156,32 @@
             grid-template-columns: 260px 1fr;
             gap: 15px;
             overflow: hidden;
+            align-items: stretch;
+            transition: grid-template-columns 0.3s ease;
         }
 
-        /* SIDEBAR */
+        .main-layout.sidebar-hidden {
+            grid-template-columns: 0px 1fr;
+        }
+
+        /* SIDEBAR (ORANGE COLOR & FULL STRETCH) */
         .left-sidebar {
             display: flex;
             flex-direction: column;
             gap: 8px;
+            overflow: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .main-layout.sidebar-hidden .left-sidebar {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-20px);
         }
 
         .sidebar-btn-box {
             background: var(--card-surface);
-            border: 1px solid var(--border-glow);
+            border: 1px solid rgba(249, 115, 22, 0.3);
             border-radius: 8px;
             padding: 10px 12px;
             color: var(--text-main);
@@ -180,17 +195,19 @@
             text-transform: lowercase;
             position: relative;
             overflow: hidden;
+            flex: 1; /* Mo-stretch padong sa ubos aron mapuno ang espasyo */
+            width: 100%;
         }
 
         .sidebar-btn-box:hover {
-            border-color: var(--accent-main);
-            background: rgba(6, 182, 212, 0.1);
+            border-color: var(--accent-orange);
+            background: rgba(249, 115, 22, 0.15);
             transform: translateX(3px);
-            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
         }
 
         .sidebar-btn-box i {
-            color: var(--accent-main);
+            color: var(--accent-orange); /* Gi-orange ang mga icons sa sidebar */
             width: 16px;
             font-size: 14px;
             text-align: center;
@@ -386,7 +403,7 @@
         }
 
         @media (max-width: 1024px) {
-            .main-layout { grid-template-columns: 1fr; overflow-y: auto; }
+            .main-layout { grid-template-columns: 1fr !important; overflow-y: auto; }
             .metrics-grid { grid-template-columns: repeat(2, 1fr); }
             body { align-items: flex-start; }
             .dashboard-frame { max-height: none; height: auto; }
@@ -399,6 +416,9 @@
         <!-- HEADER -->
         <div class="dashboard-header">
             <div class="header-title-box">
+                <button class="header-btn" onclick="toggleSidebar()" title="hide/show sidebar" style="padding: 5px 8px; margin-right: 4px;">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
                 <img id="app-logo" src="https://cdn-icons-png.flaticon.com/512/628/628324.png" class="custom-logo-img" alt="Logo">
                 <h2 id="app-title">smart farm management system</h2>
             </div>
@@ -411,8 +431,8 @@
         </div>
 
         <!-- MAIN LAYOUT -->
-        <div class="main-layout">
-            <!-- SIDEBAR WITH ANIMATED BUTTONS -->
+        <div class="main-layout" id="main-layout">
+            <!-- SIDEBAR WITH ORANGE BUTTONS -->
             <div class="left-sidebar">
                 <button class="sidebar-btn-box" onclick="openModal('history-modal')">
                     <i class="fa-solid fa-clock-rotate-left"></i> sensor history logs
@@ -629,6 +649,11 @@
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         function openSettings() { openModal('settings-modal'); }
+
+        function toggleSidebar() {
+            const layout = document.getElementById('main-layout');
+            layout.classList.toggle('sidebar-hidden');
+        }
 
         function loadLocalMusic(event) {
             const file = event.target.files[0];
