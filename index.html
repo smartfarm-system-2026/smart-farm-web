@@ -1,880 +1,1601 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Smart Farm Management System</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 <style>
+
+/* =========================================================
+   ROOT
+========================================================= */
+
 :root{
-    --bg:#030811;
-    --panel:rgba(8,15,27,.90);
-    --panel2:rgba(13,22,37,.88);
-    --card:rgba(13,23,39,.92);
-    --line:rgba(34,211,238,.24);
+    --bg:#050b14;
+    --panel:#0b1422;
+    --panel2:#0e1a2c;
+    --border:rgba(148,163,184,.12);
+
     --cyan:#22d3ee;
-    --blue:#3b82f6;
+    --cyan2:#06b6d4;
+
     --green:#10b981;
-    --orange:#f97316;
-    --purple:#a855f7;
+    --green2:#34d399;
+
+    --blue:#3b82f6;
     --yellow:#facc15;
+    --orange:#fb923c;
     --red:#ef4444;
-    --text:#f8fafc;
-    --muted:#8290a6;
-    --shadow:0 18px 50px rgba(0,0,0,.48);
+
+    --text:#e2e8f0;
+    --muted:#64748b;
+    --muted2:#94a3b8;
+
+    --sidebar:235px;
 }
 
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%}
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html{
+    scroll-behavior:smooth;
+}
 
 body{
-    font-family:"Segoe UI",system-ui,sans-serif;
-    color:var(--text);
+    min-height:100vh;
+    font-family:Inter,Arial,sans-serif;
     background:
-      radial-gradient(circle at 15% 20%,rgba(34,211,238,.12),transparent 26%),
-      radial-gradient(circle at 85% 75%,rgba(168,85,247,.12),transparent 28%),
-      linear-gradient(rgba(2,8,17,.88),rgba(2,8,17,.96)),
-      url("https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1920&q=80") center/cover fixed;
-    overflow:hidden;
+        radial-gradient(circle at 80% 0%,rgba(34,211,238,.07),transparent 30%),
+        radial-gradient(circle at 10% 90%,rgba(16,185,129,.05),transparent 30%),
+        var(--bg);
+    color:var(--text);
+    overflow-x:hidden;
 }
 
-/* moving technology grid */
-body:before{
+button,
+input,
+select,
+textarea{
+    font-family:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+/* =========================================================
+   BACKGROUND EFFECT
+========================================================= */
+
+body::before{
     content:"";
     position:fixed;
     inset:0;
     pointer-events:none;
-    opacity:.22;
+
     background-image:
-      linear-gradient(rgba(34,211,238,.06) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(34,211,238,.06) 1px,transparent 1px);
-    background-size:35px 35px;
-    mask-image:linear-gradient(to bottom,transparent,black 20%,black 80%,transparent);
+        linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+
+    background-size:40px 40px;
+    mask-image:linear-gradient(to bottom,black,transparent 90%);
 }
 
-body:after{
-    content:"";
+/* =========================================================
+   APP
+========================================================= */
+
+.app{
+    display:flex;
+    min-height:100vh;
+}
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar{
     position:fixed;
-    width:280px;height:280px;
-    left:5%;top:10%;
-    border-radius:50%;
-    background:rgba(34,211,238,.07);
-    filter:blur(55px);
-    animation:floatGlow 8s ease-in-out infinite alternate;
-    pointer-events:none;
+    top:0;
+    left:0;
+    width:var(--sidebar);
+    height:100vh;
+    padding:18px 13px;
+
+    background:
+        linear-gradient(180deg,
+        rgba(11,20,34,.98),
+        rgba(5,11,20,.98));
+
+    border-right:1px solid var(--border);
+    z-index:50;
+
+    overflow-y:auto;
 }
 
-@keyframes floatGlow{
-    from{transform:translate(0,0)}
-    to{transform:translate(90px,70px)}
-}
-
-button,input,select,textarea{font:inherit}
-
-.dashboard-frame{
-    position:relative;
-    z-index:2;
-    width:calc(100% - 24px);
-    max-width:1280px;
-    height:96vh;
-    margin:2vh auto;
-    padding:10px;
-    display:flex;
-    flex-direction:column;
-    gap:9px;
-    overflow:hidden;
-    border:1px solid rgba(34,211,238,.28);
-    border-radius:16px;
-    background:linear-gradient(145deg,rgba(7,14,26,.95),rgba(5,12,23,.88));
-    box-shadow:0 25px 80px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.04);
-    backdrop-filter:blur(18px);
-}
-
-/* top neon line */
-.dashboard-frame:before{
-    content:"";
-    position:absolute;
-    top:0;left:8%;right:8%;
-    height:2px;
-    background:linear-gradient(90deg,transparent,var(--cyan),var(--purple),var(--green),transparent);
-    box-shadow:0 0 18px var(--cyan);
-    opacity:.85;
-}
-
-/* HEADER */
-.dashboard-header{
-    min-height:54px;
+.logo-area{
     display:flex;
     align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    padding:8px 12px;
+    gap:10px;
+    padding:5px 7px 18px;
+}
+
+.logo{
+    width:42px;
+    height:42px;
+    border-radius:13px;
+
+    display:grid;
+    place-items:center;
+
+    background:
+        linear-gradient(135deg,
+        rgba(16,185,129,.25),
+        rgba(34,211,238,.15));
+
     border:1px solid rgba(34,211,238,.22);
-    border-radius:11px;
-    background:linear-gradient(135deg,rgba(15,25,42,.96),rgba(8,16,29,.92));
-    box-shadow:inset 0 0 22px rgba(34,211,238,.025);
+
+    box-shadow:
+        0 0 25px rgba(34,211,238,.07);
 }
 
-.header-title-box{
-    display:flex;
-    align-items:center;
-    gap:9px;
+.logo img{
+    width:28px;
+    height:28px;
+}
+
+.brand{
     min-width:0;
 }
 
-.menu-btn,.header-btn{
-    border:1px solid rgba(34,211,238,.25);
-    color:#dbeafe;
-    background:rgba(15,23,42,.75);
-    border-radius:8px;
-    cursor:pointer;
-    transition:.25s;
-}
-
-.menu-btn{
-    width:34px;height:32px;
-    display:grid;place-items:center;
-}
-
-.header-btn{
-    padding:7px 11px;
-    font-size:10px;
-    font-weight:700;
-}
-
-.menu-btn:hover,.header-btn:hover{
-    color:#001018;
-    background:var(--cyan);
-    border-color:var(--cyan);
-    box-shadow:0 0 18px rgba(34,211,238,.3);
-    transform:translateY(-1px);
-}
-
-.custom-logo-img{
-    width:30px;height:30px;
-    border-radius:8px;
-    object-fit:cover;
-    border:1px solid var(--cyan);
-    box-shadow:0 0 15px rgba(34,211,238,.2);
-}
-
-.dashboard-header h2{
-    font-size:14px;
-    letter-spacing:.8px;
+.brand h1{
+    color:#f8fafc;
+    font-size:11px;
     font-weight:900;
-    text-transform:uppercase;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    background:linear-gradient(90deg,#67e8f9,#60a5fa,#c084fc);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
+    line-height:1.25;
 }
 
-.header-right{display:flex;align-items:center;gap:8px}
+.brand span{
+    display:block;
+    color:var(--green2);
+    font-size:7px;
+    margin-top:3px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+}
 
-.status-badge{
+.live-pill{
     display:flex;
     align-items:center;
-    gap:6px;
-    padding:6px 9px;
-    border:1px solid rgba(16,185,129,.28);
-    border-radius:20px;
-    color:#34d399;
-    background:rgba(16,185,129,.08);
-    font-size:9px;
+    gap:5px;
+    margin:0 7px 15px;
+    padding:7px 9px;
+
+    border:1px solid rgba(16,185,129,.18);
+    border-radius:8px;
+
+    background:rgba(16,185,129,.05);
+
+    color:#86efac;
+    font-size:8px;
     font-weight:800;
-    text-transform:uppercase;
 }
 
 .status-dot{
-    width:7px;height:7px;border-radius:50%;
-    background:var(--green);
-    box-shadow:0 0 9px var(--green);
-    animation:pulse 1.5s infinite;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#34d399;
+    box-shadow:0 0 9px #34d399;
+    animation:pulse 1.7s infinite;
 }
 
 @keyframes pulse{
-    50%{transform:scale(1.45);opacity:.55}
+    0%,100%{opacity:1}
+    50%{opacity:.35}
 }
 
-/* MAIN */
-.main-layout{
-    min-height:0;
-    flex:1;
+/* =========================================================
+   NAV
+========================================================= */
+
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+}
+
+.nav button{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    padding:10px 11px;
+
+    color:#7d8da3;
+    background:transparent;
+
+    border:1px solid transparent;
+    border-radius:9px;
+
+    font-size:8px;
+    font-weight:800;
+    text-align:left;
+
+    transition:.25s;
+}
+
+.nav button i{
+    width:15px;
+    text-align:center;
+    color:#526174;
+    transition:.25s;
+}
+
+.nav button:hover{
+    color:#e2e8f0;
+    background:rgba(34,211,238,.045);
+    border-color:rgba(34,211,238,.08);
+    transform:translateX(2px);
+}
+
+.nav button:hover i{
+    color:var(--cyan);
+}
+
+.nav button.active{
+    color:#e2e8f0;
+    background:
+        linear-gradient(90deg,
+        rgba(34,211,238,.10),
+        rgba(16,185,129,.04));
+
+    border-color:rgba(34,211,238,.16);
+}
+
+.nav button.active i{
+    color:var(--cyan);
+}
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.main{
+    width:calc(100% - var(--sidebar));
+    margin-left:var(--sidebar);
+    padding:22px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:18px;
+}
+
+.top-title h2{
+    color:#f8fafc;
+    font-size:18px;
+    font-weight:900;
+}
+
+.top-title p{
+    margin-top:4px;
+    color:#526174;
+    font-size:8px;
+}
+
+.top-actions{
+    display:flex;
+    align-items:center;
+    gap:7px;
+}
+
+.top-btn{
+    width:32px;
+    height:32px;
+
     display:grid;
-    grid-template-columns:178px minmax(0,1fr);
-    gap:9px;
+    place-items:center;
+
+    color:#94a3b8;
+    background:#0b1422;
+
+    border:1px solid var(--border);
+    border-radius:8px;
+
+    transition:.25s;
+}
+
+.top-btn:hover{
+    color:var(--cyan);
+    border-color:rgba(34,211,238,.3);
+}
+
+/* =========================================================
+   SENSOR CARDS
+========================================================= */
+
+.sensor-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
+
+.sensor-card{
+    position:relative;
     overflow:hidden;
+
+    min-height:120px;
+    padding:13px;
+
+    background:
+        linear-gradient(145deg,
+        rgba(14,26,44,.96),
+        rgba(8,16,28,.96));
+
+    border:1px solid var(--border);
+    border-radius:13px;
+
     transition:.3s;
 }
 
-.main-layout.sidebar-hidden{grid-template-columns:0 1fr}
-
-.left-sidebar{
-    min-width:0;
-    display:flex;
-    flex-direction:column;
-    gap:7px;
-    overflow:hidden;
-    transition:.25s;
-}
-
-.main-layout.sidebar-hidden .left-sidebar{
-    opacity:0;
-    transform:translateX(-18px);
-    pointer-events:none;
-}
-
-.sidebar-btn-box{
-    position:relative;
-    flex:1;
-    min-height:62px;
-    width:100%;
-    overflow:hidden;
-    display:flex;
-    align-items:center;
-    gap:9px;
-    padding:9px 10px;
-    text-align:left;
-    border:1px solid rgba(249,115,22,.25);
-    border-radius:10px;
-    color:#e5e7eb;
-    background:linear-gradient(145deg,rgba(17,27,44,.92),rgba(10,18,31,.9));
-    cursor:pointer;
-    font-size:9px;
-    font-weight:800;
-    text-transform:uppercase;
-    letter-spacing:.2px;
-    box-shadow:inset 0 0 20px rgba(249,115,22,.015);
-    transition:.25s;
-}
-
-.sidebar-btn-box:before{
+.sensor-card::after{
     content:"";
     position:absolute;
-    left:0;top:10%;bottom:10%;
-    width:2px;
-    background:var(--orange);
-    box-shadow:0 0 10px var(--orange);
-    opacity:.7;
-}
+    width:90px;
+    height:90px;
+    right:-35px;
+    bottom:-40px;
 
-.sidebar-btn-box i{
-    flex:0 0 28px;
-    width:28px;height:28px;
-    display:grid;place-items:center;
-    border-radius:8px;
-    color:#fb923c;
-    background:rgba(249,115,22,.09);
-    border:1px solid rgba(249,115,22,.18);
-    font-size:11px;
-}
-
-.sidebar-btn-box:hover{
-    transform:translateX(3px);
-    border-color:rgba(249,115,22,.65);
-    background:linear-gradient(145deg,rgba(42,29,24,.9),rgba(14,22,34,.95));
-    box-shadow:0 8px 25px rgba(249,115,22,.1);
-}
-
-.sidebar-btn-box:hover i{
-    color:#fff;
-    background:var(--orange);
-    box-shadow:0 0 15px rgba(249,115,22,.45);
-}
-
-/* RIGHT */
-.right-content{
-    min-width:0;
-    min-height:0;
-    display:flex;
-    flex-direction:column;
-    gap:9px;
-    overflow:hidden;
-}
-
-/* SMALL SENSOR CARDS */
-.metrics-grid{
-    flex:0 0 230px;
-    min-height:230px;
-    display:grid;
-    grid-template-columns:repeat(4,minmax(0,1fr));
-    gap:9px;
-}
-
-.card{
-    position:relative;
-    overflow:hidden;
-    min-width:0;
-    padding:12px;
-    border:1px solid rgba(34,211,238,.20);
-    border-radius:12px;
-    background:
-      radial-gradient(circle at 85% 15%,rgba(34,211,238,.08),transparent 34%),
-      linear-gradient(145deg,rgba(16,27,45,.96),rgba(9,17,30,.94));
-    box-shadow:inset 0 0 30px rgba(34,211,238,.018),0 8px 25px rgba(0,0,0,.18);
-    transition:.28s;
-}
-
-.card:before{
-    content:"";
-    position:absolute;
-    top:0;left:10%;right:10%;
-    height:1px;
-    background:linear-gradient(90deg,transparent,var(--cyan),transparent);
-    opacity:.65;
-}
-
-.card:after{
-    content:"";
-    position:absolute;
-    width:80px;height:80px;
-    right:-30px;bottom:-30px;
     border-radius:50%;
-    background:rgba(34,211,238,.05);
-    filter:blur(8px);
+
+    background:rgba(34,211,238,.08);
+    filter:blur(5px);
 }
 
-.card:hover{
+.sensor-card:hover{
     transform:translateY(-3px);
-    border-color:rgba(34,211,238,.58);
-    box-shadow:0 12px 35px rgba(0,0,0,.3),0 0 20px rgba(34,211,238,.08);
+    border-color:rgba(34,211,238,.25);
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.25),
+        0 0 25px rgba(34,211,238,.04);
 }
 
-.card-top{
+.sensor-top{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    gap:8px;
 }
 
-.card-header{
-    color:#a9b7c9;
-    font-size:9px;
-    font-weight:900;
-    letter-spacing:.7px;
-    text-transform:uppercase;
-}
+.sensor-icon{
+    width:30px;
+    height:30px;
 
-.card-icon{
-    width:27px;height:27px;
-    display:grid;place-items:center;
-    border-radius:8px;
+    display:grid;
+    place-items:center;
+
+    border-radius:9px;
+
+    background:rgba(34,211,238,.08);
     color:var(--cyan);
-    background:rgba(34,211,238,.08);
-    border:1px solid rgba(34,211,238,.18);
-    font-size:11px;
+
+    font-size:12px;
 }
 
-.card-value{
-    margin-top:16px;
-    font-size:23px;
-    line-height:1;
+.sensor-status{
+    color:#526174;
+    font-size:7px;
     font-weight:900;
-    letter-spacing:.2px;
-    text-shadow:0 0 16px rgba(255,255,255,.08);
+    text-transform:uppercase;
 }
 
-.card-sub{
-    position:absolute;
-    left:12px;right:12px;
-    bottom:42px;
+.sensor-name{
+    margin-top:12px;
+    color:#64748b;
+    font-size:7px;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+}
+
+.sensor-value{
+    margin-top:3px;
+    color:#f8fafc;
+    font-size:20px;
+    font-weight:900;
+}
+
+.sensor-value small{
     color:#64748b;
     font-size:8px;
 }
 
-.mini-bar{
-    position:absolute;
-    left:12px;right:12px;
-    bottom:18px;
-    height:4px;
+.progress{
+    height:3px;
+    margin-top:9px;
     overflow:hidden;
-    border-radius:10px;
-    background:#101b2c;
+
+    border-radius:20px;
+    background:#162235;
 }
 
-.mini-bar span{
+.progress span{
     display:block;
-    width:50%;
+    width:0%;
     height:100%;
-    border-radius:10px;
-    background:linear-gradient(90deg,var(--cyan),var(--blue));
-    box-shadow:0 0 9px rgba(34,211,238,.45);
-    transition:width .5s ease;
-}
 
-.pump-button{
-    position:absolute;
-    left:12px;right:12px;bottom:12px;
-    height:24px;
-    border:0;
-    border-radius:7px;
-    color:white;
-    font-size:8px;
-    font-weight:900;
-    text-transform:uppercase;
-    cursor:pointer;
-}
+    border-radius:20px;
 
-.pump-off{background:linear-gradient(90deg,#059669,#10b981)}
-.pump-on{background:linear-gradient(90deg,#dc2626,#ef4444)}
-.pump-button:hover{filter:brightness(1.15);box-shadow:0 0 16px rgba(16,185,129,.2)}
-
-/* VISUALIZER */
-.visualizer-card{
-    position:relative;
-    flex:1;
-    min-height:170px;
-    overflow:hidden;
-    border:1px solid rgba(34,211,238,.25);
-    border-radius:12px;
     background:
-      linear-gradient(rgba(34,211,238,.035) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(34,211,238,.035) 1px,transparent 1px),
-      linear-gradient(180deg,rgba(11,25,43,.96),rgba(4,12,23,.98));
-    background-size:28px 28px,28px 28px,auto;
-    box-shadow:inset 0 0 45px rgba(34,211,238,.025);
+        linear-gradient(90deg,
+        var(--cyan),
+        var(--green2));
+
+    transition:width:.7s;
 }
 
-.visualizer-top{
-    position:relative;
-    z-index:5;
-    height:48px;
+/* =========================================================
+   PUMP
+========================================================= */
+
+.pump-status{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:10px;
-    padding:0 13px;
+
+    margin-top:12px;
 }
 
-.visualizer-title{
+.pump-state{
+    color:#64748b;
+    font-size:8px;
+    font-weight:800;
+}
+
+.pump-toggle{
+    padding:7px 9px;
+
+    color:#e2e8f0;
+    background:#122035;
+
+    border:1px solid rgba(34,211,238,.12);
+    border-radius:7px;
+
+    font-size:7px;
+    font-weight:900;
+}
+
+.pump-toggle:hover{
+    border-color:rgba(34,211,238,.35);
+}
+
+/* =========================================================
+   ANALYTICS
+========================================================= */
+
+.analytics{
+    margin-top:12px;
+    padding:14px;
+
+    background:
+        linear-gradient(145deg,
+        rgba(11,20,34,.97),
+        rgba(7,15,26,.97));
+
+    border:1px solid var(--border);
+    border-radius:13px;
+
+    overflow:hidden;
+}
+
+.section-head{
     display:flex;
     align-items:center;
-    gap:8px;
-    color:#67e8f9;
+    justify-content:space-between;
+
+    margin-bottom:12px;
+}
+
+.section-head h3{
+    color:#cbd5e1;
     font-size:9px;
     font-weight:900;
     text-transform:uppercase;
     letter-spacing:.7px;
 }
 
-.visualizer-title i{
-    width:25px;height:25px;
-    display:grid;place-items:center;
-    border-radius:7px;
-    color:#67e8f9;
-    background:rgba(34,211,238,.08);
-    border:1px solid rgba(34,211,238,.18);
+.live-text{
+    display:flex;
+    align-items:center;
+    gap:5px;
+
+    color:#34d399;
+    font-size:7px;
+    font-weight:900;
 }
 
-.stream-status{
-    color:#64748b;
-    font-size:8px;
+.wave{
+    position:relative;
+    height:150px;
+    overflow:hidden;
+
+    border-radius:9px;
+    border:1px solid rgba(34,211,238,.08);
+
+    background:
+        linear-gradient(rgba(34,211,238,.04) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(34,211,238,.04) 1px,transparent 1px),
+        #07111e;
+
+    background-size:28px 28px;
 }
 
-.stream-status b{color:#34d399}
-
-.wave-svg{
-    position:absolute;
-    left:0;right:0;bottom:0;
+.wave svg{
     width:100%;
-    height:calc(100% - 35px);
+    height:100%;
 }
 
-.wave-line{
-    filter:drop-shadow(0 0 6px rgba(34,211,238,.7));
+.wave-path{
+    fill:none;
+    stroke:#22d3ee;
+    stroke-width:2;
+    filter:drop-shadow(0 0 5px rgba(34,211,238,.45));
+
+    stroke-dasharray:700;
+    animation:waveMove 8s linear infinite;
 }
 
-.scan-line{
-    position:absolute;
-    left:0;right:0;
-    top:47px;
-    height:1px;
-    background:linear-gradient(90deg,transparent,rgba(34,211,238,.65),transparent);
-    box-shadow:0 0 10px rgba(34,211,238,.45);
-    animation:scan 4s linear infinite;
+.wave-path.two{
+    stroke:#10b981;
+    opacity:.45;
+    animation-duration:12s;
 }
 
-@keyframes scan{
-    0%{transform:translateY(0);opacity:0}
-    10%{opacity:1}
-    90%{opacity:1}
-    100%{transform:translateY(105px);opacity:0}
+@keyframes waveMove{
+    from{stroke-dashoffset:700}
+    to{stroke-dashoffset:0}
 }
 
 .wave-labels{
-    position:absolute;
-    z-index:3;
-    left:13px;right:13px;bottom:9px;
     display:flex;
     justify-content:space-between;
-    color:#526174;
+    margin-top:6px;
+
+    color:#334155;
     font-size:7px;
-    text-transform:uppercase;
 }
 
-/* MODALS */
+/* =========================================================
+   MODAL
+========================================================= */
+
 .modal-overlay{
     position:fixed;
     inset:0;
-    z-index:999;
+
     display:none;
     align-items:center;
     justify-content:center;
-    padding:15px;
+
+    padding:20px;
+
     background:rgba(0,0,0,.72);
-    backdrop-filter:blur(10px);
+    backdrop-filter:blur(8px);
+
+    z-index:100;
+}
+
+.modal-overlay.open{
+    display:flex;
 }
 
 .modal-box{
-    width:100%;
-    max-width:520px;
-    max-height:86vh;
+    position:relative;
+    width:min(620px,100%);
+    max-height:90vh;
     overflow:auto;
+
     padding:18px;
-    border:1px solid rgba(34,211,238,.45);
-    border-radius:14px;
-    background:linear-gradient(145deg,#0b1525,#07101d);
-    box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 35px rgba(34,211,238,.08);
+
+    background:
+        linear-gradient(145deg,
+        #0c1828,
+        #07111d);
+
+    border:1px solid rgba(34,211,238,.16);
+    border-radius:15px;
+
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.6),
+        0 0 50px rgba(34,211,238,.04);
 }
 
 .modal-box h3{
-    margin-bottom:12px;
-    color:#67e8f9;
-    font-size:13px;
-    text-transform:uppercase;
-    letter-spacing:.6px;
+    color:#f8fafc;
+    font-size:14px;
+}
+
+.modal-box h3 i{
+    margin-right:6px;
+    color:var(--cyan);
 }
 
 .btn-close{
-    float:right;
-    border:0;
-    background:transparent;
-    color:#94a3b8;
-    cursor:pointer;
-    font-size:13px;
-}
-.btn-close:hover{color:#fff}
+    position:absolute;
+    top:12px;
+    right:12px;
 
-.form-group{margin-bottom:9px}
+    width:27px;
+    height:27px;
+
+    border:1px solid rgba(148,163,184,.12);
+    border-radius:7px;
+
+    color:#94a3b8;
+    background:#0b1626;
+}
+
+.btn-close:hover{
+    color:#fff;
+    border-color:rgba(239,68,68,.35);
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.table-wrap{
+    margin-top:12px;
+    overflow:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:520px;
+}
+
+th,
+td{
+    padding:9px;
+    border-bottom:1px solid rgba(148,163,184,.08);
+
+    font-size:8px;
+    text-align:left;
+}
+
+th{
+    color:#64748b;
+    text-transform:uppercase;
+    font-size:7px;
+}
+
+td{
+    color:#cbd5e1;
+}
+
+/* =========================================================
+   FORMS
+========================================================= */
+
+.form-group{
+    margin-top:11px;
+}
+
 .form-group label{
     display:block;
-    margin-bottom:4px;
-    color:#8290a6;
+    margin-bottom:5px;
+
+    color:#64748b;
+    font-size:8px;
+    font-weight:800;
+}
+
+.form-control{
+    width:100%;
+    padding:9px 10px;
+
+    color:#e2e8f0;
+    background:#081321;
+
+    border:1px solid rgba(148,163,184,.12);
+    border-radius:8px;
+
+    outline:none;
     font-size:9px;
+}
+
+.form-control:focus{
+    border-color:rgba(34,211,238,.4);
+    box-shadow:0 0 0 3px rgba(34,211,238,.04);
+}
+
+textarea.form-control{
+    min-height:100px;
+    resize:vertical;
+}
+
+.primary-btn{
+    margin-top:12px;
+
+    padding:10px 13px;
+
+    color:#fff;
+    background:
+        linear-gradient(90deg,
+        #0f766e,
+        #0891b2,
+        #2563eb);
+
+    border:0;
+    border-radius:8px;
+
+    font-size:8px;
+    font-weight:900;
+    text-transform:uppercase;
+}
+
+.primary-btn:hover{
+    filter:brightness(1.15);
+    box-shadow:0 0 20px rgba(34,211,238,.12);
+}
+
+/* =========================================================
+   WEATHER
+========================================================= */
+
+.weather-box{
+    max-width:680px;
+}
+
+.weather-heading{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+    margin-bottom:14px;
+}
+
+.weather-kicker{
+    color:var(--cyan);
+    font-size:7px;
+    font-weight:900;
+    letter-spacing:1.3px;
+}
+
+.weather-heading h3{
+    margin-top:4px;
+}
+
+.weather-date{
+    margin-top:5px;
+    color:#64748b;
+    font-size:8px;
+}
+
+.weather-live{
+    display:flex;
+    align-items:center;
+    gap:5px;
+
+    padding:5px 8px;
+
+    color:#34d399;
+    background:rgba(16,185,129,.05);
+
+    border:1px solid rgba(16,185,129,.2);
+    border-radius:20px;
+
+    font-size:7px;
+    font-weight:900;
+}
+
+.weather-main{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+
+    padding:16px;
+
+    border:1px solid rgba(34,211,238,.14);
+    border-radius:12px;
+
+    background:
+        radial-gradient(circle at 10% 50%,
+        rgba(34,211,238,.10),
+        transparent 35%),
+        #081321;
+}
+
+.weather-temp{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.big-weather-icon{
+    width:55px;
+    height:55px;
+
+    display:grid;
+    place-items:center;
+
+    color:#67e8f9;
+    background:rgba(34,211,238,.07);
+
+    border:1px solid rgba(34,211,238,.15);
+    border-radius:14px;
+
+    font-size:24px;
+
+    box-shadow:0 0 25px rgba(34,211,238,.08);
+}
+
+.weather-temp strong{
+    display:block;
+
+    color:#f8fafc;
+    font-size:31px;
+    line-height:1;
+}
+
+.weather-temp span{
+    display:block;
+    margin-top:5px;
+
+    color:#94a3b8;
+    font-size:8px;
+}
+
+.weather-location{
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    text-align:right;
+}
+
+.weather-location > i{
+    color:#fb923c;
+}
+
+.weather-location b{
+    display:block;
+    color:#e2e8f0;
+    font-size:8px;
+}
+
+.weather-location small{
+    display:block;
+    margin-top:3px;
+    color:#64748b;
+    font-size:7px;
+}
+
+.weather-stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:7px;
+
+    margin-top:8px;
+}
+
+.weather-stat{
+    padding:10px;
+
+    background:#081321;
+    border:1px solid rgba(148,163,184,.09);
+    border-radius:9px;
+}
+
+.weather-stat i{
+    color:var(--cyan);
+    font-size:10px;
+}
+
+.weather-stat span{
+    display:block;
+    margin-top:6px;
+
+    color:#64748b;
+    font-size:6px;
     font-weight:800;
     text-transform:uppercase;
 }
 
-.form-group input,.form-group select,.form-group textarea{
-    width:100%;
-    padding:8px 9px;
-    border:1px solid rgba(34,211,238,.18);
-    border-radius:7px;
-    outline:none;
-    color:#fff;
-    background:#0c1728;
-    font-size:10px;
+.weather-stat b{
+    display:block;
+    margin-top:3px;
+
+    color:#e2e8f0;
+    font-size:12px;
 }
 
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{
-    border-color:var(--cyan);
-    box-shadow:0 0 12px rgba(34,211,238,.1);
-}
+.weather-alert{
+    display:flex;
+    align-items:center;
+    gap:8px;
 
-.btn-action{
-    width:100%;
+    margin-top:8px;
     padding:9px;
-    border:0;
+
+    color:#93c5fd;
+    background:rgba(59,130,246,.05);
+
+    border:1px solid rgba(59,130,246,.12);
     border-radius:8px;
+
+    font-size:8px;
+}
+
+.weather-alert.rain{
+    color:#67e8f9;
+    background:rgba(34,211,238,.07);
+    border-color:rgba(34,211,238,.23);
+}
+
+.weather-alert.dry{
+    color:#86efac;
+    background:rgba(16,185,129,.05);
+    border-color:rgba(16,185,129,.18);
+}
+
+.weather-actions{
+    display:grid;
+    grid-template-columns:1fr 105px;
+    gap:8px;
+
+    margin-top:9px;
+}
+
+.weather-map-btn,
+.weather-refresh-btn{
+    padding:10px;
+
+    border-radius:8px;
+
     color:#fff;
-    background:linear-gradient(90deg,#0891b2,#2563eb,#7c3aed);
-    font-size:10px;
+
+    font-size:8px;
     font-weight:900;
     text-transform:uppercase;
-    cursor:pointer;
 }
-.btn-action:hover{filter:brightness(1.15);box-shadow:0 0 20px rgba(59,130,246,.2)}
 
-.history-table{
-    width:100%;
-    border-collapse:collapse;
+.weather-map-btn{
+    border:0;
+
+    background:
+        linear-gradient(90deg,
+        #0f766e,
+        #0891b2,
+        #2563eb);
+}
+
+.weather-refresh-btn{
+    background:#102035;
+    border:1px solid rgba(34,211,238,.15);
+}
+
+.weather-map-btn:hover,
+.weather-refresh-btn:hover{
+    filter:brightness(1.15);
+}
+
+.weather-footer{
+    margin-top:8px;
+
+    color:#526174;
+    text-align:center;
+
+    font-size:7px;
+}
+
+/* =========================================================
+   FARMER LOFI MUSIC
+========================================================= */
+
+.farm-music-box{
+    max-width:620px;
+}
+
+.music-intro{
+    margin:5px 0 13px;
+
+    color:#8290a6;
+    font-size:8px;
+    line-height:1.6;
+}
+
+.music-grid{
+    display:grid;
+    gap:8px;
+}
+
+.music-card{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    padding:10px;
+
+    color:#fff;
+    text-decoration:none;
+
+    border:1px solid rgba(16,185,129,.16);
+    border-radius:10px;
+
+    background:
+        linear-gradient(135deg,
+        rgba(16,185,129,.07),
+        rgba(34,211,238,.025));
+
+    transition:.25s;
+}
+
+.music-card:hover{
+    transform:translateX(3px);
+
+    border-color:rgba(16,185,129,.5);
+
+    box-shadow:0 0 22px rgba(16,185,129,.08);
+}
+
+.music-card > span:nth-child(2){
+    flex:1;
+    min-width:0;
+}
+
+.music-art{
+    width:36px;
+    height:36px;
+    flex:0 0 36px;
+
+    display:grid;
+    place-items:center;
+
+    color:#34d399;
+
+    background:rgba(16,185,129,.08);
+
+    border:1px solid rgba(16,185,129,.2);
+    border-radius:10px;
+}
+
+.music-card b{
+    display:block;
+
+    color:#e2e8f0;
     font-size:9px;
 }
-.history-table th,.history-table td{
-    padding:7px;
-    border-bottom:1px solid rgba(34,211,238,.10);
-    text-align:left;
+
+.music-card small{
+    display:block;
+    margin-top:3px;
+
+    color:#64748b;
+    font-size:7px;
 }
-.history-table th{
-    position:sticky;top:0;
+
+.music-card > i{
+    color:#34d399;
+    font-size:8px;
+}
+
+.local-music-panel{
+    margin-top:12px;
+    padding:11px;
+
+    border:1px dashed rgba(34,211,238,.2);
+    border-radius:10px;
+
+    background:rgba(34,211,238,.025);
+}
+
+.local-music-title{
+    margin-bottom:8px;
+
     color:#67e8f9;
-    background:#07111f;
+
+    font-size:8px;
+    font-weight:900;
     text-transform:uppercase;
 }
 
-/* responsive */
-@media(max-width:950px){
-    body{overflow:auto}
-    .dashboard-frame{height:auto;min-height:96vh}
-    .main-layout{grid-template-columns:1fr}
-    .left-sidebar{
-        display:grid;
-        grid-template-columns:repeat(5,1fr);
-        max-height:74px;
-    }
-    .sidebar-btn-box{min-height:62px}
-    .sidebar-btn-box span{display:none}
-    .metrics-grid{flex:0 0 auto;grid-template-columns:repeat(2,1fr)}
-    .card{min-height:175px}
-    .right-content{overflow:visible}
-    .visualizer-card{height:190px;flex:none}
+#local-audio-file{
+    width:100%;
+    color:#94a3b8;
+    font-size:8px;
 }
 
-@media(max-width:560px){
-    .dashboard-frame{width:100%;margin:0;padding:7px;border-radius:0}
-    .dashboard-header h2{font-size:11px}
-    .status-badge{display:none}
-    .left-sidebar{grid-template-columns:repeat(3,1fr);max-height:none}
-    .metrics-grid{grid-template-columns:1fr 1fr}
-    .card{min-height:155px}
-    .card-value{font-size:18px}
+.music-note{
+    margin-top:10px;
+
+    color:#64748b;
+    font-size:7px;
+    line-height:1.5;
 }
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+.setting-row{
+    margin-top:13px;
+}
+
+.setting-row label{
+    display:block;
+    margin-bottom:6px;
+
+    color:#64748b;
+    font-size:8px;
+    font-weight:800;
+}
+
+.setting-row input,
+.setting-row select{
+    width:100%;
+    padding:9px;
+
+    color:#e2e8f0;
+    background:#081321;
+
+    border:1px solid rgba(148,163,184,.12);
+    border-radius:8px;
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.toast{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+
+    padding:10px 13px;
+
+    color:#e2e8f0;
+    background:#0b1626;
+
+    border:1px solid rgba(34,211,238,.2);
+    border-radius:9px;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.35);
+
+    font-size:8px;
+
+    transform:translateY(20px);
+    opacity:0;
+    pointer-events:none;
+
+    transition:.3s;
+
+    z-index:200;
+}
+
+.toast.show{
+    transform:translateY(0);
+    opacity:1;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:950px){
+
+    :root{
+        --sidebar:190px;
+    }
+
+    .sensor-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:650px){
+
+    .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+    }
+
+    .app{
+        display:block;
+    }
+
+    .main{
+        width:100%;
+        margin-left:0;
+        padding:14px;
+    }
+
+    .sensor-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .weather-main{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .weather-location{
+        text-align:left;
+    }
+
+    .weather-stats{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .weather-actions{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:420px){
+
+    .sensor-grid{
+        grid-template-columns:1fr;
+    }
+
+    .topbar{
+        align-items:flex-start;
+    }
+
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="dashboard-frame">
+<div class="app">
 
-    <!-- HEADER -->
-    <header class="dashboard-header">
-        <div class="header-title-box">
-            <button class="menu-btn" onclick="toggleSidebar()" title="Hide / Show menu">
-                <i class="fa-solid fa-bars"></i>
-            </button>
+<!-- ======================================================
+     SIDEBAR
+====================================================== -->
 
-            <img id="app-logo"
-                 src="https://cdn-icons-png.flaticon.com/512/628/628324.png"
-                 class="custom-logo-img"
-                 alt="Smart Farm Logo">
+<aside class="sidebar">
 
-            <h2 id="app-title">Smart Farm Management System</h2>
+    <div class="logo-area">
+
+        <div class="logo">
+            <img
+                id="system-logo"
+                src="https://cdn-icons-png.flaticon.com/512/2909/2909761.png"
+                alt="Smart Farm Logo">
         </div>
 
-        <div class="header-right">
-            <div class="status-badge">
-                <span class="status-dot"></span>
-                <span>Live System</span>
-            </div>
-            <button class="header-btn" onclick="openSettings()">
-                <i class="fa-solid fa-sliders"></i> Settings
-            </button>
+        <div class="brand">
+            <h1>Smart Farm<br>Management System</h1>
+            <span>IoT Agriculture Platform</span>
         </div>
-    </header>
 
-    <!-- MAIN -->
-    <div class="main-layout" id="main-layout">
-
-        <!-- SIDEBAR -->
-        <aside class="left-sidebar">
-
-            <button class="sidebar-btn-box" onclick="openModal('history-modal')">
-                <i class="fa-solid fa-clock-rotate-left"></i>
-                <span>Sensor History Logs</span>
-            </button>
-
-            <button class="sidebar-btn-box" onclick="openModal('report-modal')">
-                <i class="fa-solid fa-bug"></i>
-                <span>Report Bugs & Issues</span>
-            </button>
-
-            <button class="sidebar-btn-box" onclick="openModal('support-modal')">
-                <i class="fa-solid fa-screwdriver-wrench"></i>
-                <span>Technical Support</span>
-            </button>
-
-            <button class="sidebar-btn-box" onclick="openModal('weather-modal')">
-                <i class="fa-solid fa-cloud-sun"></i>
-                <span>Weather & Map</span>
-            </button>
-
-            <button class="sidebar-btn-box" onclick="openModal('music-modal')">
-                <i class="fa-solid fa-music"></i>
-                <span>Free Music</span>
-            </button>
-
-        </aside>
-
-        <!-- CONTENT -->
-        <main class="right-content">
-
-            <!-- SMALL SENSOR CARDS -->
-            <section class="metrics-grid">
-
-                <!-- HUMIDITY -->
-                <div class="card">
-                    <div class="card-top">
-                        <div class="card-header">Humidity</div>
-                        <div class="card-icon"><i class="fa-solid fa-droplet"></i></div>
-                    </div>
-
-                    <div class="card-value" id="val-humidity">0 %</div>
-
-                    <div class="card-sub">Atmospheric Sensor</div>
-
-                    <div class="mini-bar">
-                        <span id="humidity-bar" style="width:0%"></span>
-                    </div>
-                </div>
-
-                <!-- SOIL -->
-                <div class="card">
-                    <div class="card-top">
-                        <div class="card-header">Soil Moisture</div>
-                        <div class="card-icon"><i class="fa-solid fa-seedling"></i></div>
-                    </div>
-
-                    <div class="card-value" id="val-soil">0 %</div>
-
-                    <div class="card-sub">Moisture Sensor</div>
-
-                    <div class="mini-bar">
-                        <span id="soil-bar" style="width:0%"></span>
-                    </div>
-                </div>
-
-                <!-- RAIN -->
-                <div class="card">
-                    <div class="card-top">
-                        <div class="card-header">Rain Sensor</div>
-                        <div class="card-icon"><i class="fa-solid fa-cloud-rain"></i></div>
-                    </div>
-
-                    <div class="card-value" id="val-rain" style="color:var(--green);font-size:18px">
-                        NORMAL
-                    </div>
-
-                    <div class="card-sub">Precipitation Status</div>
-
-                    <div class="mini-bar">
-                        <span id="rain-bar" style="width:22%;background:linear-gradient(90deg,#22d3ee,#3b82f6)"></span>
-                    </div>
-                </div>
-
-                <!-- PUMP -->
-                <div class="card">
-                    <div class="card-top">
-                        <div class="card-header">Water Pump</div>
-                        <div class="card-icon"><i class="fa-solid fa-faucet-drip"></i></div>
-                    </div>
-
-                    <div class="card-value" id="val-pump" style="color:var(--green);font-size:18px">
-                        OFF
-                    </div>
-
-                    <button id="btn-toggle-pump"
-                            class="pump-button pump-off"
-                            onclick="togglePump()">
-                        Turn On Pump
-                    </button>
-                </div>
-
-            </section>
-
-            <!-- VISUALIZER -->
-            <section class="visualizer-card">
-
-                <div class="visualizer-top">
-                    <div class="visualizer-title">
-                        <i class="fa-solid fa-chart-area"></i>
-                        <span>Analytical Topography & Wave Matrix</span>
-                    </div>
-
-                    <div class="stream-status">
-                        <b><i class="fa-solid fa-circle"></i> LIVE</b>
-                        &nbsp; sensor stream active
-                    </div>
-                </div>
-
-                <div class="scan-line"></div>
-
-                <svg class="wave-svg"
-                     viewBox="0 0 1200 320"
-                     preserveAspectRatio="none">
-
-                    <defs>
-                        <linearGradient id="waterGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#22d3ee"/>
-                            <stop offset="45%" stop-color="#3b82f6"/>
-                            <stop offset="75%" stop-color="#8b5cf6"/>
-                            <stop offset="100%" stop-color="#10b981"/>
-                        </linearGradient>
-
-                        <linearGradient id="waterFill" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stop-color="#22d3ee" stop-opacity=".38"/>
-                            <stop offset="55%" stop-color="#2563eb" stop-opacity=".15"/>
-                            <stop offset="100%" stop-color="#030811" stop-opacity=".96"/>
-                        </linearGradient>
-
-                        <filter id="glow">
-                            <feGaussianBlur stdDeviation="3" result="blur"/>
-                            <feMerge>
-                                <feMergeNode in="blur"/>
-                                <feMergeNode in="SourceGraphic"/>
-                            </feMerge>
-                        </filter>
-                    </defs>
-
-                    <path id="dynamic-wave-fill"
-                          d="M0,170 Q150,90 300,150 T600,130 T900,170 T1200,100 L1200,320 L0,320 Z"
-                          fill="url(#waterFill)"/>
-
-                    <path class="wave-line"
-                          id="dynamic-wave-line"
-                          d="M0,155 C150,55 250,210 400,110 C550,180 700,70 850,130 C1000,75 1100,190 1200,90"
-                          fill="none"
-                          stroke="url(#waterGrad)"
-                          stroke-width="4"
-                          filter="url(#glow)"/>
-
-                    <path d="M0,210 C160,145 260,230 420,175 C570,230 720,150 860,205 C1000,155 1110,235 1200,180"
-                          fill="none"
-                          stroke="rgba(255,255,255,.08)"
-                          stroke-width="1.5"/>
-
-                </svg>
-
-                <div class="wave-labels">
-                    <span>0%</span>
-                    <span>25%</span>
-                    <span>50%</span>
-                    <span>75%</span>
-                    <span>100%</span>
-                </div>
-
-            </section>
-
-        </main>
     </div>
+
+    <div class="live-pill">
+        <span class="status-dot"></span>
+        LIVE SYSTEM
+    </div>
+
+    <nav class="nav">
+
+        <button class="active" onclick="goDashboard()">
+            <i class="fa-solid fa-gauge-high"></i>
+            Dashboard
+        </button>
+
+        <button onclick="openModal('history-modal')">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            Sensor History Logs
+        </button>
+
+        <button onclick="openModal('bug-modal')">
+            <i class="fa-solid fa-bug"></i>
+            Report Bugs & Issues
+        </button>
+
+        <button onclick="openModal('support-modal')">
+            <i class="fa-solid fa-headset"></i>
+            Technical Support
+        </button>
+
+        <!-- UPDATED WEATHER -->
+        <button onclick="openModal('weather-modal')">
+            <i class="fa-solid fa-cloud-sun-rain"></i>
+            Live Farm Weather
+        </button>
+
+        <!-- UPDATED MUSIC -->
+        <button onclick="openModal('music-modal')">
+            <i class="fa-solid fa-wheat-awn"></i>
+            Farmer Lofi Music
+        </button>
+
+        <button onclick="openModal('settings-modal')">
+            <i class="fa-solid fa-sliders"></i>
+            Dashboard Settings
+        </button>
+
+    </nav>
+
+</aside>
+
+
+<!-- ======================================================
+     MAIN
+====================================================== -->
+
+<main class="main">
+
+    <div class="topbar">
+
+        <div class="top-title">
+            <h2>Smart Farm Dashboard</h2>
+            <p>Real-time monitoring and intelligent farm management</p>
+        </div>
+
+        <div class="top-actions">
+
+            <button class="top-btn"
+                    title="Refresh sensors"
+                    onclick="refreshSensors()">
+                <i class="fa-solid fa-rotate"></i>
+            </button>
+
+            <button class="top-btn"
+                    title="Weather"
+                    onclick="openModal('weather-modal')">
+                <i class="fa-solid fa-cloud-sun"></i>
+            </button>
+
+            <button class="top-btn"
+                    title="Settings"
+                    onclick="openModal('settings-modal')">
+                <i class="fa-solid fa-gear"></i>
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         SENSOR CARDS
+    ================================================== -->
+
+    <section class="sensor-grid">
+
+        <div class="sensor-card">
+
+            <div class="sensor-top">
+                <div class="sensor-icon">
+                    <i class="fa-solid fa-droplet"></i>
+                </div>
+
+                <span class="sensor-status">LIVE</span>
+            </div>
+
+            <div class="sensor-name">
+                Humidity
+            </div>
+
+            <div class="sensor-value">
+                <span id="humidity-value">0</span><small>%</small>
+            </div>
+
+            <div class="progress">
+                <span id="humidity-progress"></span>
+            </div>
+
+        </div>
+
+
+        <div class="sensor-card">
+
+            <div class="sensor-top">
+                <div class="sensor-icon">
+                    <i class="fa-solid fa-seedling"></i>
+                </div>
+
+                <span class="sensor-status">LIVE</span>
+            </div>
+
+            <div class="sensor-name">
+                Soil Moisture
+            </div>
+
+            <div class="sensor-value">
+                <span id="soil-value">0</span><small>%</small>
+            </div>
+
+            <div class="progress">
+                <span id="soil-progress"></span>
+            </div>
+
+        </div>
+
+
+        <div class="sensor-card">
+
+            <div class="sensor-top">
+                <div class="sensor-icon">
+                    <i class="fa-solid fa-cloud-rain"></i>
+                </div>
+
+                <span class="sensor-status">LIVE</span>
+            </div>
+
+            <div class="sensor-name">
+                Rain Sensor
+            </div>
+
+            <div class="sensor-value"
+                 id="rain-value">
+                NORMAL
+            </div>
+
+            <div class="progress">
+                <span id="rain-progress"></span>
+            </div>
+
+        </div>
+
+
+        <div class="sensor-card">
+
+            <div class="sensor-top">
+                <div class="sensor-icon">
+                    <i class="fa-solid fa-faucet-drip"></i>
+                </div>
+
+                <span class="sensor-status">SYSTEM</span>
+            </div>
+
+            <div class="sensor-name">
+                Water Pump
+            </div>
+
+            <div class="sensor-value"
+                 id="pump-value">
+                OFF
+            </div>
+
+            <div class="pump-status">
+
+                <span class="pump-state"
+                      id="pump-state">
+                    Pump inactive
+                </span>
+
+                <button class="pump-toggle"
+                        onclick="togglePump()"
+                        id="pump-button">
+                    Turn On Pump
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         ANALYTICAL WAVE
+    ================================================== -->
+
+    <section class="analytics">
+
+        <div class="section-head">
+
+            <h3>
+                <i class="fa-solid fa-chart-line"></i>
+                Analytical Topography & Wave Matrix
+            </h3>
+
+            <div class="live-text">
+                <span class="status-dot"></span>
+                LIVE SENSOR STREAM
+            </div>
+
+        </div>
+
+        <div class="wave">
+
+            <svg
+                viewBox="0 0 1000 180"
+                preserveAspectRatio="none">
+
+                <path
+                    class="wave-path"
+                    d="M0 95
+                       C50 60,80 120,130 88
+                       S210 65,260 100
+                       S340 130,390 82
+                       S470 55,520 95
+                       S600 135,650 88
+                       S730 50,780 94
+                       S860 125,910 82
+                       S970 60,1000 95"/>
+
+                <path
+                    class="wave-path two"
+                    d="M0 120
+                       C60 90,100 145,150 110
+                       S240 85,300 120
+                       S390 145,450 105
+                       S540 80,600 118
+                       S690 150,750 108
+                       S840 85,900 120
+                       S960 140,1000 112"/>
+
+            </svg>
+
+        </div>
+
+        <div class="wave-labels">
+            <span>0%</span>
+            <span>25%</span>
+            <span>50%</span>
+            <span>75%</span>
+            <span>100%</span>
+        </div>
+
+    </section>
+
+</main>
+
 </div>
 
 
-<!-- ================= MODALS ================= -->
+<!-- ======================================================
+     HISTORY MODAL
+====================================================== -->
 
-<!-- HISTORY -->
 <div class="modal-overlay" id="history-modal">
-    <div class="modal-box" style="max-width:700px">
-        <button class="btn-close" onclick="closeModal('history-modal')">✖</button>
-        <h3><i class="fa-solid fa-clock-rotate-left"></i> Sensor History Logs</h3>
 
-        <div style="max-height:330px;overflow:auto">
-            <table class="history-table">
+    <div class="modal-box">
+
+        <button class="btn-close"
+                onclick="closeModal('history-modal')">
+            ✖
+        </button>
+
+        <h3>
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            Sensor History Logs
+        </h3>
+
+        <div class="table-wrap">
+
+            <table>
+
                 <thead>
+
                     <tr>
                         <th>ID</th>
                         <th>Humidity</th>
@@ -883,569 +1604,1800 @@ button,input,select,textarea{font:inherit}
                         <th>Pump</th>
                         <th>Timestamp</th>
                     </tr>
+
                 </thead>
-                <tbody id="history-table-body">
+
+                <tbody id="history-body">
+
                     <tr>
-                        <td colspan="6" style="text-align:center;color:#64748b">
-                            Fetching live logs...
+                        <td colspan="6">
+                            Loading sensor history...
                         </td>
                     </tr>
+
                 </tbody>
+
             </table>
+
         </div>
+
     </div>
+
 </div>
 
-<!-- REPORT -->
-<div class="modal-overlay" id="report-modal">
+
+<!-- ======================================================
+     BUG REPORT
+====================================================== -->
+
+<div class="modal-overlay" id="bug-modal">
+
     <div class="modal-box">
-        <button class="btn-close" onclick="closeModal('report-modal')">✖</button>
-        <h3><i class="fa-solid fa-bug"></i> Report Bugs & Issues</h3>
+
+        <button class="btn-close"
+                onclick="closeModal('bug-modal')">
+            ✖
+        </button>
+
+        <h3>
+            <i class="fa-solid fa-bug"></i>
+            Report Bugs & Issues
+        </h3>
 
         <div class="form-group">
             <label>User Name</label>
-            <input type="text" id="bug-name" placeholder="Isulat ang imong ngalan...">
+            <input
+                class="form-control"
+                id="bug-name"
+                placeholder="Enter your name">
         </div>
 
         <div class="form-group">
             <label>Farm Location</label>
-            <input type="text" id="bug-location" placeholder="Pananglitan: Ubay, Bohol">
+            <input
+                class="form-control"
+                id="bug-location"
+                placeholder="Example: Ubay, Bohol">
         </div>
 
         <div class="form-group">
             <label>Issue Category</label>
-            <select id="bug-cat">
-                <option value="Sensor Disconnected">Sensor Disconnected</option>
-                <option value="Water Pump Failure">Water Pump Failure</option>
-                <option value="Database Sync Error">Database Sync Error</option>
-                <option value="UI Glitch">Dashboard UI Glitch</option>
+
+            <select
+                class="form-control"
+                id="bug-category">
+
+                <option>Sensor Problem</option>
+                <option>Water Pump Problem</option>
+                <option>Dashboard Error</option>
+                <option>Weather Data Problem</option>
+                <option>Other</option>
+
             </select>
+
         </div>
 
         <div class="form-group">
             <label>Description</label>
-            <textarea id="bug-desc" rows="3" placeholder="Describe the issue..."></textarea>
+
+            <textarea
+                class="form-control"
+                id="bug-description"
+                placeholder="Describe the problem..."></textarea>
+
         </div>
 
-        <button class="btn-action" onclick="submitBug()">Submit Report</button>
+        <button
+            class="primary-btn"
+            onclick="submitBug()">
+
+            <i class="fa-solid fa-paper-plane"></i>
+            Submit Report
+
+        </button>
+
     </div>
+
 </div>
 
-<!-- SUPPORT -->
+
+<!-- ======================================================
+     SUPPORT
+====================================================== -->
+
 <div class="modal-overlay" id="support-modal">
-    <div class="modal-box" style="text-align:center">
-        <button class="btn-close" onclick="closeModal('support-modal')">✖</button>
-        <h3><i class="fa-solid fa-screwdriver-wrench"></i> Technical Support</h3>
 
-        <div style="margin:20px 0">
-            <a href="https://www.facebook.com"
-               target="_blank"
-               style="display:inline-flex;align-items:center;gap:10px;padding:11px 20px;border-radius:30px;text-decoration:none;color:#fff;background:rgba(24,119,242,.12);border:1px solid #1877f2;font-weight:800;font-size:11px">
-                <i class="fa-brands fa-facebook" style="font-size:20px;color:#1877f2"></i>
-                Alfrancis Sastrillas
-            </a>
-            <p style="margin-top:12px;color:#64748b;font-size:9px">
-                Click the Facebook button above to contact support.
-            </p>
-        </div>
-    </div>
-</div>
-
-<!-- WEATHER -->
-<div class="modal-overlay" id="weather-modal">
-    <div class="modal-box" style="max-width:650px">
-        <button class="btn-close" onclick="closeModal('weather-modal')">✖</button>
-        <h3><i class="fa-solid fa-cloud-sun"></i> Weather Update & Live Map</h3>
-
-        <div style="display:flex;flex-direction:column;gap:10px">
-
-            <div style="padding:12px;border:1px solid rgba(34,211,238,.18);border-radius:9px;background:#0c1728;display:flex;justify-content:space-between;gap:15px">
-                <div>
-                    <h4 style="color:#67e8f9;font-size:12px">Ubay Agricultural Hub, Bohol</h4>
-                    <p style="margin-top:3px;color:#64748b;font-size:9px">
-                        Live Weather Conditions: Ideal for Farming
-                    </p>
-                </div>
-
-                <div style="text-align:right">
-                    <span style="font-size:18px;font-weight:900;color:#34d399">31°C</span>
-                    <div style="color:#64748b;font-size:8px">Humidity: 74% | Wind: 12 km/h</div>
-                </div>
-            </div>
-
-            <div style="height:230px;border-radius:9px;overflow:hidden;border:1px solid rgba(34,211,238,.18)">
-                <iframe
-                    width="100%"
-                    height="100%"
-                    style="border:0"
-                    allowfullscreen
-                    loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62865.986874567!2d124.45!3d10.06!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33aa7556a8d8e5b9%3A0x4a0b2d6a3b2b0a0!2sUbay%2C%20Bohol%2C%20Philippines!5e0!3m2!1sen!2sph!4v1700000000000!5m2!1sen!2sph">
-                </iframe>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- MUSIC -->
-<div class="modal-overlay" id="music-modal">
     <div class="modal-box">
-        <button class="btn-close" onclick="closeModal('music-modal')">✖</button>
-        <h3><i class="fa-solid fa-music"></i> Free Music Ambient Player</h3>
 
-        <p style="color:#64748b;font-size:9px;margin-bottom:10px">
-            Pili ug music file gikan sa imong computer.
+        <button class="btn-close"
+                onclick="closeModal('support-modal')">
+            ✖
+        </button>
+
+        <h3>
+            <i class="fa-solid fa-headset"></i>
+            Technical Support
+        </h3>
+
+        <div style="
+            margin-top:15px;
+            padding:16px;
+            border:1px solid rgba(34,211,238,.12);
+            border-radius:10px;
+            background:#081321;
+        ">
+
+            <p style="
+                color:#94a3b8;
+                font-size:9px;
+                line-height:1.7;
+            ">
+
+                For technical assistance, system maintenance,
+                sensor troubleshooting, and dashboard support,
+                contact the Smart Farm technical support team.
+
+            </p>
+
+            <a
+                href="https://www.facebook.com/"
+                target="_blank"
+                rel="noopener"
+                class="primary-btn"
+                style="
+                    display:inline-block;
+                    text-decoration:none;
+                ">
+
+                <i class="fa-brands fa-facebook"></i>
+                Contact Support
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     LIVE WEATHER MODAL
+====================================================== -->
+
+<div class="modal-overlay" id="weather-modal">
+
+    <div class="modal-box weather-box">
+
+        <button class="btn-close"
+                onclick="closeModal('weather-modal')">
+            ✖
+        </button>
+
+
+        <div class="weather-heading">
+
+            <div>
+
+                <div class="weather-kicker">
+                    <i class="fa-solid fa-satellite-dish"></i>
+                    LIVE WEATHER
+                </div>
+
+                <h3>
+                    <i class="fa-solid fa-cloud-sun-rain"></i>
+                    Ubay Farm Weather
+                </h3>
+
+                <p
+                    class="weather-date"
+                    id="weather-date">
+                    Loading today's conditions...
+                </p>
+
+            </div>
+
+            <div class="weather-live">
+
+                <span class="status-dot"></span>
+
+                LIVE
+
+            </div>
+
+        </div>
+
+
+        <div class="weather-main">
+
+            <div class="weather-temp">
+
+                <div
+                    id="weather-icon"
+                    class="big-weather-icon">
+
+                    <i class="fa-solid fa-cloud-sun"></i>
+
+                </div>
+
+                <div>
+
+                    <strong id="weather-temp-value">
+                        --°C
+                    </strong>
+
+                    <span id="weather-condition">
+                        Loading...
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="weather-location">
+
+                <i class="fa-solid fa-location-dot"></i>
+
+                <div>
+
+                    <b>
+                        Ubay, Bohol, Philippines
+                    </b>
+
+                    <small>
+                        Agricultural Monitoring Location
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="weather-stats">
+
+            <div class="weather-stat">
+
+                <i class="fa-solid fa-droplet"></i>
+
+                <span>
+                    Humidity
+                </span>
+
+                <b id="weather-humidity">
+                    --%
+                </b>
+
+            </div>
+
+
+            <div class="weather-stat">
+
+                <i class="fa-solid fa-cloud-rain"></i>
+
+                <span>
+                    Rain Chance Today
+                </span>
+
+                <b id="weather-rain-chance">
+                    --%
+                </b>
+
+            </div>
+
+
+            <div class="weather-stat">
+
+                <i class="fa-solid fa-cloud-showers-heavy"></i>
+
+                <span>
+                    Rain Now
+                </span>
+
+                <b id="weather-rain-now">
+                    -- mm
+                </b>
+
+            </div>
+
+
+            <div class="weather-stat">
+
+                <i class="fa-solid fa-wind"></i>
+
+                <span>
+                    Wind
+                </span>
+
+                <b id="weather-wind">
+                    -- km/h
+                </b>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="weather-alert"
+            id="weather-alert">
+
+            <i class="fa-solid fa-cloud"></i>
+
+            <span>
+                Checking current precipitation...
+            </span>
+
+        </div>
+
+
+        <div class="weather-actions">
+
+            <button
+                class="weather-map-btn"
+                onclick="openGoogleMaps()">
+
+                <i class="fa-solid fa-map-location-dot"></i>
+
+                Open Ubay in Google Maps
+
+            </button>
+
+
+            <button
+                class="weather-refresh-btn"
+                onclick="loadWeather()">
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Refresh
+
+            </button>
+
+        </div>
+
+
+        <div class="weather-footer">
+
+            Weather automatically refreshes every 10 minutes.
+
+            <span id="weather-updated">
+                Waiting for update...
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     FARMER LOFI MUSIC
+====================================================== -->
+
+<div class="modal-overlay" id="music-modal">
+
+    <div class="modal-box farm-music-box">
+
+        <button class="btn-close"
+                onclick="closeModal('music-modal')">
+            ✖
+        </button>
+
+
+        <h3>
+            <i class="fa-solid fa-wheat-awn"></i>
+            Farmer Lofi Music
+        </h3>
+
+
+        <p class="music-intro">
+
+            Relaxing lofi, nature-inspired sounds, and
+            peaceful field music for farming, planting,
+            irrigation, harvesting, and farm monitoring.
+
         </p>
 
-        <input type="file"
-               id="local-audio-file"
-               accept="audio/*"
-               onchange="loadLocalMusic(event)"
-               style="width:100%;font-size:10px;color:#94a3b8">
 
-        <audio id="audio-player"
-               controls
-               style="width:100%;margin-top:12px;display:none">
-        </audio>
+        <div class="music-grid">
+
+
+            <a
+                class="music-card"
+                href="https://pixabay.com/music/search/farmers%20field/"
+                target="_blank"
+                rel="noopener">
+
+                <span class="music-art">
+                    <i class="fa-solid fa-wheat-awn"></i>
+                </span>
+
+                <span>
+
+                    <b>
+                        Farm & Field Sounds
+                    </b>
+
+                    <small>
+                        Nature • Agriculture • Rural
+                    </small>
+
+                </span>
+
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+
+            </a>
+
+
+            <a
+                class="music-card"
+                href="https://pixabay.com/music/search/lofi/"
+                target="_blank"
+                rel="noopener">
+
+                <span class="music-art">
+                    <i class="fa-solid fa-headphones"></i>
+                </span>
+
+                <span>
+
+                    <b>
+                        Farmer Lofi Beats
+                    </b>
+
+                    <small>
+                        Chill • Lofi • Focus
+                    </small>
+
+                </span>
+
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+
+            </a>
+
+
+            <a
+                class="music-card"
+                href="https://pixabay.com/music/beats-fields-lofi-vibes-216042/"
+                target="_blank"
+                rel="noopener">
+
+                <span class="music-art">
+                    <i class="fa-solid fa-seedling"></i>
+                </span>
+
+                <span>
+
+                    <b>
+                        Fields - Lofi Vibes
+                    </b>
+
+                    <small>
+                        Relaxing • Field • Lofi
+                    </small>
+
+                </span>
+
+                <i class="fa-solid fa-play"></i>
+
+            </a>
+
+
+        </div>
+
+
+        <div class="local-music-panel">
+
+            <div class="local-music-title">
+
+                <i class="fa-solid fa-folder-open"></i>
+
+                Play Your Own Farm Playlist
+
+            </div>
+
+
+            <input
+                type="file"
+                id="local-audio-file"
+                accept="audio/*"
+                onchange="loadLocalMusic(event)">
+
+
+            <audio
+                id="audio-player"
+                controls
+                preload="none"
+                style="
+                    width:100%;
+                    margin-top:10px;
+                    display:none;
+                ">
+            </audio>
+
+        </div>
+
+
+        <div class="music-note">
+
+            <i class="fa-solid fa-circle-info"></i>
+
+            Browse the linked music libraries for
+            farming, nature, and relaxing lofi tracks.
+
+        </div>
+
     </div>
+
 </div>
 
-<!-- SETTINGS -->
+
+<!-- ======================================================
+     SETTINGS
+====================================================== -->
+
 <div class="modal-overlay" id="settings-modal">
+
     <div class="modal-box">
-        <button class="btn-close" onclick="closeModal('settings-modal')">✖</button>
-        <h3><i class="fa-solid fa-sliders"></i> Dashboard Settings</h3>
 
-        <div class="form-group">
-            <label>Accent Color</label>
-            <select id="input-theme" onchange="changeTheme(this.value)">
-                <option value="#22d3ee">Cyber Cyan</option>
-                <option value="#10b981">Emerald Green</option>
-                <option value="#a855f7">Neon Purple</option>
-                <option value="#facc15">Cyber Gold</option>
-                <option value="#3b82f6">Electric Blue</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>System Logo Upload</label>
-            <input type="file" accept="image/*" onchange="uploadLogo(event)">
-        </div>
-
-        <button class="btn-action" onclick="closeModal('settings-modal')">
-            Save Settings
+        <button class="btn-close"
+                onclick="closeModal('settings-modal')">
+            ✖
         </button>
+
+        <h3>
+            <i class="fa-solid fa-sliders"></i>
+            Dashboard Settings
+        </h3>
+
+
+        <div class="setting-row">
+
+            <label>
+                Accent Color
+            </label>
+
+            <select
+                id="accent-color"
+                onchange="changeAccent(this.value)">
+
+                <option value="cyan">
+                    Cyan
+                </option>
+
+                <option value="green">
+                    Farm Green
+                </option>
+
+                <option value="blue">
+                    Ocean Blue
+                </option>
+
+                <option value="orange">
+                    Harvest Orange
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <label>
+                System Logo
+            </label>
+
+            <input
+                type="file"
+                id="logo-upload"
+                accept="image/*"
+                onchange="previewLogo(event)">
+
+        </div>
+
+
+        <button
+            class="primary-btn"
+            onclick="saveSettings()">
+
+            <i class="fa-solid fa-floppy-disk"></i>
+
+            Save Settings
+
+        </button>
+
     </div>
+
+</div>
+
+
+<!-- ======================================================
+     TOAST
+====================================================== -->
+
+<div
+    class="toast"
+    id="toast">
 </div>
 
 
 <script>
-/* =========================================================
-   SUPABASE
-   ========================================================= */
-
-const SUPABASE_URL = 'https://fqqwlvreqnxkbvbjjrol.supabase.co';
-
-const SUPABASE_KEY =
-'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxcXdsdnJlcW54a2J2Ympqcm9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NjI4NjksImV4cCI6MjEwMzIzODg2OX0.J_-GrhljQrMhJnzmSMhSJYUFCR7moiUF3oBIOW0YWUQ';
-
-const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
 
 /* =========================================================
-   MODALS
-   ========================================================= */
+   BASIC MODALS
+========================================================= */
 
 function openModal(id){
-    document.getElementById(id).style.display='flex';
+
+    const modal=document.getElementById(id);
+
+    if(modal){
+
+        modal.classList.add('open');
+
+        if(id==='weather-modal'){
+            loadWeather();
+        }
+
+        if(id==='history-modal'){
+            renderHistory();
+        }
+
+    }
+
 }
+
 
 function closeModal(id){
-    document.getElementById(id).style.display='none';
-}
 
-function openSettings(){
-    openModal('settings-modal');
-}
+    const modal=document.getElementById(id);
 
-window.addEventListener('click',function(e){
-    if(e.target.classList.contains('modal-overlay')){
-        e.target.style.display='none';
+    if(modal){
+        modal.classList.remove('open');
     }
+
+}
+
+
+document.querySelectorAll('.modal-overlay').forEach(modal=>{
+
+    modal.addEventListener('click',function(e){
+
+        if(e.target===modal){
+            modal.classList.remove('open');
+        }
+
+    });
+
 });
 
 
-/* =========================================================
-   SIDEBAR
-   ========================================================= */
+document.addEventListener('keydown',function(e){
 
-function toggleSidebar(){
-    document.getElementById('main-layout')
-        .classList.toggle('sidebar-hidden');
+    if(e.key==='Escape'){
+
+        document
+            .querySelectorAll('.modal-overlay.open')
+            .forEach(modal=>{
+                modal.classList.remove('open');
+            });
+
+    }
+
+});
+
+
+function goDashboard(){
+
+    window.scrollTo({
+        top:0,
+        behavior:'smooth'
+    });
+
 }
 
 
 /* =========================================================
-   LOCAL MUSIC
-   ========================================================= */
+   SENSOR SIMULATION
+========================================================= */
 
-function loadLocalMusic(event){
-    const file=event.target.files[0];
+let sensorData={
+    humidity:0,
+    soil:0,
+    rain:'NORMAL',
+    pump:false
+};
 
-    if(file){
-        const player=document.getElementById('audio-player');
 
-        player.src=URL.createObjectURL(file);
-        player.style.display='block';
+function randomSensorValue(min,max){
 
-        player.play().catch(()=>{});
-    }
+    return Math.round(
+        Math.random()*(max-min)+min
+    );
+
 }
 
 
-/* =========================================================
-   REPORT BUG
-   ========================================================= */
+function updateSensors(){
 
-async function submitBug(){
+    sensorData.humidity=randomSensorValue(60,88);
+    sensorData.soil=randomSensorValue(35,82);
 
-    const name=document.getElementById('bug-name').value.trim();
-    const location=document.getElementById('bug-location').value.trim();
-    const category=document.getElementById('bug-cat').value;
-    const description=document.getElementById('bug-desc').value.trim();
+    const rainRandom=Math.random();
 
-    if(!name || !location || !description){
-        alert('Palihug og butang sa imong ngalan, lokasyon, ug deskripsyon sa isyu.');
-        return;
-    }
+    sensorData.rain=
+        rainRandom>0.72
+        ? 'RAIN DETECTED'
+        : 'NORMAL';
 
-    const {error}=await _supabase
-        .from('farm_reports')
-        .insert([{
-            name:name,
-            location:location,
-            issue_type:category,
-            description:description
-        }]);
 
-    if(error){
+    document.getElementById('humidity-value')
+        .innerText=sensorData.humidity;
 
-        alert('Sayop sa pag-submit: '+error.message);
+    document.getElementById('soil-value')
+        .innerText=sensorData.soil;
+
+    document.getElementById('rain-value')
+        .innerText=sensorData.rain;
+
+
+    document.getElementById('humidity-progress')
+        .style.width=sensorData.humidity+'%';
+
+    document.getElementById('soil-progress')
+        .style.width=sensorData.soil+'%';
+
+    document.getElementById('rain-progress')
+        .style.width=
+            sensorData.rain==='NORMAL'
+            ? '18%'
+            : '100%';
+
+
+    if(sensorData.rain==='RAIN DETECTED'){
+
+        document.getElementById('rain-value')
+            .style.color='#22d3ee';
 
     }else{
 
-        alert('Salamat, '+name+'! Na-submit na ang imong report.');
+        document.getElementById('rain-value')
+            .style.color='#f8fafc';
 
-        document.getElementById('bug-name').value='';
-        document.getElementById('bug-location').value='';
-        document.getElementById('bug-desc').value='';
-
-        closeModal('report-modal');
     }
+
+}
+
+
+function refreshSensors(){
+
+    updateSensors();
+
+    showToast(
+        'Sensor data refreshed'
+    );
+
+    renderHistory();
+
 }
 
 
 /* =========================================================
-   THEME
-   ========================================================= */
+   WATER PUMP
+========================================================= */
 
-function changeTheme(color){
+function togglePump(){
 
-    document.documentElement
-        .style.setProperty('--cyan',color);
+    sensorData.pump=!sensorData.pump;
 
-    document.documentElement
-        .style.setProperty('--line',color+'55');
+    const value=document.getElementById('pump-value');
+    const state=document.getElementById('pump-state');
+    const button=document.getElementById('pump-button');
 
-    localStorage.setItem('theme_color',color);
+
+    if(sensorData.pump){
+
+        value.innerText='ON';
+        value.style.color='#34d399';
+
+        state.innerText='Pump active';
+
+        button.innerText='Turn Off Pump';
+
+    }else{
+
+        value.innerText='OFF';
+        value.style.color='#f8fafc';
+
+        state.innerText='Pump inactive';
+
+        button.innerText='Turn On Pump';
+
+    }
+
+
+    saveHistory();
+
+    showToast(
+        sensorData.pump
+        ? 'Water pump turned ON'
+        : 'Water pump turned OFF'
+    );
+
 }
 
 
 /* =========================================================
-   LOGO
-   ========================================================= */
+   HISTORY
+========================================================= */
 
-function uploadLogo(event){
+let historyData=[];
 
-    const file=event.target.files[0];
 
-    if(!file)return;
+function saveHistory(){
 
-    const reader=new FileReader();
+    historyData.unshift({
 
-    reader.onload=(e)=>{
+        id:Date.now(),
 
-        document.getElementById('app-logo').src=e.target.result;
+        humidity:sensorData.humidity,
 
-        localStorage.setItem(
-            'custom_logo',
-            e.target.result
-        );
-    };
+        soil:sensorData.soil,
 
-    reader.readAsDataURL(file);
+        rain:sensorData.rain,
+
+        pump:sensorData.pump
+            ? 'ON'
+            : 'OFF',
+
+        timestamp:new Date()
+            .toLocaleTimeString()
+
+    });
+
+
+    historyData=historyData.slice(0,15);
+
 }
 
 
-/* =========================================================
-   SENSOR HELPERS
-   ========================================================= */
+function renderHistory(){
 
-function safePercent(value){
+    const body=
+        document.getElementById('history-body');
 
-    const number=Number(value);
+    if(historyData.length===0){
 
-    if(Number.isNaN(number))return 0;
-
-    return Math.max(0,Math.min(100,number));
-}
-
-
-/* =========================================================
-   LIVE TELEMETRY
-   ========================================================= */
-
-async function loadTelemetry(){
-
-    const {data,error}=await _supabase
-        .from('sensor_data')
-        .select('*')
-        .order('id',{ascending:false})
-        .limit(30);
-
-    if(error){
-        console.error('Telemetry error:',error);
-        return;
-    }
-
-    if(!data || data.length===0){
-        return;
-    }
-
-    const latest=data[0];
-
-    const hum=safePercent(latest.humidity ?? 0);
-    const soil=safePercent(latest.soil_moisture ?? 0);
-
-    /* humidity */
-    document.getElementById('val-humidity').innerText =
-        hum+' %';
-
-    document.getElementById('humidity-bar').style.width =
-        hum+'%';
-
-
-    /* soil */
-    document.getElementById('val-soil').innerText =
-        soil+' %';
-
-    document.getElementById('soil-bar').style.width =
-        soil+'%';
-
-
-    /* rain */
-    const rainVal=document.getElementById('val-rain');
-    const rainBar=document.getElementById('rain-bar');
-
-    if(latest.rain_status!==undefined){
-
-        const isRaining=!!latest.rain_status;
-
-        rainVal.innerText=
-            isRaining ? 'RAINING' : 'NORMAL';
-
-        rainVal.style.color=
-            isRaining ? '#22d3ee' : '#10b981';
-
-        rainBar.style.width=
-            isRaining ? '85%' : '22%';
-    }
-
-
-    /* pump */
-    if(latest.pump_status!==undefined){
-
-        const isPumpOn=!!latest.pump_status;
-
-        const pumpVal=
-            document.getElementById('val-pump');
-
-        const toggleBtn=
-            document.getElementById('btn-toggle-pump');
-
-        pumpVal.innerText=
-            isPumpOn ? 'ON' : 'OFF';
-
-        pumpVal.style.color=
-            isPumpOn ? '#ef4444' : '#10b981';
-
-        toggleBtn.innerText=
-            isPumpOn ? 'Turn Off Pump' : 'Turn On Pump';
-
-        toggleBtn.className=
-            isPumpOn
-            ? 'pump-button pump-on'
-            : 'pump-button pump-off';
-    }
-
-
-    /* animated wave according to soil */
-    const waveHeight=
-        Math.max(
-            75,
-            Math.min(
-                240,
-                255-(soil*1.55)
-            )
-        );
-
-    const fillPath=
-        `M0,${waveHeight}
-         Q150,${waveHeight-70} 300,${waveHeight}
-         T600,${waveHeight-35}
-         T900,${waveHeight+25}
-         T1200,${waveHeight-45}
-         L1200,320 L0,320 Z`;
-
-    document
-        .getElementById('dynamic-wave-fill')
-        .setAttribute('d',fillPath);
-
-
-    /* history */
-    const tbody=
-        document.getElementById('history-table-body');
-
-    tbody.innerHTML='';
-
-    data.forEach(row=>{
-
-        const tr=document.createElement('tr');
-
-        const dateStr=
-            row.created_at
-            ? new Date(row.created_at).toLocaleString()
-            : 'N/A';
-
-        const pumpTxt=
-            row.pump_status
-            ? '<span style="color:#ef4444;font-weight:800">ON</span>'
-            : '<span style="color:#10b981;font-weight:800">OFF</span>';
-
-        const rainTxt=
-            row.rain_status
-            ? '<span style="color:#22d3ee">RAINING</span>'
-            : '<span style="color:#10b981">NORMAL</span>';
-
-        tr.innerHTML=`
-            <td>${row.id ?? '-'}</td>
-            <td>${row.humidity ?? 0}%</td>
-            <td>${row.soil_moisture ?? 0}%</td>
-            <td>${rainTxt}</td>
-            <td>${pumpTxt}</td>
-            <td>${dateStr}</td>
+        body.innerHTML=`
+            <tr>
+                <td colspan="6">
+                    No history records available yet.
+                </td>
+            </tr>
         `;
 
-        tbody.appendChild(tr);
-    });
+        return;
+    }
+
+
+    body.innerHTML=
+        historyData.map(item=>`
+
+            <tr>
+
+                <td>${item.id}</td>
+
+                <td>${item.humidity}%</td>
+
+                <td>${item.soil}%</td>
+
+                <td>${item.rain}</td>
+
+                <td>${item.pump}</td>
+
+                <td>${item.timestamp}</td>
+
+            </tr>
+
+        `).join('');
+
 }
 
 
 /* =========================================================
-   PUMP CONTROL
-   ========================================================= */
+   BUG REPORT
+========================================================= */
 
-async function togglePump(){
+function submitBug(){
 
-    const {data,error}=await _supabase
-        .from('sensor_data')
-        .select('*')
-        .order('id',{ascending:false})
-        .limit(1);
+    const name=
+        document.getElementById('bug-name').value.trim();
 
-    if(error){
-        alert('Pump error: '+error.message);
+    const location=
+        document.getElementById('bug-location').value.trim();
+
+    const category=
+        document.getElementById('bug-category').value;
+
+    const description=
+        document.getElementById('bug-description').value.trim();
+
+
+    if(!name || !location || !description){
+
+        showToast(
+            'Please complete all required fields.'
+        );
+
+        return;
+
+    }
+
+
+    const report={
+        name,
+        location,
+        category,
+        description,
+        timestamp:new Date().toISOString()
+    };
+
+
+    const reports=
+        JSON.parse(
+            localStorage.getItem('smartFarmReports') || '[]'
+        );
+
+
+    reports.unshift(report);
+
+    localStorage.setItem(
+        'smartFarmReports',
+        JSON.stringify(reports)
+    );
+
+
+    document.getElementById('bug-name').value='';
+    document.getElementById('bug-location').value='';
+    document.getElementById('bug-description').value='';
+
+
+    closeModal('bug-modal');
+
+    showToast(
+        'Issue report submitted successfully.'
+    );
+
+}
+
+
+/* =========================================================
+   FARMER MUSIC
+========================================================= */
+
+function loadLocalMusic(event){
+
+    const file=
+        event.target.files[0];
+
+    if(!file){
         return;
     }
 
-    const currentStatus=
-        data && data.length>0
-        ? !!data[0].pump_status
-        : false;
 
-    const newStatus=!currentStatus;
+    const player=
+        document.getElementById('audio-player');
 
-    const soil=
-        data && data[0]
-        ? data[0].soil_moisture
-        : 0;
 
-    const hum=
-        data && data[0]
-        ? data[0].humidity
-        : 0;
+    if(player.dataset.objectUrl){
 
-    const rain=
-        data && data[0]
-        ? data[0].rain_status
-        : false;
+        URL.revokeObjectURL(
+            player.dataset.objectUrl
+        );
 
-    const {error:insertError}=
-        await _supabase
-        .from('sensor_data')
-        .insert([{
-            humidity:hum,
-            soil_moisture:soil,
-            rain_status:rain,
-            pump_status:newStatus
-        }]);
+    }
 
-    if(insertError){
 
-        alert('Unable to update pump: '+insertError.message);
+    const objectUrl=
+        URL.createObjectURL(file);
+
+
+    player.dataset.objectUrl=
+        objectUrl;
+
+    player.src=
+        objectUrl;
+
+    player.style.display=
+        'block';
+
+
+    player.play().catch(()=>{});
+
+
+    showToast(
+        'Farm playlist loaded.'
+    );
+
+}
+
+
+/* =========================================================
+   LIVE WEATHER
+   UBAY, BOHOL
+========================================================= */
+
+const FARM_WEATHER={
+
+    latitude:10.056001,
+
+    longitude:124.472935,
+
+    timezone:'Asia/Manila',
+
+    location:'Ubay, Bohol, Philippines'
+
+};
+
+
+function weatherDescription(code){
+
+    const map={
+
+        0:'Clear sky',
+
+        1:'Mainly clear',
+
+        2:'Partly cloudy',
+
+        3:'Overcast',
+
+        45:'Fog',
+
+        48:'Depositing rime fog',
+
+        51:'Light drizzle',
+
+        53:'Moderate drizzle',
+
+        55:'Dense drizzle',
+
+        56:'Light freezing drizzle',
+
+        57:'Dense freezing drizzle',
+
+        61:'Slight rain',
+
+        63:'Moderate rain',
+
+        65:'Heavy rain',
+
+        66:'Light freezing rain',
+
+        67:'Heavy freezing rain',
+
+        71:'Slight snowfall',
+
+        73:'Moderate snowfall',
+
+        75:'Heavy snowfall',
+
+        77:'Snow grains',
+
+        80:'Slight rain showers',
+
+        81:'Moderate rain showers',
+
+        82:'Violent rain showers',
+
+        85:'Slight snow showers',
+
+        86:'Heavy snow showers',
+
+        95:'Thunderstorm',
+
+        96:'Thunderstorm with hail',
+
+        99:'Thunderstorm with heavy hail'
+
+    };
+
+
+    return map[code] ||
+        'Weather conditions';
+
+}
+
+
+function weatherIcon(code){
+
+    if(code===0){
+
+        return `
+            <i class="fa-solid fa-sun"></i>
+        `;
+
+    }
+
+
+    if([1,2].includes(code)){
+
+        return `
+            <i class="fa-solid fa-cloud-sun"></i>
+        `;
+
+    }
+
+
+    if([3,45,48].includes(code)){
+
+        return `
+            <i class="fa-solid fa-cloud"></i>
+        `;
+
+    }
+
+
+    if([
+        51,53,55,56,57,
+        61,63,65,66,67,
+        80,81,82
+    ].includes(code)){
+
+        return `
+            <i class="fa-solid fa-cloud-rain"></i>
+        `;
+
+    }
+
+
+    if([95,96,99].includes(code)){
+
+        return `
+            <i class="fa-solid fa-cloud-bolt"></i>
+        `;
+
+    }
+
+
+    return `
+        <i class="fa-solid fa-cloud-sun"></i>
+    `;
+
+}
+
+
+async function loadWeather(){
+
+    const tempEl=
+        document.getElementById(
+            'weather-temp-value'
+        );
+
+    const conditionEl=
+        document.getElementById(
+            'weather-condition'
+        );
+
+    const iconEl=
+        document.getElementById(
+            'weather-icon'
+        );
+
+    const humidityEl=
+        document.getElementById(
+            'weather-humidity'
+        );
+
+    const rainChanceEl=
+        document.getElementById(
+            'weather-rain-chance'
+        );
+
+    const rainNowEl=
+        document.getElementById(
+            'weather-rain-now'
+        );
+
+    const windEl=
+        document.getElementById(
+            'weather-wind'
+        );
+
+    const dateEl=
+        document.getElementById(
+            'weather-date'
+        );
+
+    const alertEl=
+        document.getElementById(
+            'weather-alert'
+        );
+
+    const updatedEl=
+        document.getElementById(
+            'weather-updated'
+        );
+
+
+    conditionEl.innerText=
+        'Updating...';
+
+
+    const url=
+        'https://api.open-meteo.com/v1/forecast' +
+
+        '?latitude='+
+        FARM_WEATHER.latitude +
+
+        '&longitude='+
+        FARM_WEATHER.longitude +
+
+        '&current='+
+        'temperature_2m,'+
+        'relative_humidity_2m,'+
+        'apparent_temperature,'+
+        'precipitation,'+
+        'rain,'+
+        'showers,'+
+        'weather_code,'+
+        'wind_speed_10m' +
+
+        '&daily='+
+        'temperature_2m_max,'+
+        'temperature_2m_min,'+
+        'precipitation_probability_max,'+
+        'rain_sum' +
+
+        '&timezone='+
+        encodeURIComponent(
+            FARM_WEATHER.timezone
+        ) +
+
+        '&forecast_days=1';
+
+
+    try{
+
+        const response=
+            await fetch(
+                url,
+                {
+                    cache:'no-store'
+                }
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                'Weather service unavailable'
+            );
+
+        }
+
+
+        const data=
+            await response.json();
+
+
+        const current=
+            data.current || {};
+
+        const daily=
+            data.daily || {};
+
+
+        const code=
+            Number(
+                current.weather_code ?? 0
+            );
+
+
+        const temp=
+            Number(
+                current.temperature_2m ?? 0
+            );
+
+
+        const humidity=
+            Number(
+                current.relative_humidity_2m ?? 0
+            );
+
+
+        const rainNow=
+            Number(
+                current.rain ?? 0
+            );
+
+
+        const precipitation=
+            Number(
+                current.precipitation ?? 0
+            );
+
+
+        const wind=
+            Number(
+                current.wind_speed_10m ?? 0
+            );
+
+
+        const rainChance=
+            Number(
+                daily.precipitation_probability_max?.[0] ?? 0
+            );
+
+
+        tempEl.innerText=
+            `${Math.round(temp)}°C`;
+
+
+        conditionEl.innerText=
+            weatherDescription(code);
+
+
+        iconEl.innerHTML=
+            weatherIcon(code);
+
+
+        humidityEl.innerText=
+            `${Math.round(humidity)}%`;
+
+
+        rainChanceEl.innerText=
+            `${Math.round(rainChance)}%`;
+
+
+        rainNowEl.innerText=
+            `${rainNow.toFixed(1)} mm`;
+
+
+        windEl.innerText=
+            `${Math.round(wind)} km/h`;
+
+
+        const today=
+            new Date().toLocaleDateString(
+                'en-US',
+                {
+                    weekday:'long',
+                    month:'long',
+                    day:'numeric',
+                    year:'numeric',
+                    timeZone:
+                        FARM_WEATHER.timezone
+                }
+            );
+
+
+        dateEl.innerText=
+            `Today • ${today}`;
+
+
+        alertEl.className=
+            'weather-alert';
+
+
+        if(
+            rainNow>0 ||
+            precipitation>0 ||
+            [51,53,55,56,57,61,63,65,66,67,80,81,82,95,96,99]
+                .includes(code)
+        ){
+
+            alertEl.classList.add(
+                'rain'
+            );
+
+
+            alertEl.innerHTML=`
+
+                <i class="fa-solid fa-cloud-showers-heavy"></i>
+
+                <span>
+                    Rain is currently indicated
+                    near the selected farm location.
+                </span>
+
+            `;
+
+        }
+
+        else if(rainChance>=50){
+
+            alertEl.classList.add(
+                'rain'
+            );
+
+
+            alertEl.innerHTML=`
+
+                <i class="fa-solid fa-umbrella"></i>
+
+                <span>
+                    Rain is possible today.
+                    Consider checking field conditions
+                    before irrigation.
+                </span>
+
+            `;
+
+        }
+
+        else{
+
+            alertEl.classList.add(
+                'dry'
+            );
+
+
+            alertEl.innerHTML=`
+
+                <i class="fa-solid fa-sun"></i>
+
+                <span>
+                    No significant rain is indicated
+                    right now.
+                </span>
+
+            `;
+
+        }
+
+
+        const updated=
+            new Date().toLocaleTimeString(
+                'en-US',
+                {
+                    hour:'numeric',
+                    minute:'2-digit',
+                    timeZone:
+                        FARM_WEATHER.timezone
+                }
+            );
+
+
+        updatedEl.innerText=
+            `Last updated ${updated}`;
+
+
+    }catch(error){
+
+        console.error(
+            'Weather error:',
+            error
+        );
+
+
+        tempEl.innerText=
+            '--°C';
+
+
+        conditionEl.innerText=
+            'Weather unavailable';
+
+
+        humidityEl.innerText=
+            '--%';
+
+
+        rainChanceEl.innerText=
+            '--%';
+
+
+        rainNowEl.innerText=
+            '-- mm';
+
+
+        windEl.innerText=
+            '-- km/h';
+
+
+        alertEl.className=
+            'weather-alert';
+
+
+        alertEl.innerHTML=`
+
+            <i class="fa-solid fa-triangle-exclamation"></i>
+
+            <span>
+                Weather data could not be loaded.
+                Please check your internet connection.
+            </span>
+
+        `;
+
+
+        updatedEl.innerText=
+            'Update failed';
+
+    }
+
+}
+
+
+/* =========================================================
+   GOOGLE MAPS
+========================================================= */
+
+function openGoogleMaps(){
+
+    const query=
+        'Ubay, Bohol, Philippines';
+
+
+    const mapUrl=
+        'https://www.google.com/maps/search/?api=1&query='+
+        encodeURIComponent(query);
+
+
+    window.open(
+        mapUrl,
+        '_blank',
+        'noopener'
+    );
+
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+function previewLogo(event){
+
+    const file=
+        event.target.files[0];
+
+    if(!file){
         return;
     }
 
-    loadTelemetry();
+
+    const reader=
+        new FileReader();
+
+
+    reader.onload=function(e){
+
+        document.getElementById(
+            'system-logo'
+        ).src=e.target.result;
+
+        localStorage.setItem(
+            'smartFarmLogo',
+            e.target.result
+        );
+
+    };
+
+
+    reader.readAsDataURL(file);
+
+}
+
+
+function changeAccent(color){
+
+    const root=
+        document.documentElement;
+
+
+    if(color==='green'){
+
+        root.style.setProperty(
+            '--cyan',
+            '#34d399'
+        );
+
+        root.style.setProperty(
+            '--cyan2',
+            '#10b981'
+        );
+
+    }
+
+    else if(color==='blue'){
+
+        root.style.setProperty(
+            '--cyan',
+            '#60a5fa'
+        );
+
+        root.style.setProperty(
+            '--cyan2',
+            '#3b82f6'
+        );
+
+    }
+
+    else if(color==='orange'){
+
+        root.style.setProperty(
+            '--cyan',
+            '#fb923c'
+        );
+
+        root.style.setProperty(
+            '--cyan2',
+            '#f97316'
+        );
+
+    }
+
+    else{
+
+        root.style.setProperty(
+            '--cyan',
+            '#22d3ee'
+        );
+
+        root.style.setProperty(
+            '--cyan2',
+            '#06b6d4'
+        );
+
+    }
+
+}
+
+
+function saveSettings(){
+
+    const accent=
+        document.getElementById(
+            'accent-color'
+        ).value;
+
+
+    localStorage.setItem(
+        'smartFarmAccent',
+        accent
+    );
+
+
+    showToast(
+        'Dashboard settings saved.'
+    );
+
+
+    closeModal(
+        'settings-modal'
+    );
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer;
+
+
+function showToast(message){
+
+    const toast=
+        document.getElementById(
+            'toast'
+        );
+
+
+    toast.innerText=
+        message;
+
+
+    toast.classList.add(
+        'show'
+    );
+
+
+    clearTimeout(
+        toastTimer
+    );
+
+
+    toastTimer=
+        setTimeout(
+            ()=>{
+                toast.classList.remove(
+                    'show'
+                );
+            },
+            2500
+        );
+
 }
 
 
 /* =========================================================
    LOAD SAVED SETTINGS
-   ========================================================= */
+========================================================= */
 
-const savedTheme=
-    localStorage.getItem('theme_color');
+function loadSettings(){
 
-if(savedTheme){
+    const accent=
+        localStorage.getItem(
+            'smartFarmAccent'
+        );
 
-    document.documentElement
-        .style.setProperty('--cyan',savedTheme);
 
-    document.getElementById('input-theme').value=
-        savedTheme;
-}
+    if(accent){
 
-const savedLogo=
-    localStorage.getItem('custom_logo');
+        document.getElementById(
+            'accent-color'
+        ).value=
+            accent;
 
-if(savedLogo){
+        changeAccent(
+            accent
+        );
 
-    document.getElementById('app-logo').src=
-        savedLogo;
+    }
+
+
+    const logo=
+        localStorage.getItem(
+            'smartFarmLogo'
+        );
+
+
+    if(logo){
+
+        document.getElementById(
+            'system-logo'
+        ).src=
+            logo;
+
+    }
+
 }
 
 
 /* =========================================================
-   START LIVE SYSTEM
-   ========================================================= */
+   INITIALIZE
+========================================================= */
 
-setInterval(loadTelemetry,5000);
+updateSensors();
 
-loadTelemetry();
+saveHistory();
+
+loadSettings();
+
+loadWeather();
+
+
+/*
+   Refresh dashboard sensor simulation
+   every 8 seconds.
+*/
+
+setInterval(
+    updateSensors,
+    8000
+);
+
+
+/*
+   Refresh weather automatically
+   every 10 minutes.
+*/
+
+setInterval(
+    loadWeather,
+    10*60*1000
+);
 
 </script>
 
 </body>
 </html>
+```
