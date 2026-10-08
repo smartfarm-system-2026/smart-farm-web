@@ -62,7 +62,7 @@
             justify-content: space-between;
             align-items: center;
             background: var(--card-surface);
-            padding: 8px 14px;
+            padding: 12px 16px; /* Gi-padak-an gamay ang header */
             border-radius: 6px;
             border: 1px solid var(--border-glow);
             flex-shrink: 0;
@@ -76,8 +76,8 @@
         }
 
         .custom-logo-img {
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             border-radius: 4px;
             object-fit: cover;
             border: 1px solid var(--accent-main);
@@ -86,7 +86,7 @@
 
         .dashboard-header h2 {
             margin: 0;
-            font-size: 15px;
+            font-size: 16px;
             letter-spacing: 0.5px;
             text-transform: lowercase;
             background: linear-gradient(90deg, var(--accent-main), var(--accent-purple));
@@ -167,7 +167,7 @@
             grid-template-columns: 0px 1fr;
         }
 
-        /* SIDEBAR (Wala) */
+        /* SIDEBAR */
         .left-sidebar {
             display: flex;
             flex-direction: column;
@@ -187,7 +187,7 @@
             background: var(--card-surface);
             border: 1px solid rgba(249, 115, 22, 0.35);
             border-radius: 6px;
-            padding: 8px 10px;
+            padding: 10px;
             color: var(--text-main);
             text-align: left;
             font-size: 11px;
@@ -224,23 +224,23 @@
             overflow: hidden;
         }
 
-        /* METRICS GRID: 4 ka columns sa ibabaw (Humidity, Soil Moisture, Rain Sensor, Water Pump) */
+        /* METRICS GRID: GI-PADAK-AN (GI-PATAASAN) ANG MGA KAHON SA UBAS PADONG UBOS */
         .metrics-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr;
             gap: 10px;
-            flex-shrink: 0;
+            flex: 1; /* Puno-on ang bakanteng espasyo padulong sa ubos */
         }
 
         .card {
             background: var(--card-surface);
             border: 1px solid var(--border-glow);
             border-radius: 6px;
-            padding: 10px 12px;
+            padding: 14px 16px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: 85px;
+            height: 100%; /* Puno-on ang tibuok vertical space sa grid */
         }
 
         .card:hover {
@@ -250,42 +250,43 @@
 
         .card-header {
             color: var(--text-sub);
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: lowercase;
             letter-spacing: 0.3px;
         }
 
         .card-value {
-            font-size: 16px;
+            font-size: 22px;
             font-weight: 800;
-            margin: 2px 0;
+            margin: 4px 0;
             color: #fff;
         }
 
         .btn-pump-inline {
             width: 100%;
-            padding: 3px;
+            padding: 6px;
             border: none;
-            border-radius: 3px;
+            border-radius: 4px;
             font-weight: 700;
             cursor: pointer;
             color: #fff;
-            font-size: 9px;
+            font-size: 10px;
             text-transform: lowercase;
         }
         .pump-off { background: #10b981; }
         .pump-on { background: #ef4444; }
 
-        /* VISUALIZER (Analytical Topography & Wave Matrix - Naa sa ubos) */
+        /* VISUALIZER (Analytical Topography & Wave Matrix - GI-PAGAMYAN ANG HEIGHT) */
         .visualizer-card {
             background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(9, 13, 22, 0.95) 100%);
             border: 1px solid var(--border-glow);
             border-radius: 6px;
-            padding: 12px;
+            padding: 10px 12px;
             position: relative;
             overflow: hidden;
-            flex: 1;
+            flex-shrink: 0;
+            height: 95px; /* Gi-gamyan ang gidak-on sa ubos */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -296,7 +297,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 130px;
+            height: 65px; /* Gi-gamyan ang wave height */
             pointer-events: none;
         }
 
@@ -429,7 +430,7 @@
 
         <!-- MAIN LAYOUT -->
         <div class="main-layout" id="main-layout">
-            <!-- SIDEBAR (Wala) -->
+            <!-- SIDEBAR -->
             <div class="left-sidebar">
                 <button class="sidebar-btn-box" onclick="openModal('history-modal')">
                     <i class="fa-solid fa-clock-rotate-left"></i> sensor history logs
@@ -450,41 +451,41 @@
 
             <!-- RIGHT CONTENT AREA -->
             <div class="right-content">
-                <!-- METRICS GRID (4 ka kahon sa ibabaw nga hapsay ang side-by-side) -->
+                <!-- METRICS GRID: GI-PADAK-AN/GIPATAASAN ANG MGA KAHON -->
                 <div class="metrics-grid">
                     <div class="card">
                         <div class="card-header">humidity</div>
                         <div class="card-value" id="val-humidity">0 %</div>
-                        <span style="font-size: 8px; color: var(--text-sub);">atmospheric sensor</span>
+                        <span style="font-size: 9px; color: var(--text-sub);">atmospheric sensor</span>
                     </div>
 
                     <div class="card">
                         <div class="card-header">soil moisture</div>
                         <div class="card-value" id="val-soil">0 %</div>
-                        <span style="font-size: 8px; color: var(--text-sub);">moisture sensor</span>
+                        <span style="font-size: 9px; color: var(--text-sub);">moisture sensor</span>
                     </div>
 
                     <div class="card">
                         <div class="card-header">rain sensor</div>
-                        <div class="card-value" id="val-rain" style="color: var(--accent-main); font-size: 14px;">NORMAL</div>
-                        <span style="font-size: 8px; color: var(--text-sub);">precipitation status</span>
+                        <div class="card-value" id="val-rain" style="color: var(--accent-main); font-size: 18px;">NORMAL</div>
+                        <span style="font-size: 9px; color: var(--text-sub);">precipitation status</span>
                     </div>
 
                     <div class="card">
                         <div class="card-header">water pump status</div>
-                        <div class="card-value" id="val-pump" style="color: var(--accent-green); font-size: 14px;">OFF</div>
+                        <div class="card-value" id="val-pump" style="color: var(--accent-green); font-size: 18px;">OFF</div>
                         <button id="btn-toggle-pump" class="btn-pump-inline pump-off" onclick="togglePump()">turn on pump</button>
                     </div>
                 </div>
 
-                <!-- ANALYTICAL TOPOGRAPHY & WAVE MATRIX (Naa sa ubos) -->
+                <!-- ANALYTICAL TOPOGRAPHY & WAVE MATRIX: GI-PAGAMYAN SA UBOS -->
                 <div class="visualizer-card">
                     <div style="display: flex; justify-content: space-between; position: relative; z-index: 2;">
                         <span style="font-weight: 700; color: var(--accent-main); font-size: 10px; text-transform: lowercase;">analytical topography & wave matrix</span>
                         <span style="color: var(--text-sub); font-size: 8px;" id="stream-status-text">live sensor stream: active</span>
                     </div>
 
-                    <svg class="wave-svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                    <svg class="wave-svg" viewBox="0 0 1200 80" preserveAspectRatio="none">
                         <defs>
                             <linearGradient id="waterGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                                 <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.8"/>
@@ -496,8 +497,8 @@
                                 <stop offset="100%" stop-color="#050b14" stop-opacity="0.95"/>
                             </linearGradient>
                         </defs>
-                        <path id="dynamic-wave-fill" d="M0,80 Q150,30 300,70 T600,50 T900,80 T1200,40 L1200,120 L0,120 Z" fill="url(#waterFill)" />
-                        <path id="dynamic-wave-line" d="M0,70 C150,10 250,90 400,40 C550,80 700,10 850,60 C1000,20 1100,80 1200,30" fill="none" stroke="url(#waterGrad)" stroke-width="2.5" />
+                        <path id="dynamic-wave-fill" d="M0,50 Q150,20 300,45 T600,30 T900,50 T1200,25 L1200,80 L0,80 Z" fill="url(#waterFill)" />
+                        <path id="dynamic-wave-line" d="M0,45 C150,10 250,60 400,25 C550,45 700,10 850,35 C1000,15 1100,50 1200,20" fill="none" stroke="url(#waterGrad)" stroke-width="2" />
                     </svg>
                 </div>
             </div>
@@ -734,8 +735,8 @@
                     toggleBtn.className = isPumpOn ? "btn-pump-inline pump-on" : "btn-pump-inline pump-off";
                 }
 
-                let waveHeightOffset = Math.max(15, Math.min(80, 90 - (soil * 0.65)));
-                document.getElementById('dynamic-wave-fill').setAttribute('d', `M0,${waveHeightOffset} Q150,${waveHeightOffset - 20} 300,${waveHeightOffset} T600,${waveHeightOffset - 12} T900,${waveHeightOffset + 8} T1200,${waveHeightOffset - 15} L1200,120 L0,120 Z`);
+                let waveHeightOffset = Math.max(15, Math.min(60, 70 - (soil * 0.5)));
+                document.getElementById('dynamic-wave-fill').setAttribute('d', `M0,${waveHeightOffset} Q150,${waveHeightOffset - 15} 300,${waveHeightOffset} T600,${waveHeightOffset - 10} T900,${waveHeightOffset + 6} T1200,${waveHeightOffset - 12} L1200,80 L0,80 Z`);
 
                 const tbody = document.getElementById('history-table-body');
                 tbody.innerHTML = '';
