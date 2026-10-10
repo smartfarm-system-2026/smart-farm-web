@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,6 +13,9 @@
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<!-- SUPABASE LIBRARY (NEW) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 
 <style>
 
@@ -450,7 +452,7 @@ body::before{
         var(--cyan),
         var(--green2));
 
-    transition:width:.7s;
+    transition:width .7s;
 }
 
 /* =========================================================
@@ -757,6 +759,11 @@ textarea.form-control{
 .primary-btn:hover{
     filter:brightness(1.15);
     box-shadow:0 0 20px rgba(34,211,238,.12);
+}
+
+.primary-btn:disabled{
+    opacity:.6;
+    cursor:not-allowed;
 }
 
 /* =========================================================
@@ -1315,7 +1322,7 @@ textarea.form-control{
 
         <button onclick="openModal('bug-modal')">
             <i class="fa-solid fa-bug"></i>
-            Report Bugs & Issues
+            Report Bugs &amp; Issues
         </button>
 
         <button onclick="openModal('support-modal')">
@@ -1323,13 +1330,11 @@ textarea.form-control{
             Technical Support
         </button>
 
-        <!-- UPDATED WEATHER -->
         <button onclick="openModal('weather-modal')">
             <i class="fa-solid fa-cloud-sun-rain"></i>
             Live Farm Weather
         </button>
 
-        <!-- UPDATED MUSIC -->
         <button onclick="openModal('music-modal')">
             <i class="fa-solid fa-wheat-awn"></i>
             Farmer Lofi Music
@@ -1383,9 +1388,7 @@ textarea.form-control{
     </div>
 
 
-    <!-- ==================================================
-         SENSOR CARDS
-    ================================================== -->
+    <!-- SENSOR CARDS -->
 
     <section class="sensor-grid">
 
@@ -1395,13 +1398,10 @@ textarea.form-control{
                 <div class="sensor-icon">
                     <i class="fa-solid fa-droplet"></i>
                 </div>
-
                 <span class="sensor-status">LIVE</span>
             </div>
 
-            <div class="sensor-name">
-                Humidity
-            </div>
+            <div class="sensor-name">Humidity</div>
 
             <div class="sensor-value">
                 <span id="humidity-value">0</span><small>%</small>
@@ -1420,13 +1420,10 @@ textarea.form-control{
                 <div class="sensor-icon">
                     <i class="fa-solid fa-seedling"></i>
                 </div>
-
                 <span class="sensor-status">LIVE</span>
             </div>
 
-            <div class="sensor-name">
-                Soil Moisture
-            </div>
+            <div class="sensor-name">Soil Moisture</div>
 
             <div class="sensor-value">
                 <span id="soil-value">0</span><small>%</small>
@@ -1445,18 +1442,12 @@ textarea.form-control{
                 <div class="sensor-icon">
                     <i class="fa-solid fa-cloud-rain"></i>
                 </div>
-
                 <span class="sensor-status">LIVE</span>
             </div>
 
-            <div class="sensor-name">
-                Rain Sensor
-            </div>
+            <div class="sensor-name">Rain Sensor</div>
 
-            <div class="sensor-value"
-                 id="rain-value">
-                NORMAL
-            </div>
+            <div class="sensor-value" id="rain-value">NORMAL</div>
 
             <div class="progress">
                 <span id="rain-progress"></span>
@@ -1471,23 +1462,16 @@ textarea.form-control{
                 <div class="sensor-icon">
                     <i class="fa-solid fa-faucet-drip"></i>
                 </div>
-
                 <span class="sensor-status">SYSTEM</span>
             </div>
 
-            <div class="sensor-name">
-                Water Pump
-            </div>
+            <div class="sensor-name">Water Pump</div>
 
-            <div class="sensor-value"
-                 id="pump-value">
-                OFF
-            </div>
+            <div class="sensor-value" id="pump-value">OFF</div>
 
             <div class="pump-status">
 
-                <span class="pump-state"
-                      id="pump-state">
+                <span class="pump-state" id="pump-state">
                     Pump inactive
                 </span>
 
@@ -1504,9 +1488,7 @@ textarea.form-control{
     </section>
 
 
-    <!-- ==================================================
-         ANALYTICAL WAVE
-    ================================================== -->
+    <!-- ANALYTICAL WAVE -->
 
     <section class="analytics">
 
@@ -1514,7 +1496,7 @@ textarea.form-control{
 
             <h3>
                 <i class="fa-solid fa-chart-line"></i>
-                Analytical Topography & Wave Matrix
+                Analytical Topography &amp; Wave Matrix
             </h3>
 
             <div class="live-text">
@@ -1526,9 +1508,7 @@ textarea.form-control{
 
         <div class="wave">
 
-            <svg
-                viewBox="0 0 1000 180"
-                preserveAspectRatio="none">
+            <svg viewBox="0 0 1000 180" preserveAspectRatio="none">
 
                 <path
                     class="wave-path"
@@ -1580,10 +1560,7 @@ textarea.form-control{
 
     <div class="modal-box">
 
-        <button class="btn-close"
-                onclick="closeModal('history-modal')">
-            ✖
-        </button>
+        <button class="btn-close" onclick="closeModal('history-modal')">✖</button>
 
         <h3>
             <i class="fa-solid fa-clock-rotate-left"></i>
@@ -1595,7 +1572,6 @@ textarea.form-control{
             <table>
 
                 <thead>
-
                     <tr>
                         <th>ID</th>
                         <th>Humidity</th>
@@ -1604,17 +1580,12 @@ textarea.form-control{
                         <th>Pump</th>
                         <th>Timestamp</th>
                     </tr>
-
                 </thead>
 
                 <tbody id="history-body">
-
                     <tr>
-                        <td colspan="6">
-                            Loading sensor history...
-                        </td>
+                        <td colspan="6">Loading sensor history...</td>
                     </tr>
-
                 </tbody>
 
             </table>
@@ -1634,14 +1605,11 @@ textarea.form-control{
 
     <div class="modal-box">
 
-        <button class="btn-close"
-                onclick="closeModal('bug-modal')">
-            ✖
-        </button>
+        <button class="btn-close" onclick="closeModal('bug-modal')">✖</button>
 
         <h3>
             <i class="fa-solid fa-bug"></i>
-            Report Bugs & Issues
+            Report Bugs &amp; Issues
         </h3>
 
         <div class="form-group">
@@ -1663,16 +1631,12 @@ textarea.form-control{
         <div class="form-group">
             <label>Issue Category</label>
 
-            <select
-                class="form-control"
-                id="bug-category">
-
+            <select class="form-control" id="bug-category">
                 <option>Sensor Problem</option>
                 <option>Water Pump Problem</option>
                 <option>Dashboard Error</option>
                 <option>Weather Data Problem</option>
                 <option>Other</option>
-
             </select>
 
         </div>
@@ -1689,6 +1653,7 @@ textarea.form-control{
 
         <button
             class="primary-btn"
+            id="bug-submit-btn"
             onclick="submitBug()">
 
             <i class="fa-solid fa-paper-plane"></i>
@@ -1709,10 +1674,7 @@ textarea.form-control{
 
     <div class="modal-box">
 
-        <button class="btn-close"
-                onclick="closeModal('support-modal')">
-            ✖
-        </button>
+        <button class="btn-close" onclick="closeModal('support-modal')">✖</button>
 
         <h3>
             <i class="fa-solid fa-headset"></i>
@@ -1769,11 +1731,7 @@ textarea.form-control{
 
     <div class="modal-box weather-box">
 
-        <button class="btn-close"
-                onclick="closeModal('weather-modal')">
-            ✖
-        </button>
-
+        <button class="btn-close" onclick="closeModal('weather-modal')">✖</button>
 
         <div class="weather-heading">
 
@@ -1789,20 +1747,15 @@ textarea.form-control{
                     Ubay Farm Weather
                 </h3>
 
-                <p
-                    class="weather-date"
-                    id="weather-date">
+                <p class="weather-date" id="weather-date">
                     Loading today's conditions...
                 </p>
 
             </div>
 
             <div class="weather-live">
-
                 <span class="status-dot"></span>
-
                 LIVE
-
             </div>
 
         </div>
@@ -1812,24 +1765,13 @@ textarea.form-control{
 
             <div class="weather-temp">
 
-                <div
-                    id="weather-icon"
-                    class="big-weather-icon">
-
+                <div id="weather-icon" class="big-weather-icon">
                     <i class="fa-solid fa-cloud-sun"></i>
-
                 </div>
 
                 <div>
-
-                    <strong id="weather-temp-value">
-                        --°C
-                    </strong>
-
-                    <span id="weather-condition">
-                        Loading...
-                    </span>
-
+                    <strong id="weather-temp-value">--°C</strong>
+                    <span id="weather-condition">Loading...</span>
                 </div>
 
             </div>
@@ -1840,15 +1782,8 @@ textarea.form-control{
                 <i class="fa-solid fa-location-dot"></i>
 
                 <div>
-
-                    <b>
-                        Ubay, Bohol, Philippines
-                    </b>
-
-                    <small>
-                        Agricultural Monitoring Location
-                    </small>
-
+                    <b>Ubay, Bohol, Philippines</b>
+                    <small>Agricultural Monitoring Location</small>
                 </div>
 
             </div>
@@ -1859,114 +1794,56 @@ textarea.form-control{
         <div class="weather-stats">
 
             <div class="weather-stat">
-
                 <i class="fa-solid fa-droplet"></i>
-
-                <span>
-                    Humidity
-                </span>
-
-                <b id="weather-humidity">
-                    --%
-                </b>
-
+                <span>Humidity</span>
+                <b id="weather-humidity">--%</b>
             </div>
 
-
             <div class="weather-stat">
-
                 <i class="fa-solid fa-cloud-rain"></i>
-
-                <span>
-                    Rain Chance Today
-                </span>
-
-                <b id="weather-rain-chance">
-                    --%
-                </b>
-
+                <span>Rain Chance Today</span>
+                <b id="weather-rain-chance">--%</b>
             </div>
 
-
             <div class="weather-stat">
-
                 <i class="fa-solid fa-cloud-showers-heavy"></i>
-
-                <span>
-                    Rain Now
-                </span>
-
-                <b id="weather-rain-now">
-                    -- mm
-                </b>
-
+                <span>Rain Now</span>
+                <b id="weather-rain-now">-- mm</b>
             </div>
 
-
             <div class="weather-stat">
-
                 <i class="fa-solid fa-wind"></i>
-
-                <span>
-                    Wind
-                </span>
-
-                <b id="weather-wind">
-                    -- km/h
-                </b>
-
+                <span>Wind</span>
+                <b id="weather-wind">-- km/h</b>
             </div>
 
         </div>
 
 
-        <div
-            class="weather-alert"
-            id="weather-alert">
-
+        <div class="weather-alert" id="weather-alert">
             <i class="fa-solid fa-cloud"></i>
-
-            <span>
-                Checking current precipitation...
-            </span>
-
+            <span>Checking current precipitation...</span>
         </div>
 
 
         <div class="weather-actions">
 
-            <button
-                class="weather-map-btn"
-                onclick="openGoogleMaps()">
-
+            <button class="weather-map-btn" onclick="openGoogleMaps()">
                 <i class="fa-solid fa-map-location-dot"></i>
-
                 Open Ubay in Google Maps
-
             </button>
 
-
-            <button
-                class="weather-refresh-btn"
-                onclick="loadWeather()">
-
+            <button class="weather-refresh-btn" onclick="loadWeather()">
                 <i class="fa-solid fa-rotate"></i>
-
                 Refresh
-
             </button>
 
         </div>
 
 
         <div class="weather-footer">
-
             Weather automatically refreshes every 10 minutes.
-
-            <span id="weather-updated">
-                Waiting for update...
-            </span>
-
+            <span id="weather-updated">Waiting for update...</span>
         </div>
 
     </div>
@@ -1982,29 +1859,20 @@ textarea.form-control{
 
     <div class="modal-box farm-music-box">
 
-        <button class="btn-close"
-                onclick="closeModal('music-modal')">
-            ✖
-        </button>
-
+        <button class="btn-close" onclick="closeModal('music-modal')">✖</button>
 
         <h3>
             <i class="fa-solid fa-wheat-awn"></i>
             Farmer Lofi Music
         </h3>
 
-
         <p class="music-intro">
-
             Relaxing lofi, nature-inspired sounds, and
             peaceful field music for farming, planting,
             irrigation, harvesting, and farm monitoring.
-
         </p>
 
-
         <div class="music-grid">
-
 
             <a
                 class="music-card"
@@ -2017,21 +1885,13 @@ textarea.form-control{
                 </span>
 
                 <span>
-
-                    <b>
-                        Farm & Field Sounds
-                    </b>
-
-                    <small>
-                        Nature • Agriculture • Rural
-                    </small>
-
+                    <b>Farm &amp; Field Sounds</b>
+                    <small>Nature • Agriculture • Rural</small>
                 </span>
 
                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
 
             </a>
-
 
             <a
                 class="music-card"
@@ -2044,21 +1904,13 @@ textarea.form-control{
                 </span>
 
                 <span>
-
-                    <b>
-                        Farmer Lofi Beats
-                    </b>
-
-                    <small>
-                        Chill • Lofi • Focus
-                    </small>
-
+                    <b>Farmer Lofi Beats</b>
+                    <small>Chill • Lofi • Focus</small>
                 </span>
 
                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
 
             </a>
-
 
             <a
                 class="music-card"
@@ -2071,35 +1923,22 @@ textarea.form-control{
                 </span>
 
                 <span>
-
-                    <b>
-                        Fields - Lofi Vibes
-                    </b>
-
-                    <small>
-                        Relaxing • Field • Lofi
-                    </small>
-
+                    <b>Fields - Lofi Vibes</b>
+                    <small>Relaxing • Field • Lofi</small>
                 </span>
 
                 <i class="fa-solid fa-play"></i>
 
             </a>
 
-
         </div>
-
 
         <div class="local-music-panel">
 
             <div class="local-music-title">
-
                 <i class="fa-solid fa-folder-open"></i>
-
                 Play Your Own Farm Playlist
-
             </div>
-
 
             <input
                 type="file"
@@ -2107,28 +1946,19 @@ textarea.form-control{
                 accept="audio/*"
                 onchange="loadLocalMusic(event)">
 
-
             <audio
                 id="audio-player"
                 controls
                 preload="none"
-                style="
-                    width:100%;
-                    margin-top:10px;
-                    display:none;
-                ">
+                style="width:100%;margin-top:10px;display:none;">
             </audio>
 
         </div>
 
-
         <div class="music-note">
-
             <i class="fa-solid fa-circle-info"></i>
-
             Browse the linked music libraries for
             farming, nature, and relaxing lofi tracks.
-
         </div>
 
     </div>
@@ -2144,53 +1974,29 @@ textarea.form-control{
 
     <div class="modal-box">
 
-        <button class="btn-close"
-                onclick="closeModal('settings-modal')">
-            ✖
-        </button>
+        <button class="btn-close" onclick="closeModal('settings-modal')">✖</button>
 
         <h3>
             <i class="fa-solid fa-sliders"></i>
             Dashboard Settings
         </h3>
 
-
         <div class="setting-row">
 
-            <label>
-                Accent Color
-            </label>
+            <label>Accent Color</label>
 
-            <select
-                id="accent-color"
-                onchange="changeAccent(this.value)">
-
-                <option value="cyan">
-                    Cyan
-                </option>
-
-                <option value="green">
-                    Farm Green
-                </option>
-
-                <option value="blue">
-                    Ocean Blue
-                </option>
-
-                <option value="orange">
-                    Harvest Orange
-                </option>
-
+            <select id="accent-color" onchange="changeAccent(this.value)">
+                <option value="cyan">Cyan</option>
+                <option value="green">Farm Green</option>
+                <option value="blue">Ocean Blue</option>
+                <option value="orange">Harvest Orange</option>
             </select>
 
         </div>
 
-
         <div class="setting-row">
 
-            <label>
-                System Logo
-            </label>
+            <label>System Logo</label>
 
             <input
                 type="file"
@@ -2200,15 +2006,9 @@ textarea.form-control{
 
         </div>
 
-
-        <button
-            class="primary-btn"
-            onclick="saveSettings()">
-
+        <button class="primary-btn" onclick="saveSettings()">
             <i class="fa-solid fa-floppy-disk"></i>
-
             Save Settings
-
         </button>
 
     </div>
@@ -2216,17 +2016,28 @@ textarea.form-control{
 </div>
 
 
-<!-- ======================================================
-     TOAST
-====================================================== -->
+<!-- TOAST -->
 
-<div
-    class="toast"
-    id="toast">
-</div>
+<div class="toast" id="toast"></div>
 
 
 <script>
+
+/* =========================================================
+   SUPABASE CONNECTION  (EDIT THESE 2 LINES)
+========================================================= */
+
+const SUPABASE_URL = 'https://fqqwlvreqnxkbvbjjrol.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_q50rZScT_Y05tprM2GfTHQ_ZlJNHZHQ';
+
+let db = null;
+
+try{
+    db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+}catch(err){
+    console.error('Supabase failed to load:', err);
+}
+
 
 /* =========================================================
    BASIC MODALS
@@ -2234,17 +2045,17 @@ textarea.form-control{
 
 function openModal(id){
 
-    const modal=document.getElementById(id);
+    const modal = document.getElementById(id);
 
     if(modal){
 
         modal.classList.add('open');
 
-        if(id==='weather-modal'){
+        if(id === 'weather-modal'){
             loadWeather();
         }
 
-        if(id==='history-modal'){
+        if(id === 'history-modal'){
             renderHistory();
         }
 
@@ -2255,7 +2066,7 @@ function openModal(id){
 
 function closeModal(id){
 
-    const modal=document.getElementById(id);
+    const modal = document.getElementById(id);
 
     if(modal){
         modal.classList.remove('open');
@@ -2264,11 +2075,11 @@ function closeModal(id){
 }
 
 
-document.querySelectorAll('.modal-overlay').forEach(modal=>{
+document.querySelectorAll('.modal-overlay').forEach(modal => {
 
-    modal.addEventListener('click',function(e){
+    modal.addEventListener('click', function(e){
 
-        if(e.target===modal){
+        if(e.target === modal){
             modal.classList.remove('open');
         }
 
@@ -2277,13 +2088,13 @@ document.querySelectorAll('.modal-overlay').forEach(modal=>{
 });
 
 
-document.addEventListener('keydown',function(e){
+document.addEventListener('keydown', function(e){
 
-    if(e.key==='Escape'){
+    if(e.key === 'Escape'){
 
         document
             .querySelectorAll('.modal-overlay.open')
-            .forEach(modal=>{
+            .forEach(modal => {
                 modal.classList.remove('open');
             });
 
@@ -2306,7 +2117,7 @@ function goDashboard(){
    SENSOR SIMULATION
 ========================================================= */
 
-let sensorData={
+let sensorData = {
     humidity:0,
     soil:0,
     rain:'NORMAL',
@@ -2314,10 +2125,10 @@ let sensorData={
 };
 
 
-function randomSensorValue(min,max){
+function randomSensorValue(min, max){
 
     return Math.round(
-        Math.random()*(max-min)+min
+        Math.random() * (max - min) + min
     );
 
 }
@@ -2325,49 +2136,49 @@ function randomSensorValue(min,max){
 
 function updateSensors(){
 
-    sensorData.humidity=randomSensorValue(60,88);
-    sensorData.soil=randomSensorValue(35,82);
+    sensorData.humidity = randomSensorValue(60, 88);
+    sensorData.soil = randomSensorValue(35, 82);
 
-    const rainRandom=Math.random();
+    const rainRandom = Math.random();
 
-    sensorData.rain=
-        rainRandom>0.72
+    sensorData.rain =
+        rainRandom > 0.72
         ? 'RAIN DETECTED'
         : 'NORMAL';
 
 
     document.getElementById('humidity-value')
-        .innerText=sensorData.humidity;
+        .innerText = sensorData.humidity;
 
     document.getElementById('soil-value')
-        .innerText=sensorData.soil;
+        .innerText = sensorData.soil;
 
     document.getElementById('rain-value')
-        .innerText=sensorData.rain;
+        .innerText = sensorData.rain;
 
 
     document.getElementById('humidity-progress')
-        .style.width=sensorData.humidity+'%';
+        .style.width = sensorData.humidity + '%';
 
     document.getElementById('soil-progress')
-        .style.width=sensorData.soil+'%';
+        .style.width = sensorData.soil + '%';
 
     document.getElementById('rain-progress')
-        .style.width=
-            sensorData.rain==='NORMAL'
+        .style.width =
+            sensorData.rain === 'NORMAL'
             ? '18%'
             : '100%';
 
 
-    if(sensorData.rain==='RAIN DETECTED'){
+    if(sensorData.rain === 'RAIN DETECTED'){
 
         document.getElementById('rain-value')
-            .style.color='#22d3ee';
+            .style.color = '#22d3ee';
 
     }else{
 
         document.getElementById('rain-value')
-            .style.color='#f8fafc';
+            .style.color = '#f8fafc';
 
     }
 
@@ -2378,9 +2189,7 @@ function refreshSensors(){
 
     updateSensors();
 
-    showToast(
-        'Sensor data refreshed'
-    );
+    showToast('Sensor data refreshed');
 
     renderHistory();
 
@@ -2393,30 +2202,30 @@ function refreshSensors(){
 
 function togglePump(){
 
-    sensorData.pump=!sensorData.pump;
+    sensorData.pump = !sensorData.pump;
 
-    const value=document.getElementById('pump-value');
-    const state=document.getElementById('pump-state');
-    const button=document.getElementById('pump-button');
+    const value = document.getElementById('pump-value');
+    const state = document.getElementById('pump-state');
+    const button = document.getElementById('pump-button');
 
 
     if(sensorData.pump){
 
-        value.innerText='ON';
-        value.style.color='#34d399';
+        value.innerText = 'ON';
+        value.style.color = '#34d399';
 
-        state.innerText='Pump active';
+        state.innerText = 'Pump active';
 
-        button.innerText='Turn Off Pump';
+        button.innerText = 'Turn Off Pump';
 
     }else{
 
-        value.innerText='OFF';
-        value.style.color='#f8fafc';
+        value.innerText = 'OFF';
+        value.style.color = '#f8fafc';
 
-        state.innerText='Pump inactive';
+        state.innerText = 'Pump inactive';
 
-        button.innerText='Turn On Pump';
+        button.innerText = 'Turn On Pump';
 
     }
 
@@ -2436,7 +2245,7 @@ function togglePump(){
    HISTORY
 ========================================================= */
 
-let historyData=[];
+let historyData = [];
 
 
 function saveHistory(){
@@ -2451,29 +2260,25 @@ function saveHistory(){
 
         rain:sensorData.rain,
 
-        pump:sensorData.pump
-            ? 'ON'
-            : 'OFF',
+        pump:sensorData.pump ? 'ON' : 'OFF',
 
-        timestamp:new Date()
-            .toLocaleTimeString()
+        timestamp:new Date().toLocaleTimeString()
 
     });
 
 
-    historyData=historyData.slice(0,15);
+    historyData = historyData.slice(0, 15);
 
 }
 
 
 function renderHistory(){
 
-    const body=
-        document.getElementById('history-body');
+    const body = document.getElementById('history-body');
 
-    if(historyData.length===0){
+    if(historyData.length === 0){
 
-        body.innerHTML=`
+        body.innerHTML = `
             <tr>
                 <td colspan="6">
                     No history records available yet.
@@ -2485,23 +2290,16 @@ function renderHistory(){
     }
 
 
-    body.innerHTML=
-        historyData.map(item=>`
+    body.innerHTML =
+        historyData.map(item => `
 
             <tr>
-
                 <td>${item.id}</td>
-
                 <td>${item.humidity}%</td>
-
                 <td>${item.soil}%</td>
-
                 <td>${item.rain}</td>
-
                 <td>${item.pump}</td>
-
                 <td>${item.timestamp}</td>
-
             </tr>
 
         `).join('');
@@ -2510,68 +2308,97 @@ function renderHistory(){
 
 
 /* =========================================================
-   BUG REPORT
+   BUG REPORT  ->  SUPABASE  (farm_reports table)
+
+   NOTE: the names on the LEFT (name, location, type,
+   description) must match your column names in the
+   Supabase farm_reports table exactly.
 ========================================================= */
 
-function submitBug(){
+async function submitBug(){
 
-    const name=
+    const name =
         document.getElementById('bug-name').value.trim();
 
-    const location=
+    const location =
         document.getElementById('bug-location').value.trim();
 
-    const category=
+    const category =
         document.getElementById('bug-category').value;
 
-    const description=
+    const description =
         document.getElementById('bug-description').value.trim();
+
+    const submitBtn =
+        document.getElementById('bug-submit-btn');
 
 
     if(!name || !location || !description){
 
-        showToast(
-            'Please complete all required fields.'
-        );
+        showToast('Please complete all required fields.');
 
         return;
 
     }
 
 
-    const report={
-        name,
-        location,
-        category,
-        description,
-        timestamp:new Date().toISOString()
-    };
+    if(!db){
+
+        showToast('Database not connected. Check Supabase setup.');
+
+        return;
+
+    }
 
 
-    const reports=
-        JSON.parse(
-            localStorage.getItem('smartFarmReports') || '[]'
-        );
+    submitBtn.disabled = true;
 
 
-    reports.unshift(report);
+    try{
 
-    localStorage.setItem(
-        'smartFarmReports',
-        JSON.stringify(reports)
-    );
+        const { error } = await db
+            .from('farm_reports')
+            .insert([{
+
+                name:name,
+                location:location,
+                type:category,
+                description:description
+
+            }]);
 
 
-    document.getElementById('bug-name').value='';
-    document.getElementById('bug-location').value='';
-    document.getElementById('bug-description').value='';
+        if(error){
+
+            console.error('Supabase insert failed:', error);
+
+            showToast('Failed to submit: ' + error.message);
+
+            return;
+
+        }
 
 
-    closeModal('bug-modal');
+        document.getElementById('bug-name').value = '';
+        document.getElementById('bug-location').value = '';
+        document.getElementById('bug-description').value = '';
 
-    showToast(
-        'Issue report submitted successfully.'
-    );
+
+        closeModal('bug-modal');
+
+        showToast('Issue report submitted successfully.');
+
+    }catch(err){
+
+        console.error('Submit error:', err);
+
+        showToast('Failed to submit. Check your internet connection.');
+
+    }finally{
+
+        submitBtn.disabled = false;
+
+    }
 
 }
 
@@ -2582,57 +2409,46 @@ function submitBug(){
 
 function loadLocalMusic(event){
 
-    const file=
-        event.target.files[0];
+    const file = event.target.files[0];
 
     if(!file){
         return;
     }
 
 
-    const player=
-        document.getElementById('audio-player');
+    const player = document.getElementById('audio-player');
 
 
     if(player.dataset.objectUrl){
 
-        URL.revokeObjectURL(
-            player.dataset.objectUrl
-        );
+        URL.revokeObjectURL(player.dataset.objectUrl);
 
     }
 
 
-    const objectUrl=
-        URL.createObjectURL(file);
+    const objectUrl = URL.createObjectURL(file);
 
 
-    player.dataset.objectUrl=
-        objectUrl;
+    player.dataset.objectUrl = objectUrl;
 
-    player.src=
-        objectUrl;
+    player.src = objectUrl;
 
-    player.style.display=
-        'block';
+    player.style.display = 'block';
 
 
-    player.play().catch(()=>{});
+    player.play().catch(() => {});
 
 
-    showToast(
-        'Farm playlist loaded.'
-    );
+    showToast('Farm playlist loaded.');
 
 }
 
 
 /* =========================================================
-   LIVE WEATHER
-   UBAY, BOHOL
+   LIVE WEATHER  -  UBAY, BOHOL
 ========================================================= */
 
-const FARM_WEATHER={
+const FARM_WEATHER = {
 
     latitude:10.056001,
 
@@ -2647,477 +2463,251 @@ const FARM_WEATHER={
 
 function weatherDescription(code){
 
-    const map={
+    const map = {
 
         0:'Clear sky',
-
         1:'Mainly clear',
-
         2:'Partly cloudy',
-
         3:'Overcast',
-
         45:'Fog',
-
         48:'Depositing rime fog',
-
         51:'Light drizzle',
-
         53:'Moderate drizzle',
-
         55:'Dense drizzle',
-
         56:'Light freezing drizzle',
-
         57:'Dense freezing drizzle',
-
         61:'Slight rain',
-
         63:'Moderate rain',
-
         65:'Heavy rain',
-
         66:'Light freezing rain',
-
         67:'Heavy freezing rain',
-
         71:'Slight snowfall',
-
         73:'Moderate snowfall',
-
         75:'Heavy snowfall',
-
         77:'Snow grains',
-
         80:'Slight rain showers',
-
         81:'Moderate rain showers',
-
         82:'Violent rain showers',
-
         85:'Slight snow showers',
-
         86:'Heavy snow showers',
-
         95:'Thunderstorm',
-
         96:'Thunderstorm with hail',
-
         99:'Thunderstorm with heavy hail'
 
     };
 
 
-    return map[code] ||
-        'Weather conditions';
+    return map[code] || 'Weather conditions';
 
 }
 
 
 function weatherIcon(code){
 
-    if(code===0){
-
-        return `
-            <i class="fa-solid fa-sun"></i>
-        `;
-
+    if(code === 0){
+        return '<i class="fa-solid fa-sun"></i>';
     }
 
-
-    if([1,2].includes(code)){
-
-        return `
-            <i class="fa-solid fa-cloud-sun"></i>
-        `;
-
+    if([1, 2].includes(code)){
+        return '<i class="fa-solid fa-cloud-sun"></i>';
     }
 
-
-    if([3,45,48].includes(code)){
-
-        return `
-            <i class="fa-solid fa-cloud"></i>
-        `;
-
+    if([3, 45, 48].includes(code)){
+        return '<i class="fa-solid fa-cloud"></i>';
     }
 
-
-    if([
-        51,53,55,56,57,
-        61,63,65,66,67,
-        80,81,82
-    ].includes(code)){
-
-        return `
-            <i class="fa-solid fa-cloud-rain"></i>
-        `;
-
+    if([51,53,55,56,57,61,63,65,66,67,80,81,82].includes(code)){
+        return '<i class="fa-solid fa-cloud-rain"></i>';
     }
 
-
-    if([95,96,99].includes(code)){
-
-        return `
-            <i class="fa-solid fa-cloud-bolt"></i>
-        `;
-
+    if([95, 96, 99].includes(code)){
+        return '<i class="fa-solid fa-cloud-bolt"></i>';
     }
 
-
-    return `
-        <i class="fa-solid fa-cloud-sun"></i>
-    `;
+    return '<i class="fa-solid fa-cloud-sun"></i>';
 
 }
 
 
 async function loadWeather(){
 
-    const tempEl=
-        document.getElementById(
-            'weather-temp-value'
-        );
-
-    const conditionEl=
-        document.getElementById(
-            'weather-condition'
-        );
-
-    const iconEl=
-        document.getElementById(
-            'weather-icon'
-        );
-
-    const humidityEl=
-        document.getElementById(
-            'weather-humidity'
-        );
-
-    const rainChanceEl=
-        document.getElementById(
-            'weather-rain-chance'
-        );
-
-    const rainNowEl=
-        document.getElementById(
-            'weather-rain-now'
-        );
-
-    const windEl=
-        document.getElementById(
-            'weather-wind'
-        );
-
-    const dateEl=
-        document.getElementById(
-            'weather-date'
-        );
-
-    const alertEl=
-        document.getElementById(
-            'weather-alert'
-        );
-
-    const updatedEl=
-        document.getElementById(
-            'weather-updated'
-        );
+    const tempEl = document.getElementById('weather-temp-value');
+    const conditionEl = document.getElementById('weather-condition');
+    const iconEl = document.getElementById('weather-icon');
+    const humidityEl = document.getElementById('weather-humidity');
+    const rainChanceEl = document.getElementById('weather-rain-chance');
+    const rainNowEl = document.getElementById('weather-rain-now');
+    const windEl = document.getElementById('weather-wind');
+    const dateEl = document.getElementById('weather-date');
+    const alertEl = document.getElementById('weather-alert');
+    const updatedEl = document.getElementById('weather-updated');
 
 
-    conditionEl.innerText=
-        'Updating...';
+    conditionEl.innerText = 'Updating...';
 
 
-    const url=
+    const url =
         'https://api.open-meteo.com/v1/forecast' +
 
-        '?latitude='+
-        FARM_WEATHER.latitude +
+        '?latitude=' + FARM_WEATHER.latitude +
 
-        '&longitude='+
-        FARM_WEATHER.longitude +
+        '&longitude=' + FARM_WEATHER.longitude +
 
-        '&current='+
-        'temperature_2m,'+
-        'relative_humidity_2m,'+
-        'apparent_temperature,'+
-        'precipitation,'+
-        'rain,'+
-        'showers,'+
-        'weather_code,'+
+        '&current=' +
+        'temperature_2m,' +
+        'relative_humidity_2m,' +
+        'apparent_temperature,' +
+        'precipitation,' +
+        'rain,' +
+        'showers,' +
+        'weather_code,' +
         'wind_speed_10m' +
 
-        '&daily='+
-        'temperature_2m_max,'+
-        'temperature_2m_min,'+
-        'precipitation_probability_max,'+
+        '&daily=' +
+        'temperature_2m_max,' +
+        'temperature_2m_min,' +
+        'precipitation_probability_max,' +
         'rain_sum' +
 
-        '&timezone='+
-        encodeURIComponent(
-            FARM_WEATHER.timezone
-        ) +
+        '&timezone=' + encodeURIComponent(FARM_WEATHER.timezone) +
 
         '&forecast_days=1';
 
 
     try{
 
-        const response=
-            await fetch(
-                url,
-                {
-                    cache:'no-store'
-                }
-            );
+        const response = await fetch(url, { cache:'no-store' });
 
 
         if(!response.ok){
 
-            throw new Error(
-                'Weather service unavailable'
-            );
+            throw new Error('Weather service unavailable');
 
         }
 
 
-        const data=
-            await response.json();
+        const data = await response.json();
+
+        const current = data.current || {};
+        const daily = data.daily || {};
+
+        const code = Number(current.weather_code ?? 0);
+        const temp = Number(current.temperature_2m ?? 0);
+        const humidity = Number(current.relative_humidity_2m ?? 0);
+        const rainNow = Number(current.rain ?? 0);
+        const precipitation = Number(current.precipitation ?? 0);
+        const wind = Number(current.wind_speed_10m ?? 0);
+        const rainChance = Number(daily.precipitation_probability_max?.[0] ?? 0);
 
 
-        const current=
-            data.current || {};
+        tempEl.innerText = `${Math.round(temp)}°C`;
 
-        const daily=
-            data.daily || {};
+        conditionEl.innerText = weatherDescription(code);
 
+        iconEl.innerHTML = weatherIcon(code);
 
-        const code=
-            Number(
-                current.weather_code ?? 0
-            );
+        humidityEl.innerText = `${Math.round(humidity)}%`;
 
+        rainChanceEl.innerText = `${Math.round(rainChance)}%`;
 
-        const temp=
-            Number(
-                current.temperature_2m ?? 0
-            );
+        rainNowEl.innerText = `${rainNow.toFixed(1)} mm`;
+
+        windEl.innerText = `${Math.round(wind)} km/h`;
 
 
-        const humidity=
-            Number(
-                current.relative_humidity_2m ?? 0
-            );
+        const today = new Date().toLocaleDateString('en-US', {
+            weekday:'long',
+            month:'long',
+            day:'numeric',
+            year:'numeric',
+            timeZone:FARM_WEATHER.timezone
+        });
+
+        dateEl.innerText = `Today • ${today}`;
 
 
-        const rainNow=
-            Number(
-                current.rain ?? 0
-            );
-
-
-        const precipitation=
-            Number(
-                current.precipitation ?? 0
-            );
-
-
-        const wind=
-            Number(
-                current.wind_speed_10m ?? 0
-            );
-
-
-        const rainChance=
-            Number(
-                daily.precipitation_probability_max?.[0] ?? 0
-            );
-
-
-        tempEl.innerText=
-            `${Math.round(temp)}°C`;
-
-
-        conditionEl.innerText=
-            weatherDescription(code);
-
-
-        iconEl.innerHTML=
-            weatherIcon(code);
-
-
-        humidityEl.innerText=
-            `${Math.round(humidity)}%`;
-
-
-        rainChanceEl.innerText=
-            `${Math.round(rainChance)}%`;
-
-
-        rainNowEl.innerText=
-            `${rainNow.toFixed(1)} mm`;
-
-
-        windEl.innerText=
-            `${Math.round(wind)} km/h`;
-
-
-        const today=
-            new Date().toLocaleDateString(
-                'en-US',
-                {
-                    weekday:'long',
-                    month:'long',
-                    day:'numeric',
-                    year:'numeric',
-                    timeZone:
-                        FARM_WEATHER.timezone
-                }
-            );
-
-
-        dateEl.innerText=
-            `Today • ${today}`;
-
-
-        alertEl.className=
-            'weather-alert';
+        alertEl.className = 'weather-alert';
 
 
         if(
-            rainNow>0 ||
-            precipitation>0 ||
-            [51,53,55,56,57,61,63,65,66,67,80,81,82,95,96,99]
-                .includes(code)
+            rainNow > 0 ||
+            precipitation > 0 ||
+            [51,53,55,56,57,61,63,65,66,67,80,81,82,95,96,99].includes(code)
         ){
 
-            alertEl.classList.add(
-                'rain'
-            );
+            alertEl.classList.add('rain');
 
-
-            alertEl.innerHTML=`
-
+            alertEl.innerHTML = `
                 <i class="fa-solid fa-cloud-showers-heavy"></i>
-
                 <span>
                     Rain is currently indicated
                     near the selected farm location.
                 </span>
-
             `;
 
         }
 
-        else if(rainChance>=50){
+        else if(rainChance >= 50){
 
-            alertEl.classList.add(
-                'rain'
-            );
+            alertEl.classList.add('rain');
 
-
-            alertEl.innerHTML=`
-
+            alertEl.innerHTML = `
                 <i class="fa-solid fa-umbrella"></i>
-
                 <span>
                     Rain is possible today.
                     Consider checking field conditions
                     before irrigation.
                 </span>
-
             `;
 
         }
 
         else{
 
-            alertEl.classList.add(
-                'dry'
-            );
+            alertEl.classList.add('dry');
 
-
-            alertEl.innerHTML=`
-
+            alertEl.innerHTML = `
                 <i class="fa-solid fa-sun"></i>
-
                 <span>
                     No significant rain is indicated
                     right now.
                 </span>
-
             `;
 
         }
 
 
-        const updated=
-            new Date().toLocaleTimeString(
-                'en-US',
-                {
-                    hour:'numeric',
-                    minute:'2-digit',
-                    timeZone:
-                        FARM_WEATHER.timezone
-                }
-            );
+        const updated = new Date().toLocaleTimeString('en-US', {
+            hour:'numeric',
+            minute:'2-digit',
+            timeZone:FARM_WEATHER.timezone
+        });
 
-
-        updatedEl.innerText=
-            `Last updated ${updated}`;
+        updatedEl.innerText = `Last updated ${updated}`;
 
 
     }catch(error){
 
-        console.error(
-            'Weather error:',
-            error
-        );
+        console.error('Weather error:', error);
 
+        tempEl.innerText = '--°C';
+        conditionEl.innerText = 'Weather unavailable';
+        humidityEl.innerText = '--%';
+        rainChanceEl.innerText = '--%';
+        rainNowEl.innerText = '-- mm';
+        windEl.innerText = '-- km/h';
 
-        tempEl.innerText=
-            '--°C';
+        alertEl.className = 'weather-alert';
 
-
-        conditionEl.innerText=
-            'Weather unavailable';
-
-
-        humidityEl.innerText=
-            '--%';
-
-
-        rainChanceEl.innerText=
-            '--%';
-
-
-        rainNowEl.innerText=
-            '-- mm';
-
-
-        windEl.innerText=
-            '-- km/h';
-
-
-        alertEl.className=
-            'weather-alert';
-
-
-        alertEl.innerHTML=`
-
+        alertEl.innerHTML = `
             <i class="fa-solid fa-triangle-exclamation"></i>
-
             <span>
                 Weather data could not be loaded.
                 Please check your internet connection.
             </span>
-
         `;
 
-
-        updatedEl.innerText=
-            'Update failed';
+        updatedEl.innerText = 'Update failed';
 
     }
 
@@ -3130,20 +2720,13 @@ async function loadWeather(){
 
 function openGoogleMaps(){
 
-    const query=
-        'Ubay, Bohol, Philippines';
+    const query = 'Ubay, Bohol, Philippines';
 
-
-    const mapUrl=
-        'https://www.google.com/maps/search/?api=1&query='+
+    const mapUrl =
+        'https://www.google.com/maps/search/?api=1&query=' +
         encodeURIComponent(query);
 
-
-    window.open(
-        mapUrl,
-        '_blank',
-        'noopener'
-    );
+    window.open(mapUrl, '_blank', 'noopener');
 
 }
 
@@ -3154,28 +2737,21 @@ function openGoogleMaps(){
 
 function previewLogo(event){
 
-    const file=
-        event.target.files[0];
+    const file = event.target.files[0];
 
     if(!file){
         return;
     }
 
 
-    const reader=
-        new FileReader();
+    const reader = new FileReader();
 
 
-    reader.onload=function(e){
+    reader.onload = function(e){
 
-        document.getElementById(
-            'system-logo'
-        ).src=e.target.result;
+        document.getElementById('system-logo').src = e.target.result;
 
-        localStorage.setItem(
-            'smartFarmLogo',
-            e.target.result
-        );
+        localStorage.setItem('smartFarmLogo', e.target.result);
 
     };
 
@@ -3187,63 +2763,34 @@ function previewLogo(event){
 
 function changeAccent(color){
 
-    const root=
-        document.documentElement;
+    const root = document.documentElement;
 
 
-    if(color==='green'){
+    if(color === 'green'){
 
-        root.style.setProperty(
-            '--cyan',
-            '#34d399'
-        );
-
-        root.style.setProperty(
-            '--cyan2',
-            '#10b981'
-        );
+        root.style.setProperty('--cyan', '#34d399');
+        root.style.setProperty('--cyan2', '#10b981');
 
     }
 
-    else if(color==='blue'){
+    else if(color === 'blue'){
 
-        root.style.setProperty(
-            '--cyan',
-            '#60a5fa'
-        );
-
-        root.style.setProperty(
-            '--cyan2',
-            '#3b82f6'
-        );
+        root.style.setProperty('--cyan', '#60a5fa');
+        root.style.setProperty('--cyan2', '#3b82f6');
 
     }
 
-    else if(color==='orange'){
+    else if(color === 'orange'){
 
-        root.style.setProperty(
-            '--cyan',
-            '#fb923c'
-        );
-
-        root.style.setProperty(
-            '--cyan2',
-            '#f97316'
-        );
+        root.style.setProperty('--cyan', '#fb923c');
+        root.style.setProperty('--cyan2', '#f97316');
 
     }
 
     else{
 
-        root.style.setProperty(
-            '--cyan',
-            '#22d3ee'
-        );
-
-        root.style.setProperty(
-            '--cyan2',
-            '#06b6d4'
-        );
+        root.style.setProperty('--cyan', '#22d3ee');
+        root.style.setProperty('--cyan2', '#06b6d4');
 
     }
 
@@ -3252,26 +2799,13 @@ function changeAccent(color){
 
 function saveSettings(){
 
-    const accent=
-        document.getElementById(
-            'accent-color'
-        ).value;
+    const accent = document.getElementById('accent-color').value;
 
+    localStorage.setItem('smartFarmAccent', accent);
 
-    localStorage.setItem(
-        'smartFarmAccent',
-        accent
-    );
+    showToast('Dashboard settings saved.');
 
-
-    showToast(
-        'Dashboard settings saved.'
-    );
-
-
-    closeModal(
-        'settings-modal'
-    );
+    closeModal('settings-modal');
 
 }
 
@@ -3285,35 +2819,17 @@ let toastTimer;
 
 function showToast(message){
 
-    const toast=
-        document.getElementById(
-            'toast'
-        );
+    const toast = document.getElementById('toast');
 
+    toast.innerText = message;
 
-    toast.innerText=
-        message;
+    toast.classList.add('show');
 
+    clearTimeout(toastTimer);
 
-    toast.classList.add(
-        'show'
-    );
-
-
-    clearTimeout(
-        toastTimer
-    );
-
-
-    toastTimer=
-        setTimeout(
-            ()=>{
-                toast.classList.remove(
-                    'show'
-                );
-            },
-            2500
-        );
+    toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3500);
 
 }
 
@@ -3324,38 +2840,22 @@ function showToast(message){
 
 function loadSettings(){
 
-    const accent=
-        localStorage.getItem(
-            'smartFarmAccent'
-        );
-
+    const accent = localStorage.getItem('smartFarmAccent');
 
     if(accent){
 
-        document.getElementById(
-            'accent-color'
-        ).value=
-            accent;
+        document.getElementById('accent-color').value = accent;
 
-        changeAccent(
-            accent
-        );
+        changeAccent(accent);
 
     }
 
 
-    const logo=
-        localStorage.getItem(
-            'smartFarmLogo'
-        );
-
+    const logo = localStorage.getItem('smartFarmLogo');
 
     if(logo){
 
-        document.getElementById(
-            'system-logo'
-        ).src=
-            logo;
+        document.getElementById('system-logo').src = logo;
 
     }
 
@@ -3375,29 +2875,16 @@ loadSettings();
 loadWeather();
 
 
-/*
-   Refresh dashboard sensor simulation
-   every 8 seconds.
-*/
+/* Refresh dashboard sensor simulation every 8 seconds. */
 
-setInterval(
-    updateSensors,
-    8000
-);
+setInterval(updateSensors, 8000);
 
 
-/*
-   Refresh weather automatically
-   every 10 minutes.
-*/
+/* Refresh weather automatically every 10 minutes. */
 
-setInterval(
-    loadWeather,
-    10*60*1000
-);
+setInterval(loadWeather, 10 * 60 * 1000);
 
 </script>
 
 </body>
 </html>
-```
