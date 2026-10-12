@@ -1456,11 +1456,11 @@ textarea.form-control{
                     Pump inactive
                 </span>
 
-                <button class="pump-toggle"
-                        onclick="togglePump()"
-                        id="pump-button">
-                    Turn On Pump
-                </button>
+                <div style="display:flex;gap:4px;">
+                    <button class="pump-toggle" onclick="setPumpMode('auto')">Auto</button>
+                    <button class="pump-toggle" onclick="setPumpMode('on')">On</button>
+                    <button class="pump-toggle" onclick="setPumpMode('off')">Off</button>
+                </div>
 
             </div>
 
@@ -2103,7 +2103,7 @@ function goDashboard(){
 
 let historyData = [];
 
-let pumpCommand = false;   /* manual command saved in device_settings */
+let pumpMode = 'auto';        /* auto | on | off, saved in device_settings */
 let pumpActual = null;     /* real relay state reported by the ESP32  */
 
 const OFFLINE_AFTER_MS = 60 * 1000;
@@ -2266,36 +2266,25 @@ async function fetchPump(){
         return;
     }
 
-
     try{
 
         const { data, error } = await db
             .from('device_settings')
-            .select('pump_status')
+            .select('pump_mode')
             .limit(1);
 
-
         if(error){
-
-            console.error('Pump fetch failed:', error);
-
+            console.error('Mode fetch failed:', error);
             return;
-
         }
 
-
         if(data && data.length > 0){
-
-            pumpCommand = data[0].pump_status === true;
-
+            pumpMode = data[0].pump_mode || 'auto';
             renderPump();
-
         }
 
     }catch(err){
-
-        console.error('Pump fetch error:', err);
-
+        console.error('Mode fetch error:', err);
     }
 
 }
@@ -2327,102 +2316,49 @@ function renderPump(){
 
     const value = document.getElementById('pump-value');
     const state = document.getElementById('pump-state');
-    const button = document.getElementById('pump-button');
 
+    value.innerText = pumpActual === true ? 'ON' : 'OFF';
+    value.style.color = pumpActual === true ? '#34d399' : '#f8fafc';
 
-    const shownOn =
-        pumpActual === null
-        ? pumpCommand
-        : pumpActual;
-
-
-    value.innerText = shownOn ? 'ON' : 'OFF';
-
-    value.style.color = shownOn ? '#34d399' : '#f8fafc';
-
-    state.innerText =
-        'Manual command: ' + (pumpCommand ? 'ON' : 'OFF');
-
-    button.innerText =
-        pumpCommand
-        ? 'Turn Off Pump'
-        : 'Turn On Pump';
+    state.innerText = 'Mode: ' + pumpMode.toUpperCase();
 
 }
 
 
-async function togglePump(){
+async function setPumpMode(mode){
 
     if(!db){
-
         showToast('Database not connected.');
-
         return;
-
     }
-
-
-    const button = document.getElementById('pump-button');
-
-    const newState = !pumpCommand;
-
-
-    button.disabled = true;
-
 
     try{
 
         const { data, error } = await db
             .from('device_settings')
-            .update({ pump_status:newState })
+            .update({ pump_mode: mode })
             .not('created_at', 'is', null)
             .select();
 
-
         if(error){
-
-            console.error('Pump update failed:', error);
-
-            showToast('Pump command failed: ' + error.message);
-
+            console.error('Mode update failed:', error);
+            showToast('Failed: ' + error.message);
             return;
-
         }
-
 
         if(!data || data.length === 0){
-
             await fetchPump();
-
-            showToast(
-                'Pump command not applied. Check Supabase policies.'
-            );
-
+            showToast('Not applied. Check Supabase policies.');
             return;
-
         }
 
-
-        pumpCommand = newState;
-
+        pumpMode = mode;
         renderPump();
-
-        showToast(
-            newState
-            ? 'Pump command sent: ON'
-            : 'Pump command sent: OFF'
-        );
+        showToast('Pump mode: ' + mode.toUpperCase());
 
     }catch(err){
-
-        console.error('Pump toggle error:', err);
-
-        showToast('Pump command failed. Check your connection.');
-
-    }finally{
-
-        button.disabled = false;
-
+        console.error('Mode update error:', err);
+        showToast('Connection error.');
     }
 
 }
