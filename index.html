@@ -337,7 +337,7 @@ body::before{
 
 .sensor-grid{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:repeat(3,1fr);
     gap:10px;
 }
 
@@ -1392,26 +1392,7 @@ textarea.form-control{
 
     <section class="sensor-grid">
 
-        <div class="sensor-card">
-
-            <div class="sensor-top">
-                <div class="sensor-icon">
-                    <i class="fa-solid fa-droplet"></i>
-                </div>
-                <span class="sensor-status">LIVE</span>
-            </div>
-
-            <div class="sensor-name">Humidity</div>
-
-            <div class="sensor-value">
-                <span id="humidity-value">--</span><small>%</small>
-            </div>
-
-            <div class="progress">
-                <span id="humidity-progress"></span>
-            </div>
-
-        </div>
+        
 
 
         <div class="sensor-card">
@@ -1574,7 +1555,6 @@ textarea.form-control{
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Humidity</th>
                         <th>Soil</th>
                         <th>Rain</th>
                         <th>Pump</th>
@@ -1584,7 +1564,7 @@ textarea.form-control{
 
                 <tbody id="history-body">
                     <tr>
-                        <td colspan="6">Loading sensor history...</td>
+                        <td colspan="5">Loading sensor history...</td>
                     </tr>
                 </tbody>
 
@@ -2116,7 +2096,7 @@ function goDashboard(){
 /* =========================================================
    LIVE SENSOR DATA  <-  SUPABASE
 
-   sensor_data     : humidity, soil_moisture, rain_status,
+   sensor_data     : soil_moisture, rain_status,
                      pump_status, recorded_at
    device_settings : pump_status  (manual pump command)
 ========================================================= */
@@ -2157,7 +2137,6 @@ function clampPercent(value){
 
 function showSensors(row){
 
-    const humidity = Number(row.humidity ?? 0);
     const soil = Number(row.soil_moisture ?? 0);
 
     let rainText = 'NO DATA';
@@ -2169,18 +2148,12 @@ function showSensors(row){
     }
 
 
-    document.getElementById('humidity-value')
-        .innerText = Math.round(humidity);
-
     document.getElementById('soil-value')
         .innerText = Math.round(soil);
 
     document.getElementById('rain-value')
         .innerText = rainText;
 
-
-    document.getElementById('humidity-progress')
-        .style.width = clampPercent(humidity) + '%';
 
     document.getElementById('soil-progress')
         .style.width = clampPercent(soil) + '%';
@@ -2402,7 +2375,7 @@ async function togglePump(){
         const { data, error } = await db
             .from('device_settings')
             .update({ pump_status:newState })
-            .eq('pump_status', !newState)
+            .not('created_at', 'is', null)
             .select();
 
 
@@ -2467,7 +2440,7 @@ function renderHistory(){
 
         body.innerHTML = `
             <tr>
-                <td colspan="6">
+                <td colspan="5">
                     No history records available yet.
                 </td>
             </tr>
@@ -2506,7 +2479,6 @@ function renderHistory(){
 
             <tr>
                 <td>${item.id}</td>
-                <td>${Math.round(Number(item.humidity ?? 0))}%</td>
                 <td>${Math.round(Number(item.soil_moisture ?? 0))}%</td>
                 <td>${rain}</td>
                 <td>${pump}</td>
