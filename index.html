@@ -2333,7 +2333,7 @@ async function setPumpMode(mode){
         const { data, error } = await db
             .from('device_settings')
             .update({ pump_mode: mode })
-            .neq('pump_status', null)
+            .not('created_at', 'is', null)
             .select();
 
         if(error){
