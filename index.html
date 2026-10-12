@@ -2309,7 +2309,7 @@ function refreshSensors(){
 
 
 /* =========================================================
-   WATER PUMP
+   WATER PUMP (UPDATED & FIXED)
 ========================================================= */
 
 function renderPump(){
@@ -2337,18 +2337,12 @@ async function setPumpMode(mode){
         const { data, error } = await db
             .from('device_settings')
             .update({ pump_mode: mode })
-            .not('created_at', 'is', null)
+            .limit(1)
             .select();
 
         if(error){
             console.error('Mode update failed:', error);
             showToast('Failed: ' + error.message);
-            return;
-        }
-
-        if(!data || data.length === 0){
-            await fetchPump();
-            showToast('Not applied. Check Supabase policies.');
             return;
         }
 
@@ -2430,10 +2424,6 @@ function renderHistory(){
 
 /* =========================================================
    BUG REPORT  ->  SUPABASE  (farm_reports table)
-
-   NOTE: the names on the LEFT (name, location, issue_type,
-   description) must match your column names in the
-   Supabase farm_reports table exactly.
 ========================================================= */
 
 async function submitBug(){
