@@ -2095,16 +2095,12 @@ function goDashboard(){
 
 /* =========================================================
    LIVE SENSOR DATA  <-  SUPABASE
-
-   sensor_data     : soil_moisture, rain_status,
-                     pump_status, recorded_at
-   device_settings : pump_status  (manual pump command)
 ========================================================= */
 
 let historyData = [];
 
-let pumpMode = 'auto';        /* auto | on | off, saved in device_settings */
-let pumpActual = null;     /* real relay state reported by the ESP32  */
+let pumpMode = 'auto';        
+let pumpActual = null;     
 
 const OFFLINE_AFTER_MS = 60 * 1000;
 
@@ -2309,7 +2305,7 @@ function refreshSensors(){
 
 
 /* =========================================================
-   WATER PUMP (UPDATED & FIXED)
+   WATER PUMP (NAAY SAKTONG WHERE CLAUSE NA)
 ========================================================= */
 
 function renderPump(){
@@ -2337,7 +2333,7 @@ async function setPumpMode(mode){
         const { data, error } = await db
             .from('device_settings')
             .update({ pump_mode: mode })
-            .limit(1)
+            .neq('pump_status', null)
             .select();
 
         if(error){
