@@ -1235,156 +1235,6 @@ textarea.form-control{
    HARVEST YIELD RECORDS - SUPABASE
    Requires public.harvest_records table (SQL supplied separately).
 ========================================================= */
-let harvestRecords = [];
-
-function escapeHarvestText(value){
-    return String(value ?? '').replace(/[&<>"']/g, ch => ({
-        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-    }[ch]));
-}
-
-function growthPercent(previous, present){
-    const prev = Number(previous) || 0;
-    const now = Number(present) || 0;
-    if(prev === 0) return null;
-    return ((now - prev) / prev) * 100;
-}
-
-function openHarvestForm(recordId = null){
-    const form = document.getElementById('harvest-form-modal');
-    document.getElementById('harvest-edit-id').value = '';
-    document.getElementById('harvest-form-title').textContent = 'Add Harvest Record';
-    document.getElementById('harvest-crop').value = '';
-    document.getElementById('harvest-date').value = new Date().toISOString().slice(0,10);
-    document.getElementById('harvest-previous').value = '0';
-    document.getElementById('harvest-present').value = '';
-    document.getElementById('harvest-unit').value = 'kg';
-    document.getElementById('harvest-notes').value = '';
-
-    if(recordId !== null){
-        const record = harvestRecords.find(item => String(item.id) === String(recordId));
-        if(!record){ showToast('Harvest record not found.'); return; }
-        document.getElementById('harvest-edit-id').value = record.id;
-        document.getElementById('harvest-form-title').textContent = 'Edit Harvest Record';
-        document.getElementById('harvest-crop').value = record.crop_name || '';
-        document.getElementById('harvest-date').value = record.harvest_date || '';
-        document.getElementById('harvest-previous').value = record.previous_yield ?? 0;
-        document.getElementById('harvest-present').value = record.present_yield ?? '';
-        document.getElementById('harvest-unit').value = record.unit || 'kg';
-        document.getElementById('harvest-notes').value = record.notes || '';
-    }
-    form.classList.add('open');
-}
-
-async function loadHarvestRecords(){
-    const body = document.getElementById('harvest-records-body');
-    if(!db){
-        body.innerHTML = '<tr><td colspan="7" class="harvest-empty">Supabase is not connected.</td></tr>';
-        return;
-    }
-    body.innerHTML = '<tr><td colspan="7" class="harvest-empty">Loading harvest records...</td></tr>';
-    try{
-        const {data,error} = await db.from('harvest_records')
-            .select('*').order('harvest_date',{ascending:false}).order('created_at',{ascending:false});
-        if(error) throw error;
-        harvestRecords = data || [];
-        renderHarvestRecords();
-    }catch(error){
-        console.error('Harvest records load failed:',error);
-        body.innerHTML = '<tr><td colspan="7" class="harvest-empty">Could not load records. Check the Supabase harvest_records table and its permissions.</td></tr>';
-        showToast('Harvest records could not be loaded.');
-    }
-}
-
-function renderHarvestRecords(){
-    const body = document.getElementById('harvest-records-body');
-    const total = harvestRecords.reduce((sum,r)=>sum+(Number(r.present_yield)||0),0);
-    document.getElementById('harvest-total').textContent = `${total.toLocaleString(undefined,{maximumFractionDigits:2})} ${harvestRecords[0]?.unit || 'kg'}`;
-    document.getElementById('harvest-count').textContent = harvestRecords.length.toLocaleString();
-
-    const cutoff = new Date();
-    cutoff.setMonth(cutoff.getMonth()-3);
-    const recent = harvestRecords.filter(r => r.harvest_date && new Date(r.harvest_date+'T00:00:00') >= cutoff);
-    const recentTotal = recent.reduce((sum,r)=>sum+(Number(r.present_yield)||0),0);
-    const priorTotal = harvestRecords.filter(r => r.harvest_date && new Date(r.harvest_date+'T00:00:00') < cutoff)
-        .reduce((sum,r)=>sum+(Number(r.present_yield)||0),0);
-    let trend = 'Stable';
-    if(recent.length === 0) trend = 'No data';
-    else if(priorTotal === 0 || recentTotal > priorTotal) trend = 'Increasing';
-    else if(recentTotal < priorTotal) trend = 'Decreasing';
-    document.getElementById('harvest-trend').textContent = trend;
-
-    if(!harvestRecords.length){
-        body.innerHTML = '<tr><td colspan="7" class="harvest-empty">No harvest records yet. Click “Add Harvest” to record your first harvest.</td></tr>';
-        return;
-    }
-    body.innerHTML = harvestRecords.map(r=>{
-        const growth = growthPercent(r.previous_yield,r.present_yield);
-        const growthText = growth === null ? 'N/A' : `${growth > 0 ? '+' : ''}${growth.toFixed(1)}%`;
-        const growthClass = growth !== null && growth < 0 ? 'harvest-growth down' : 'harvest-growth';
-        return `<tr>
-            <td>${escapeHarvestText(r.harvest_date || '')}</td>
-            <td>${escapeHarvestText(r.crop_name || '')}</td>
-            <td>${Number(r.previous_yield||0).toLocaleString()} ${escapeHarvestText(r.unit||'kg')}</td>
-            <td><strong>${Number(r.present_yield||0).toLocaleString()} ${escapeHarvestText(r.unit||'kg')}</strong></td>
-            <td class="${growthClass}">${growthText}</td>
-            <td>${escapeHarvestText(r.notes || '—')}</td>
-            <td><button class="harvest-action" onclick="openHarvestForm('${String(r.id).replace(/'/g,'')}')">Edit</button><button class="harvest-action" onclick="deleteHarvestRecord('${String(r.id).replace(/'/g,'')}')">Delete</button></td>
-        </tr>`;
-    }).join('');
-}
-
-async function saveHarvestRecord(){
-    if(!db){showToast('Database not connected.');return;}
-    const crop = document.getElementById('harvest-crop').value.trim();
-    const date = document.getElementById('harvest-date').value;
-    const previous = Number(document.getElementById('harvest-previous').value);
-    const presentRaw = document.getElementById('harvest-present').value;
-    const present = Number(presentRaw);
-    const unit = document.getElementById('harvest-unit').value;
-    const notes = document.getElementById('harvest-notes').value.trim();
-    const editId = document.getElementById('harvest-edit-id').value;
-    if(!crop || !date || presentRaw === '' || !Number.isFinite(previous) || !Number.isFinite(present) || previous < 0 || present < 0){
-        showToast('Please enter valid crop, date, and yield values.');
-        return;
-    }
-    const button = document.getElementById('harvest-save-btn');
-    button.disabled = true;
-    const payload = {crop_name:crop,harvest_date:date,previous_yield:previous,present_yield:present,unit,notes};
-    try{
-        let result;
-        if(editId){
-            result = await db.from('harvest_records').update(payload).eq('id',editId);
-        }else{
-            result = await db.from('harvest_records').insert(payload);
-        }
-        if(result.error) throw result.error;
-        closeModal('harvest-form-modal');
-        showToast(editId ? 'Harvest record updated.' : 'Harvest record saved.');
-        await loadHarvestRecords();
-    }catch(error){
-        console.error('Harvest save failed:',error);
-        showToast('Save failed: ' + (error.message || 'check Supabase table permissions'));
-    }finally{
-        button.disabled = false;
-    }
-}
-
-async function deleteHarvestRecord(id){
-    if(!confirm('Delete this harvest record? This cannot be undone.')) return;
-    if(!db){showToast('Database not connected.');return;}
-    try{
-        const {error} = await db.from('harvest_records').delete().eq('id',id);
-        if(error) throw error;
-        showToast('Harvest record deleted.');
-        await loadHarvestRecords();
-    }catch(error){
-        console.error('Harvest delete failed:',error);
-        showToast('Delete failed: ' + (error.message || 'check Supabase permissions'));
-    }
-}
-
-
 /* =========================================================
    TOAST
 ========================================================= */
@@ -3289,6 +3139,155 @@ setInterval(refreshLive, 5000);
 /* Refresh weather automatically every 10 minutes. */
 
 setInterval(loadWeather, 10 * 60 * 1000);
+
+let harvestRecords = [];
+
+function escapeHarvestText(value){
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[ch]));
+}
+
+function growthPercent(previous, present){
+    const prev = Number(previous) || 0;
+    const now = Number(present) || 0;
+    if(prev === 0) return null;
+    return ((now - prev) / prev) * 100;
+}
+
+function openHarvestForm(recordId = null){
+    const form = document.getElementById('harvest-form-modal');
+    document.getElementById('harvest-edit-id').value = '';
+    document.getElementById('harvest-form-title').textContent = 'Add Harvest Record';
+    document.getElementById('harvest-crop').value = '';
+    document.getElementById('harvest-date').value = new Date().toISOString().slice(0,10);
+    document.getElementById('harvest-previous').value = '0';
+    document.getElementById('harvest-present').value = '';
+    document.getElementById('harvest-unit').value = 'kg';
+    document.getElementById('harvest-notes').value = '';
+
+    if(recordId !== null){
+        const record = harvestRecords.find(item => String(item.id) === String(recordId));
+        if(!record){ showToast('Harvest record not found.'); return; }
+        document.getElementById('harvest-edit-id').value = record.id;
+        document.getElementById('harvest-form-title').textContent = 'Edit Harvest Record';
+        document.getElementById('harvest-crop').value = record.crop_name || '';
+        document.getElementById('harvest-date').value = record.harvest_date || '';
+        document.getElementById('harvest-previous').value = record.previous_yield ?? 0;
+        document.getElementById('harvest-present').value = record.present_yield ?? '';
+        document.getElementById('harvest-unit').value = record.unit || 'kg';
+        document.getElementById('harvest-notes').value = record.notes || '';
+    }
+    form.classList.add('open');
+}
+
+async function loadHarvestRecords(){
+    const body = document.getElementById('harvest-records-body');
+    if(!db){
+        body.innerHTML = '<tr><td colspan="7" class="harvest-empty">Supabase is not connected.</td></tr>';
+        return;
+    }
+    body.innerHTML = '<tr><td colspan="7" class="harvest-empty">Loading harvest records...</td></tr>';
+    try{
+        const {data,error} = await db.from('harvest_records')
+            .select('*').order('harvest_date',{ascending:false}).order('created_at',{ascending:false});
+        if(error) throw error;
+        harvestRecords = data || [];
+        renderHarvestRecords();
+    }catch(error){
+        console.error('Harvest records load failed:',error);
+        body.innerHTML = '<tr><td colspan="7" class="harvest-empty">Could not load records. Check the Supabase harvest_records table and its permissions.</td></tr>';
+        showToast('Harvest records could not be loaded.');
+    }
+}
+
+function renderHarvestRecords(){
+    const body = document.getElementById('harvest-records-body');
+    const total = harvestRecords.reduce((sum,r)=>sum+(Number(r.present_yield)||0),0);
+    document.getElementById('harvest-total').textContent = `${total.toLocaleString(undefined,{maximumFractionDigits:2})} ${harvestRecords[0]?.unit || 'kg'}`;
+    document.getElementById('harvest-count').textContent = harvestRecords.length.toLocaleString();
+
+    const cutoff = new Date();
+    cutoff.setMonth(cutoff.getMonth()-3);
+    const recent = harvestRecords.filter(r => r.harvest_date && new Date(r.harvest_date+'T00:00:00') >= cutoff);
+    const recentTotal = recent.reduce((sum,r)=>sum+(Number(r.present_yield)||0),0);
+    const priorTotal = harvestRecords.filter(r => r.harvest_date && new Date(r.harvest_date+'T00:00:00') < cutoff)
+        .reduce((sum,r)=>sum+(Number(r.present_yield)||0),0);
+    let trend = 'Stable';
+    if(recent.length === 0) trend = 'No data';
+    else if(priorTotal === 0 || recentTotal > priorTotal) trend = 'Increasing';
+    else if(recentTotal < priorTotal) trend = 'Decreasing';
+    document.getElementById('harvest-trend').textContent = trend;
+
+    if(!harvestRecords.length){
+        body.innerHTML = '<tr><td colspan="7" class="harvest-empty">No harvest records yet. Click “Add Harvest” to record your first harvest.</td></tr>';
+        return;
+    }
+    body.innerHTML = harvestRecords.map(r=>{
+        const growth = growthPercent(r.previous_yield,r.present_yield);
+        const growthText = growth === null ? 'N/A' : `${growth > 0 ? '+' : ''}${growth.toFixed(1)}%`;
+        const growthClass = growth !== null && growth < 0 ? 'harvest-growth down' : 'harvest-growth';
+        return `<tr>
+            <td>${escapeHarvestText(r.harvest_date || '')}</td>
+            <td>${escapeHarvestText(r.crop_name || '')}</td>
+            <td>${Number(r.previous_yield||0).toLocaleString()} ${escapeHarvestText(r.unit||'kg')}</td>
+            <td><strong>${Number(r.present_yield||0).toLocaleString()} ${escapeHarvestText(r.unit||'kg')}</strong></td>
+            <td class="${growthClass}">${growthText}</td>
+            <td>${escapeHarvestText(r.notes || '—')}</td>
+            <td><button class="harvest-action" onclick="openHarvestForm('${String(r.id).replace(/'/g,'')}')">Edit</button><button class="harvest-action" onclick="deleteHarvestRecord('${String(r.id).replace(/'/g,'')}')">Delete</button></td>
+        </tr>`;
+    }).join('');
+}
+
+async function saveHarvestRecord(){
+    if(!db){showToast('Database not connected.');return;}
+    const crop = document.getElementById('harvest-crop').value.trim();
+    const date = document.getElementById('harvest-date').value;
+    const previous = Number(document.getElementById('harvest-previous').value);
+    const presentRaw = document.getElementById('harvest-present').value;
+    const present = Number(presentRaw);
+    const unit = document.getElementById('harvest-unit').value;
+    const notes = document.getElementById('harvest-notes').value.trim();
+    const editId = document.getElementById('harvest-edit-id').value;
+    if(!crop || !date || presentRaw === '' || !Number.isFinite(previous) || !Number.isFinite(present) || previous < 0 || present < 0){
+        showToast('Please enter valid crop, date, and yield values.');
+        return;
+    }
+    const button = document.getElementById('harvest-save-btn');
+    button.disabled = true;
+    const payload = {crop_name:crop,harvest_date:date,previous_yield:previous,present_yield:present,unit,notes};
+    try{
+        let result;
+        if(editId){
+            result = await db.from('harvest_records').update(payload).eq('id',editId);
+        }else{
+            result = await db.from('harvest_records').insert(payload);
+        }
+        if(result.error) throw result.error;
+        closeModal('harvest-form-modal');
+        showToast(editId ? 'Harvest record updated.' : 'Harvest record saved.');
+        await loadHarvestRecords();
+    }catch(error){
+        console.error('Harvest save failed:',error);
+        showToast('Save failed: ' + (error.message || 'check Supabase table permissions'));
+    }finally{
+        button.disabled = false;
+    }
+}
+
+async function deleteHarvestRecord(id){
+    if(!confirm('Delete this harvest record? This cannot be undone.')) return;
+    if(!db){showToast('Database not connected.');return;}
+    try{
+        const {error} = await db.from('harvest_records').delete().eq('id',id);
+        if(error) throw error;
+        showToast('Harvest record deleted.');
+        await loadHarvestRecords();
+    }catch(error){
+        console.error('Harvest delete failed:',error);
+        showToast('Delete failed: ' + (error.message || 'check Supabase permissions'));
+    }
+}
 
 </script>
 
