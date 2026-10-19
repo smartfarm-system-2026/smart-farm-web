@@ -460,7 +460,7 @@ body::before{
     transition:width .7s;
 }
 
-/* Harvest card flash after saving a record */
+/* Harvest card glow after saving a record */
 @keyframes harvestFlash{
     0%{
         box-shadow:0 0 0 rgba(52,211,153,0);
@@ -591,15 +591,10 @@ body::before{
     animation:waveMove 8s linear infinite;
 }
 
-.wave-path.live{
-    stroke-dasharray:none;
-    animation:none;
-    stroke-width:2.5;
-}
-
-.wave-area{
-    fill:rgba(34,211,238,.10);
-    stroke:none;
+.wave-path.two{
+    stroke:#10b981;
+    opacity:.45;
+    animation-duration:12s;
 }
 
 @keyframes waveMove{
@@ -610,7 +605,6 @@ body::before{
 .wave-labels{
     display:flex;
     justify-content:space-between;
-    align-items:center;
     margin-top:6px;
 
     color:#334155;
@@ -1634,7 +1628,7 @@ textarea.form-control{
         </div>
 
 
-        <!-- Harvest Yield -->
+        <!-- Harvest Yield (replaces Rain Sensor) -->
         <div class="sensor-card clickable" id="harvest-card" onclick="openModal('harvest-modal')">
 
             <div class="sensor-top">
@@ -1690,7 +1684,7 @@ textarea.form-control{
     </section>
 
 
-    <!-- LIVE SOIL MOISTURE WAVE -->
+    <!-- ANALYTICAL WAVE (moves with soil moisture) -->
 
     <section class="analytics">
 
@@ -1698,27 +1692,40 @@ textarea.form-control{
 
             <h3>
                 <i class="fa-solid fa-chart-line"></i>
-                Live Soil Moisture Trend
+                Analytical Topography &amp; Wave Matrix
             </h3>
 
             <div class="live-text">
                 <span class="status-dot"></span>
-                LIVE SENSOR STREAM
+                <span id="wave-level">Naghulat sa data...</span>
             </div>
 
         </div>
 
         <div class="wave">
-            <svg id="wave-svg" viewBox="0 0 1000 180" preserveAspectRatio="none">
-                <path id="wave-area" class="wave-area" d=""/>
-                <path id="wave-line" class="wave-path live" d=""/>
+
+            <svg viewBox="0 0 1000 180" preserveAspectRatio="none">
+
+                <path
+                    id="wave-main"
+                    class="wave-path"
+                    d="M0 95 C50 60,80 120,130 88 S210 65,260 100 S340 130,390 82 S470 55,520 95 S600 135,650 88 S730 50,780 94 S860 125,910 82 S970 60,1000 95"/>
+
+                <path
+                    id="wave-two"
+                    class="wave-path two"
+                    d="M0 120 C60 90,100 145,150 110 S240 85,300 120 S390 145,450 105 S540 80,600 118 S690 150,750 108 S840 85,900 120 S960 140,1000 112"/>
+
             </svg>
+
         </div>
 
         <div class="wave-labels">
-            <span>Kaniadto</span>
-            <span id="wave-hint" style="color:#67e8f9;font-weight:900;">Naghulat sa data...</span>
-            <span>Karon</span>
+            <span>0%</span>
+            <span>25%</span>
+            <span>50%</span>
+            <span>75%</span>
+            <span>100%</span>
         </div>
 
     </section>
@@ -2380,8 +2387,6 @@ let pumpActual = null;
 
 const OFFLINE_AFTER_MS = 60 * 1000;
 
-const WAVE_MAX_POINTS = 15;
-
 
 function setLiveStatus(online, text){
 
@@ -2409,65 +2414,61 @@ function clampPercent(value){
 }
 
 
-function soilLevelText(v){
+/* =========================================================
+   WAVE MATRIX  (original design, moves with soil moisture)
+   Wet soil = wave goes up. Dry soil = wave goes down.
+========================================================= */
 
-    if(v < 30){
-        return 'UGA — ' + Math.round(v) + '% (kinahanglan og tubig)';
-    }
+const WAVE_BASE = {
+    main: "M0 95 C50 60,80 120,130 88 S210 65,260 100 S340 130,390 82 S470 55,520 95 S600 135,650 88 S730 50,780 94 S860 125,910 82 S970 60,1000 95",
+    two:  "M0 120 C60 90,100 145,150 110 S240 85,300 120 S390 145,450 105 S540 80,600 118 S690 150,750 108 S840 85,900 120 S960 140,1000 112"
+};
 
-    if(v < 60){
-        return 'MAAYO — ' + Math.round(v) + '%';
-    }
+function shiftWavePath(d, shift){
 
-    return 'BASA — ' + Math.round(v) + '% (igo na ang tubig)';
+    let i = 0;
+
+    return d.replace(/-?\d+(\.\d+)?/g, m => {
+
+        const isY = (i++ % 2) === 1;
+
+        if(!isY) return m;
+
+        const y = Math.max(6, Math.min(174, Number(m) + shift));
+
+        return y.toFixed(1);
+
+    });
 
 }
 
-
 function updateWave(rows){
 
-    const line = document.getElementById('wave-line');
-    const area = document.getElementById('wave-area');
-    const hint = document.getElementById('wave-hint');
+    const main = document.getElementById('wave-main');
+    const two = document.getElementById('wave-two');
+    const level = document.getElementById('wave-level');
 
-    if(!line || !area || !hint) return;
+    if(!main || !two) return;
 
-    const points = (rows || [])
-        .slice(0, WAVE_MAX_POINTS)
-        .reverse()
-        .map(r => clampPercent(r.soil_moisture));
+    const latest = rows && rows.length
+        ? clampPercent(rows[0].soil_moisture)
+        : 50;
 
-    if(points.length === 0){
-        line.setAttribute('d', '');
-        area.setAttribute('d', '');
-        hint.textContent = 'Walay data pa';
-        return;
+    const shift = (50 - latest) * 0.7;
+
+    main.setAttribute('d', shiftWavePath(WAVE_BASE.main, shift));
+    two.setAttribute('d', shiftWavePath(WAVE_BASE.two, shift));
+
+    if(level){
+
+        const label =
+            latest < 30 ? 'UGA' :
+            latest < 60 ? 'MAAYO' :
+            'BASA';
+
+        level.textContent = label + ' — ' + Math.round(latest) + '%';
+
     }
-
-    const W = 1000;
-    const H = 180;
-    const PAD = 12;
-    const usable = H - PAD * 2;
-    const stepX = points.length > 1 ? W / (points.length - 1) : 0;
-
-    const coords = points.map((v, i) => {
-        const x = points.length > 1 ? i * stepX : W / 2;
-        const y = PAD + usable - (v / 100) * usable;
-        return [x, y];
-    });
-
-    const linePath = coords
-        .map((c, i) => (i === 0 ? 'M' : 'L') + c[0].toFixed(1) + ' ' + c[1].toFixed(1))
-        .join(' ');
-
-    const lastX = coords[coords.length - 1][0].toFixed(1);
-    const firstX = coords[0][0].toFixed(1);
-    const areaPath = linePath + ` L${lastX} ${H} L${firstX} ${H} Z`;
-
-    line.setAttribute('d', linePath);
-    area.setAttribute('d', areaPath);
-
-    hint.textContent = soilLevelText(points[points.length - 1]);
 
 }
 
