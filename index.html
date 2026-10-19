@@ -1628,7 +1628,7 @@ textarea.form-control{
         </div>
 
 
-        <!-- Harvest Yield (replaces Rain Sensor) -->
+        <!-- Harvest Yield -->
         <div class="sensor-card clickable" id="harvest-card" onclick="openModal('harvest-modal')">
 
             <div class="sensor-top">
@@ -1697,7 +1697,7 @@ textarea.form-control{
 
             <div class="live-text">
                 <span class="status-dot"></span>
-                <span id="wave-level">Naghulat sa data...</span>
+                <span id="wave-level">Waiting for data...</span>
             </div>
 
         </div>
@@ -2462,9 +2462,9 @@ function updateWave(rows){
     if(level){
 
         const label =
-            latest < 30 ? 'UGA' :
-            latest < 60 ? 'MAAYO' :
-            'BASA';
+            latest < 30 ? 'DRY' :
+            latest < 60 ? 'MODERATE' :
+            'WET';
 
         level.textContent = label + ' — ' + Math.round(latest) + '%';
 
@@ -2804,7 +2804,7 @@ async function submitBug(){
 
         closeModal('bug-modal');
 
-        showToast('✔ Issue report na-submit na!', 'success');
+        showToast('✔ Issue report submitted!', 'success');
 
     }catch(err){
 
@@ -3221,7 +3221,7 @@ function saveSettings(){
 
     localStorage.setItem('smartFarmAccent', accent);
 
-    showToast('✔ Dashboard settings na-save na!', 'success');
+    showToast('✔ Dashboard settings saved!', 'success');
 
     closeModal('settings-modal');
 
@@ -3446,7 +3446,7 @@ async function saveHarvestRecord(){
     const notes = document.getElementById('harvest-notes').value.trim();
     const editId = document.getElementById('harvest-edit-id').value;
     if(!crop || !date || presentRaw === '' || !Number.isFinite(previous) || !Number.isFinite(present) || previous < 0 || present < 0){
-        showToast('Palihug i-complete ang crop, date, ug yield.', 'error');
+        showToast('Please complete the crop, date, and yield fields.', 'error');
         return;
     }
     const button = document.getElementById('harvest-save-btn');
@@ -3464,8 +3464,8 @@ async function saveHarvestRecord(){
         await loadHarvestRecords();
         showToast(
             editId
-            ? '✔ Harvest record na-update na!'
-            : '✔ Harvest record na-save na!',
+            ? '✔ Harvest record updated!'
+            : '✔ Harvest record saved!',
             'success'
         );
         flashHarvestCard();
@@ -3484,7 +3484,7 @@ async function deleteHarvestRecord(id){
         const {error} = await db.from('harvest_records').delete().eq('id',id);
         if(error) throw error;
         await loadHarvestRecords();
-        showToast('Harvest record na-delete na.', 'success');
+        showToast('Harvest record deleted.', 'success');
     }catch(error){
         console.error('Harvest delete failed:',error);
         showToast('Delete failed: ' + (error.message || 'check Supabase permissions'), 'error');
