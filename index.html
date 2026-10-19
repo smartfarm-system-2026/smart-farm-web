@@ -460,6 +460,26 @@ body::before{
     transition:width .7s;
 }
 
+/* Harvest card flash after saving a record */
+@keyframes harvestFlash{
+    0%{
+        box-shadow:0 0 0 rgba(52,211,153,0);
+        border-color:var(--border);
+    }
+    40%{
+        box-shadow:0 0 30px rgba(52,211,153,.55);
+        border-color:#34d399;
+    }
+    100%{
+        box-shadow:0 0 0 rgba(52,211,153,0);
+        border-color:var(--border);
+    }
+}
+
+.sensor-card.flash{
+    animation:harvestFlash 1.6s ease 2;
+}
+
 /* =========================================================
    PUMP
 ========================================================= */
@@ -571,10 +591,15 @@ body::before{
     animation:waveMove 8s linear infinite;
 }
 
-.wave-path.two{
-    stroke:#10b981;
-    opacity:.45;
-    animation-duration:12s;
+.wave-path.live{
+    stroke-dasharray:none;
+    animation:none;
+    stroke-width:2.5;
+}
+
+.wave-area{
+    fill:rgba(34,211,238,.10);
+    stroke:none;
 }
 
 @keyframes waveMove{
@@ -585,6 +610,7 @@ body::before{
 .wave-labels{
     display:flex;
     justify-content:space-between;
+    align-items:center;
     margin-top:6px;
 
     color:#334155;
@@ -1338,17 +1364,23 @@ textarea.form-control{
     right:20px;
     bottom:20px;
 
-    padding:10px 13px;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    min-width:240px;
+    max-width:340px;
+    padding:12px 15px;
 
     color:#e2e8f0;
     background:#0b1626;
 
     border:1px solid rgba(34,211,238,.2);
-    border-radius:9px;
+    border-radius:10px;
 
-    box-shadow:0 15px 40px rgba(0,0,0,.35);
+    box-shadow:0 15px 40px rgba(0,0,0,.45);
 
-    font-size:8px;
+    font-size:10px;
+    font-weight:700;
 
     transform:translateY(20px);
     opacity:0;
@@ -1359,9 +1391,33 @@ textarea.form-control{
     z-index:200;
 }
 
+.toast i{
+    font-size:16px;
+}
+
 .toast.show{
     transform:translateY(0);
     opacity:1;
+}
+
+.toast.success{
+    color:#d1fae5;
+    background:linear-gradient(135deg,#0b2a1f,#0b1626);
+    border-color:rgba(52,211,153,.55);
+    box-shadow:0 15px 40px rgba(0,0,0,.45),0 0 25px rgba(52,211,153,.15);
+}
+
+.toast.success i{
+    color:#34d399;
+}
+
+.toast.error{
+    color:#fee2e2;
+    border-color:rgba(239,68,68,.55);
+}
+
+.toast.error i{
+    color:#ef4444;
 }
 
 /* =========================================================
@@ -1578,8 +1634,8 @@ textarea.form-control{
         </div>
 
 
-        <!-- Harvest Yield (replaces Rain Sensor) -->
-        <div class="sensor-card clickable" onclick="openModal('harvest-modal')">
+        <!-- Harvest Yield -->
+        <div class="sensor-card clickable" id="harvest-card" onclick="openModal('harvest-modal')">
 
             <div class="sensor-top">
                 <div class="sensor-icon">
@@ -1634,7 +1690,7 @@ textarea.form-control{
     </section>
 
 
-    <!-- ANALYTICAL WAVE -->
+    <!-- LIVE SOIL MOISTURE WAVE -->
 
     <section class="analytics">
 
@@ -1642,7 +1698,7 @@ textarea.form-control{
 
             <h3>
                 <i class="fa-solid fa-chart-line"></i>
-                Analytical Topography &amp; Wave Matrix
+                Live Soil Moisture Trend
             </h3>
 
             <div class="live-text">
@@ -1653,42 +1709,16 @@ textarea.form-control{
         </div>
 
         <div class="wave">
-
-            <svg viewBox="0 0 1000 180" preserveAspectRatio="none">
-
-                <path
-                    class="wave-path"
-                    d="M0 95
-                       C50 60,80 120,130 88
-                       S210 65,260 100
-                       S340 130,390 82
-                       S470 55,520 95
-                       S600 135,650 88
-                       S730 50,780 94
-                       S860 125,910 82
-                       S970 60,1000 95"/>
-
-                <path
-                    class="wave-path two"
-                    d="M0 120
-                       C60 90,100 145,150 110
-                       S240 85,300 120
-                       S390 145,450 105
-                       S540 80,600 118
-                       S690 150,750 108
-                       S840 85,900 120
-                       S960 140,1000 112"/>
-
+            <svg id="wave-svg" viewBox="0 0 1000 180" preserveAspectRatio="none">
+                <path id="wave-area" class="wave-area" d=""/>
+                <path id="wave-line" class="wave-path live" d=""/>
             </svg>
-
         </div>
 
         <div class="wave-labels">
-            <span>0%</span>
-            <span>25%</span>
-            <span>50%</span>
-            <span>75%</span>
-            <span>100%</span>
+            <span>Kaniadto</span>
+            <span id="wave-hint" style="color:#67e8f9;font-weight:900;">Naghulat sa data...</span>
+            <span>Karon</span>
         </div>
 
     </section>
@@ -2350,6 +2380,8 @@ let pumpActual = null;
 
 const OFFLINE_AFTER_MS = 60 * 1000;
 
+const WAVE_MAX_POINTS = 15;
+
 
 function setLiveStatus(online, text){
 
@@ -2373,6 +2405,69 @@ function setLiveStatus(online, text){
 function clampPercent(value){
 
     return Math.max(0, Math.min(100, Number(value) || 0));
+
+}
+
+
+function soilLevelText(v){
+
+    if(v < 30){
+        return 'UGA — ' + Math.round(v) + '% (kinahanglan og tubig)';
+    }
+
+    if(v < 60){
+        return 'MAAYO — ' + Math.round(v) + '%';
+    }
+
+    return 'BASA — ' + Math.round(v) + '% (igo na ang tubig)';
+
+}
+
+
+function updateWave(rows){
+
+    const line = document.getElementById('wave-line');
+    const area = document.getElementById('wave-area');
+    const hint = document.getElementById('wave-hint');
+
+    if(!line || !area || !hint) return;
+
+    const points = (rows || [])
+        .slice(0, WAVE_MAX_POINTS)
+        .reverse()
+        .map(r => clampPercent(r.soil_moisture));
+
+    if(points.length === 0){
+        line.setAttribute('d', '');
+        area.setAttribute('d', '');
+        hint.textContent = 'Walay data pa';
+        return;
+    }
+
+    const W = 1000;
+    const H = 180;
+    const PAD = 12;
+    const usable = H - PAD * 2;
+    const stepX = points.length > 1 ? W / (points.length - 1) : 0;
+
+    const coords = points.map((v, i) => {
+        const x = points.length > 1 ? i * stepX : W / 2;
+        const y = PAD + usable - (v / 100) * usable;
+        return [x, y];
+    });
+
+    const linePath = coords
+        .map((c, i) => (i === 0 ? 'M' : 'L') + c[0].toFixed(1) + ' ' + c[1].toFixed(1))
+        .join(' ');
+
+    const lastX = coords[coords.length - 1][0].toFixed(1);
+    const firstX = coords[0][0].toFixed(1);
+    const areaPath = linePath + ` L${lastX} ${H} L${firstX} ${H} Z`;
+
+    line.setAttribute('d', linePath);
+    area.setAttribute('d', areaPath);
+
+    hint.textContent = soilLevelText(points[points.length - 1]);
 
 }
 
@@ -2436,6 +2531,8 @@ async function fetchSensors(){
 
 
         historyData = data;
+
+        updateWave(data);
 
         const latest = data[0];
 
@@ -2520,7 +2617,7 @@ function refreshSensors(){
 
     loadHarvestRecords();
 
-    showToast('Sensor data refreshed');
+    showToast('Sensor data refreshed', 'info');
 
 }
 
@@ -2545,7 +2642,7 @@ function renderPump(){
 async function setPumpMode(mode){
 
     if(!db){
-        showToast('Database not connected.');
+        showToast('Database not connected.', 'error');
         return;
     }
 
@@ -2559,17 +2656,17 @@ async function setPumpMode(mode){
 
         if(error){
             console.error('Mode update failed:', error);
-            showToast('Failed: ' + error.message);
+            showToast('Failed: ' + error.message, 'error');
             return;
         }
 
         pumpMode = mode;
         renderPump();
-        showToast('Pump mode: ' + mode.toUpperCase());
+        showToast('Pump mode: ' + mode.toUpperCase(), 'success');
 
     }catch(err){
         console.error('Mode update error:', err);
-        showToast('Connection error.');
+        showToast('Connection error.', 'error');
     }
 
 }
@@ -2655,7 +2752,7 @@ async function submitBug(){
 
     if(!name || !location || !description){
 
-        showToast('Please complete all required fields.');
+        showToast('Please complete all required fields.', 'error');
 
         return;
 
@@ -2664,7 +2761,7 @@ async function submitBug(){
 
     if(!db){
 
-        showToast('Database not connected. Check Supabase setup.');
+        showToast('Database not connected. Check Supabase setup.', 'error');
 
         return;
 
@@ -2692,7 +2789,7 @@ async function submitBug(){
 
             console.error('Supabase insert failed:', error);
 
-            showToast('Failed to submit: ' + error.message);
+            showToast('Failed to submit: ' + error.message, 'error');
 
             return;
 
@@ -2706,13 +2803,13 @@ async function submitBug(){
 
         closeModal('bug-modal');
 
-        showToast('Issue report submitted successfully.');
+        showToast('✔ Issue report na-submit na!', 'success');
 
     }catch(err){
 
         console.error('Submit error:', err);
 
-        showToast('Failed to submit. Check your internet connection.');
+        showToast('Failed to submit. Check your internet connection.', 'error');
 
     }finally{
 
@@ -2759,7 +2856,7 @@ function loadLocalMusic(event){
     player.play().catch(() => {});
 
 
-    showToast('Farm playlist loaded.');
+    showToast('Farm playlist loaded.', 'info');
 
 }
 
@@ -3123,7 +3220,7 @@ function saveSettings(){
 
     localStorage.setItem('smartFarmAccent', accent);
 
-    showToast('Dashboard settings saved.');
+    showToast('✔ Dashboard settings na-save na!', 'success');
 
     closeModal('settings-modal');
 
@@ -3137,19 +3234,43 @@ function saveSettings(){
 let toastTimer;
 
 
-function showToast(message){
+function showToast(message, type = 'info'){
 
     const toast = document.getElementById('toast');
 
-    toast.innerText = message;
+    const icons = {
+        success: 'fa-circle-check',
+        error: 'fa-circle-exclamation',
+        info: 'fa-circle-info'
+    };
 
-    toast.classList.add('show');
+    toast.innerHTML = `
+        <i class="fa-solid ${icons[type] || icons.info}"></i>
+        <span></span>
+    `;
+
+    toast.querySelector('span').innerText = message;
+
+    toast.className = 'toast show ' + type;
 
     clearTimeout(toastTimer);
 
     toastTimer = setTimeout(() => {
         toast.classList.remove('show');
-    }, 3500);
+    }, type === 'success' ? 5000 : 3500);
+
+}
+
+
+function flashHarvestCard(){
+
+    const card = document.getElementById('harvest-card');
+
+    if(!card) return;
+
+    card.classList.remove('flash');
+    void card.offsetWidth;
+    card.classList.add('flash');
 
 }
 
@@ -3214,7 +3335,7 @@ function openHarvestForm(recordId = null){
 
     if(recordId !== null){
         const record = harvestRecords.find(item => String(item.id) === String(recordId));
-        if(!record){ showToast('Harvest record not found.'); return; }
+        if(!record){ showToast('Harvest record not found.', 'error'); return; }
         document.getElementById('harvest-edit-id').value = record.id;
         document.getElementById('harvest-form-title').textContent = 'Edit Harvest Record';
         document.getElementById('harvest-crop').value = record.crop_name || '';
@@ -3244,7 +3365,7 @@ async function loadHarvestRecords(){
     }catch(error){
         console.error('Harvest records load failed:',error);
         body.innerHTML = '<tr><td colspan="7" class="harvest-empty">Could not load records. Check the Supabase harvest_records table and its permissions.</td></tr>';
-        showToast('Harvest records could not be loaded.');
+        showToast('Harvest records could not be loaded.', 'error');
     }
 }
 
@@ -3314,7 +3435,7 @@ function renderHarvestRecords(){
 }
 
 async function saveHarvestRecord(){
-    if(!db){showToast('Database not connected.');return;}
+    if(!db){showToast('Database not connected.', 'error');return;}
     const crop = document.getElementById('harvest-crop').value.trim();
     const date = document.getElementById('harvest-date').value;
     const previous = Number(document.getElementById('harvest-previous').value);
@@ -3324,7 +3445,7 @@ async function saveHarvestRecord(){
     const notes = document.getElementById('harvest-notes').value.trim();
     const editId = document.getElementById('harvest-edit-id').value;
     if(!crop || !date || presentRaw === '' || !Number.isFinite(previous) || !Number.isFinite(present) || previous < 0 || present < 0){
-        showToast('Please enter valid crop, date, and yield values.');
+        showToast('Palihug i-complete ang crop, date, ug yield.', 'error');
         return;
     }
     const button = document.getElementById('harvest-save-btn');
@@ -3339,11 +3460,17 @@ async function saveHarvestRecord(){
         }
         if(result.error) throw result.error;
         closeModal('harvest-form-modal');
-        showToast(editId ? 'Harvest record updated.' : 'Harvest record saved.');
         await loadHarvestRecords();
+        showToast(
+            editId
+            ? '✔ Harvest record na-update na!'
+            : '✔ Harvest record na-save na!',
+            'success'
+        );
+        flashHarvestCard();
     }catch(error){
         console.error('Harvest save failed:',error);
-        showToast('Save failed: ' + (error.message || 'check Supabase table permissions'));
+        showToast('Save failed: ' + (error.message || 'check Supabase table permissions'), 'error');
     }finally{
         button.disabled = false;
     }
@@ -3351,15 +3478,15 @@ async function saveHarvestRecord(){
 
 async function deleteHarvestRecord(id){
     if(!confirm('Delete this harvest record? This cannot be undone.')) return;
-    if(!db){showToast('Database not connected.');return;}
+    if(!db){showToast('Database not connected.', 'error');return;}
     try{
         const {error} = await db.from('harvest_records').delete().eq('id',id);
         if(error) throw error;
-        showToast('Harvest record deleted.');
         await loadHarvestRecords();
+        showToast('Harvest record na-delete na.', 'success');
     }catch(error){
         console.error('Harvest delete failed:',error);
-        showToast('Delete failed: ' + (error.message || 'check Supabase permissions'));
+        showToast('Delete failed: ' + (error.message || 'check Supabase permissions'), 'error');
     }
 }
 
