@@ -14,7 +14,7 @@
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-<!-- SUPABASE LIBRARY (NEW) -->
+<!-- SUPABASE LIBRARY -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 
 <style>
@@ -369,9 +369,9 @@ body::before{
 
     border-radius:50%;
 
-       background:rgba(34,211,238,.08);
- filter:blur(5px);
-        pointer-events:none;
+    background:rgba(34,211,238,.08);
+    filter:blur(5px);
+    pointer-events:none;
 }
 
 .sensor-card:hover{
@@ -381,6 +381,10 @@ body::before{
     box-shadow:
         0 15px 40px rgba(0,0,0,.25),
         0 0 25px rgba(34,211,238,.04);
+}
+
+.sensor-card.clickable{
+    cursor:pointer;
 }
 
 .sensor-top{
@@ -1172,16 +1176,17 @@ textarea.form-control{
     border-radius:8px;
 }
 
-
 /* =========================================================
-   HARVEST YIELD (ADDED FEATURE - EXISTING THEME PRESERVED)
+   HARVEST YIELD
 ========================================================= */
+
 .harvest-summary{
     display:grid;
     grid-template-columns:repeat(3,minmax(0,1fr));
     gap:10px;
     margin-top:14px;
 }
+
 .harvest-kpi{
     background:linear-gradient(135deg,#e9f8f0,#d9f3e7);
     color:#174b35;
@@ -1189,8 +1194,21 @@ textarea.form-control{
     border-radius:10px;
     padding:12px;
 }
-.harvest-kpi span{display:block;font-size:9px;font-weight:700;color:#3b7259}
-.harvest-kpi strong{display:block;font-size:20px;font-weight:900;margin-top:5px}
+
+.harvest-kpi span{
+    display:block;
+    font-size:9px;
+    font-weight:700;
+    color:#3b7259;
+}
+
+.harvest-kpi strong{
+    display:block;
+    font-size:20px;
+    font-weight:900;
+    margin-top:5px;
+}
+
 .harvest-panel{
     margin-top:14px;
     border:1px solid rgba(52,211,153,.22);
@@ -1199,42 +1217,118 @@ textarea.form-control{
     background:#f8fffb;
     color:#183b2d;
 }
+
 .harvest-panel-head{
-    display:flex;align-items:center;justify-content:space-between;gap:10px;
-    padding:13px;background:#e4f6ed;border-bottom:1px solid #ccebdc;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:13px;
+    background:#e4f6ed;
+    border-bottom:1px solid #ccebdc;
 }
-.harvest-panel-head h4{font-size:12px;color:#174b35}
-.harvest-panel-head p{font-size:9px;color:#507765;margin-top:4px}
-.harvest-panel .table-wrap{margin:0}
-.harvest-panel table{min-width:720px}
-.harvest-panel th{background:#dff4e9;color:#315e4b;font-size:9px}
-.harvest-panel td{color:#29483a;border-bottom:1px solid #e0eee7;font-size:10px}
-.harvest-panel tr:last-child td{border-bottom:0}
+
+.harvest-panel-head h4{
+    font-size:12px;
+    color:#174b35;
+}
+
+.harvest-panel-head p{
+    font-size:9px;
+    color:#507765;
+    margin-top:4px;
+}
+
+.harvest-panel .table-wrap{
+    margin:0;
+}
+
+.harvest-panel table{
+    min-width:720px;
+}
+
+.harvest-panel th{
+    background:#dff4e9;
+    color:#315e4b;
+    font-size:9px;
+}
+
+.harvest-panel td{
+    color:#29483a;
+    border-bottom:1px solid #e0eee7;
+    font-size:10px;
+}
+
+.harvest-panel tr:last-child td{
+    border-bottom:0;
+}
+
 .harvest-add-btn{
-    padding:9px 12px;border:0;border-radius:7px;background:#218653;color:#fff;
-    font-size:9px;font-weight:800;white-space:nowrap
+    padding:9px 12px;
+    border:0;
+    border-radius:7px;
+    background:#218653;
+    color:#fff;
+    font-size:9px;
+    font-weight:800;
+    white-space:nowrap;
 }
-.harvest-add-btn:hover{background:#176c41}
-.harvest-growth{font-weight:900;color:#16804a}
-.harvest-growth.down{color:#d94841}
+
+.harvest-add-btn:hover{
+    background:#176c41;
+}
+
+.harvest-growth{
+    font-weight:900;
+    color:#16804a;
+}
+
+.harvest-growth.down{
+    color:#d94841;
+}
+
 .harvest-action{
-    border:1px solid #c8e4d5;background:#f1fbf5;color:#256747;
-    border-radius:5px;padding:5px 7px;font-size:9px;margin:2px
+    border:1px solid #c8e4d5;
+    background:#f1fbf5;
+    color:#256747;
+    border-radius:5px;
+    padding:5px 7px;
+    font-size:9px;
+    margin:2px;
 }
-.harvest-empty{text-align:center;padding:22px;color:#638574}
-.harvest-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
-.harvest-note{font-size:9px;color:#8da49a;margin-top:9px;line-height:1.5}
+
+.harvest-empty{
+    text-align:center;
+    padding:22px;
+    color:#638574;
+}
+
+.harvest-form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0 12px;
+}
+
+.harvest-note{
+    font-size:9px;
+    color:#8da49a;
+    margin-top:9px;
+    line-height:1.5;
+}
+
 @media(max-width:650px){
- .harvest-summary{grid-template-columns:1fr}
- .harvest-panel-head{align-items:flex-start;flex-direction:column}
- .harvest-form-grid{grid-template-columns:1fr}
+    .harvest-summary{
+        grid-template-columns:1fr;
+    }
+    .harvest-panel-head{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+    .harvest-form-grid{
+        grid-template-columns:1fr;
+    }
 }
 
-
-/* =========================================================
-   HARVEST YIELD RECORDS - SUPABASE
-   Requires public.harvest_records table (SQL supplied separately).
-========================================================= */
 /* =========================================================
    TOAST
 ========================================================= */
@@ -1461,9 +1555,7 @@ textarea.form-control{
 
     <section class="sensor-grid">
 
-        
-
-
+        <!-- Soil Moisture -->
         <div class="sensor-card">
 
             <div class="sensor-top">
@@ -1486,26 +1578,30 @@ textarea.form-control{
         </div>
 
 
-        <div class="sensor-card">
+        <!-- Harvest Yield (replaces Rain Sensor) -->
+        <div class="sensor-card clickable" onclick="openModal('harvest-modal')">
 
             <div class="sensor-top">
                 <div class="sensor-icon">
-                    <i class="fa-solid fa-cloud-rain"></i>
+                    <i class="fa-solid fa-wheat-awn"></i>
                 </div>
-                <span class="sensor-status">LIVE</span>
+                <span class="sensor-status">RECORDS</span>
             </div>
 
-            <div class="sensor-name">Rain Sensor</div>
+            <div class="sensor-name">Harvest Yield</div>
 
-            <div class="sensor-value" id="rain-value">NORMAL</div>
+            <div class="sensor-value">
+                <span id="harvest-card-value">0</span><small id="harvest-card-unit"> kg</small>
+            </div>
 
-            <div class="progress">
-                <span id="rain-progress"></span>
+            <div class="pump-status">
+                <span class="pump-state" id="harvest-card-state">No harvest records yet</span>
             </div>
 
         </div>
 
 
+        <!-- Water Pump -->
         <div class="sensor-card">
 
             <div class="sensor-top">
@@ -1625,7 +1721,6 @@ textarea.form-control{
                     <tr>
                         <th>ID</th>
                         <th>Soil</th>
-                        <th>Rain</th>
                         <th>Pump</th>
                         <th>Timestamp</th>
                     </tr>
@@ -1633,7 +1728,7 @@ textarea.form-control{
 
                 <tbody id="history-body">
                     <tr>
-                        <td colspan="5">Loading sensor history...</td>
+                        <td colspan="4">Loading sensor history...</td>
                     </tr>
                 </tbody>
 
@@ -2065,10 +2160,10 @@ textarea.form-control{
 </div>
 
 
-
 <!-- ======================================================
      HARVEST YIELD & HARVEST RECORDS
 ====================================================== -->
+
 <div class="modal-overlay" id="harvest-modal">
     <div class="modal-box" style="width:min(1000px,100%);">
         <button class="btn-close" onclick="closeModal('harvest-modal')">✖</button>
@@ -2151,7 +2246,7 @@ textarea.form-control{
 <script>
 
 /* =========================================================
-   SUPABASE CONNECTION  
+   SUPABASE CONNECTION
 ========================================================= */
 
 const SUPABASE_URL = 'https://fqqwlvreqnxkbvbjjrol.supabase.co';
@@ -2250,8 +2345,8 @@ function goDashboard(){
 
 let historyData = [];
 
-let pumpMode = 'auto';        
-let pumpActual = null;     
+let pumpMode = 'auto';
+let pumpActual = null;
 
 const OFFLINE_AFTER_MS = 60 * 1000;
 
@@ -2286,38 +2381,11 @@ function showSensors(row){
 
     const soil = Number(row.soil_moisture ?? 0);
 
-    let rainText = 'NO DATA';
-
-    if(row.rain_status === true){
-        rainText = 'RAIN DETECTED';
-    }else if(row.rain_status === false){
-        rainText = 'NORMAL';
-    }
-
-
     document.getElementById('soil-value')
         .innerText = Math.round(soil);
 
-    document.getElementById('rain-value')
-        .innerText = rainText;
-
-
     document.getElementById('soil-progress')
         .style.width = clampPercent(soil) + '%';
-
-    document.getElementById('rain-progress')
-        .style.width =
-            rainText === 'RAIN DETECTED'
-            ? '100%'
-            : rainText === 'NORMAL'
-            ? '18%'
-            : '0%';
-
-    document.getElementById('rain-value')
-        .style.color =
-            rainText === 'RAIN DETECTED'
-            ? '#22d3ee'
-            : '#f8fafc';
 
 
     pumpActual = row.pump_status === true;
@@ -2450,13 +2518,15 @@ function refreshSensors(){
 
     refreshLive();
 
+    loadHarvestRecords();
+
     showToast('Sensor data refreshed');
 
 }
 
 
 /* =========================================================
-   WATER PUMP (NAAY SAKTONG WHERE CLAUSE NA)
+   WATER PUMP
 ========================================================= */
 
 function renderPump(){
@@ -2517,7 +2587,7 @@ function renderHistory(){
 
         body.innerHTML = `
             <tr>
-                <td colspan="5">
+                <td colspan="4">
                     No history records available yet.
                 </td>
             </tr>
@@ -2529,13 +2599,6 @@ function renderHistory(){
 
     body.innerHTML =
         historyData.map(item => {
-
-            const rain =
-                item.rain_status === true
-                ? 'RAIN'
-                : item.rain_status === false
-                ? 'NORMAL'
-                : '--';
 
             const pump =
                 item.pump_status === true
@@ -2557,7 +2620,6 @@ function renderHistory(){
             <tr>
                 <td>${item.id}</td>
                 <td>${Math.round(Number(item.soil_moisture ?? 0))}%</td>
-                <td>${rain}</td>
                 <td>${pump}</td>
                 <td>${time}</td>
             </tr>
@@ -3121,24 +3183,8 @@ function loadSettings(){
 
 
 /* =========================================================
-   INITIALIZE
+   HARVEST YIELD RECORDS  ->  SUPABASE (harvest_records)
 ========================================================= */
-
-loadSettings();
-
-loadWeather();
-
-refreshLive();
-
-
-/* Read live sensor data and pump command every 5 seconds. */
-
-setInterval(refreshLive, 5000);
-
-
-/* Refresh weather automatically every 10 minutes. */
-
-setInterval(loadWeather, 10 * 60 * 1000);
 
 let harvestRecords = [];
 
@@ -3185,6 +3231,7 @@ async function loadHarvestRecords(){
     const body = document.getElementById('harvest-records-body');
     if(!db){
         body.innerHTML = '<tr><td colspan="7" class="harvest-empty">Supabase is not connected.</td></tr>';
+        updateHarvestCard();
         return;
     }
     body.innerHTML = '<tr><td colspan="7" class="harvest-empty">Loading harvest records...</td></tr>';
@@ -3199,6 +3246,31 @@ async function loadHarvestRecords(){
         body.innerHTML = '<tr><td colspan="7" class="harvest-empty">Could not load records. Check the Supabase harvest_records table and its permissions.</td></tr>';
         showToast('Harvest records could not be loaded.');
     }
+}
+
+function updateHarvestCard(){
+    const valueEl = document.getElementById('harvest-card-value');
+    const unitEl = document.getElementById('harvest-card-unit');
+    const stateEl = document.getElementById('harvest-card-state');
+
+    const total = harvestRecords.reduce((sum,r)=>sum+(Number(r.present_yield)||0),0);
+    const unit = harvestRecords[0]?.unit || 'kg';
+
+    valueEl.innerText = total.toLocaleString(undefined,{maximumFractionDigits:2});
+    unitEl.innerText = ' ' + unit;
+
+    if(!harvestRecords.length){
+        stateEl.innerText = 'No harvest records yet';
+        return;
+    }
+
+    const latest = harvestRecords[0];
+    const growth = growthPercent(latest.previous_yield, latest.present_yield);
+    const growthText = growth === null
+        ? 'Latest: ' + (latest.crop_name || 'Crop')
+        : 'Latest growth: ' + (growth > 0 ? '+' : '') + growth.toFixed(1) + '%';
+
+    stateEl.innerText = growthText;
 }
 
 function renderHarvestRecords(){
@@ -3218,6 +3290,8 @@ function renderHarvestRecords(){
     else if(priorTotal === 0 || recentTotal > priorTotal) trend = 'Increasing';
     else if(recentTotal < priorTotal) trend = 'Decreasing';
     document.getElementById('harvest-trend').textContent = trend;
+
+    updateHarvestCard();
 
     if(!harvestRecords.length){
         body.innerHTML = '<tr><td colspan="7" class="harvest-empty">No harvest records yet. Click “Add Harvest” to record your first harvest.</td></tr>';
@@ -3288,6 +3362,34 @@ async function deleteHarvestRecord(id){
         showToast('Delete failed: ' + (error.message || 'check Supabase permissions'));
     }
 }
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+loadSettings();
+
+loadWeather();
+
+refreshLive();
+
+loadHarvestRecords();
+
+
+/* Read live sensor data and pump command every 5 seconds. */
+
+setInterval(refreshLive, 5000);
+
+
+/* Refresh harvest totals every 30 seconds. */
+
+setInterval(loadHarvestRecords, 30000);
+
+
+/* Refresh weather automatically every 10 minutes. */
+
+setInterval(loadWeather, 10 * 60 * 1000);
 
 </script>
 
